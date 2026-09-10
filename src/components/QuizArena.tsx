@@ -285,9 +285,9 @@ export const QuizArena: React.FC<QuizArenaProps> = ({
   const optionLetters = ['A', 'B', 'C', 'D'];
 
   return (
-    <div className="w-full max-w-5xl mx-auto px-3 sm:px-6 py-4 sm:py-6 space-y-5">
+    <div className="w-full max-w-5xl mx-auto px-3 sm:px-6 py-4 sm:py-6 flex flex-col gap-5">
       {/* Top Banner: Anti-Cheat Sentinel & Timer telemetry */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800 shadow-xl">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-3.5 rounded-2xl bg-slate-900 border border-slate-800 shadow-xl">
         {/* Anti-cheat banner */}
         <div className="flex items-center gap-2.5 text-xs font-mono">
           <div className="relative flex items-center justify-center w-7 h-7 rounded-lg bg-rose-500/20 text-rose-400 border border-rose-500/40 shrink-0">
@@ -333,7 +333,7 @@ export const QuizArena: React.FC<QuizArenaProps> = ({
 
       {/* Main Question Arena Card */}
       {currentQuestion && (
-        <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-5 sm:p-8 shadow-2xl backdrop-blur-md relative overflow-hidden">
+        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 sm:p-8 shadow-2xl relative overflow-hidden">
           {/* Subtle Ambient Accent Glow */}
           <div className="absolute top-0 right-0 w-80 h-80 bg-cyan-500/5 rounded-full blur-3xl -z-10" />
 

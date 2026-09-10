@@ -73,7 +73,7 @@ export const SubmitConfirmModal: React.FC<SubmitConfirmModalProps> = ({
           </div>
         )}
 
-        <div className="p-3.5 rounded-xl bg-slate-950/80 border border-slate-800 mb-6 space-y-1.5 text-xs font-mono text-slate-400">
+        <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 mb-6 flex flex-col gap-1.5 text-xs font-mono text-slate-400">
           <div className="flex justify-between">
             <span>Attempted:</span>
             <span className="text-slate-100 font-bold">{answeredCount} / {totalQuestions}</span>

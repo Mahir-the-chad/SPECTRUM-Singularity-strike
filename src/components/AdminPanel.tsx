@@ -200,9 +200,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz }) => {
             Restricted Admin Authorization (/admin)
           </p>
 
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div>
-              <label className="block text-xs font-mono font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+          <form onSubmit={handleLogin} className="flex flex-col gap-4">
+            <div className="flex flex-col gap-1.5">
+              <label className="block text-xs font-mono font-semibold text-slate-300 uppercase tracking-wider">
                 Admin Username
               </label>
               <input
@@ -215,8 +215,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz }) => {
               />
             </div>
 
-            <div>
-              <label className="block text-xs font-mono font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+            <div className="flex flex-col gap-1.5">
+              <label className="block text-xs font-mono font-semibold text-slate-300 uppercase tracking-wider">
                 Security Passkey
               </label>
               <input
@@ -260,9 +260,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz }) => {
 
   // Authenticated Admin Dashboard
   return (
-    <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6">
+    <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 flex flex-col gap-6">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-3xl bg-slate-900 border border-slate-800 shadow-xl">
         <div>
           <div className="flex items-center gap-2.5">
             <span className="font-mono text-xs font-bold uppercase tracking-widest text-cyan-400">

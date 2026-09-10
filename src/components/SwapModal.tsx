@@ -46,7 +46,7 @@ export const SwapModal: React.FC<SwapModalProps> = ({
           Are you sure you want to execute your <span className="text-amber-400 font-semibold font-mono">SWAP CHALLENGE</span>?
         </p>
 
-        <div className="p-3.5 rounded-xl bg-slate-950/80 border border-slate-800 mb-6 space-y-1.5 text-xs font-mono text-slate-400">
+        <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 mb-6 flex flex-col gap-1.5 text-xs font-mono text-slate-400">
           <div className="flex justify-between">
             <span>Target Question:</span>
             <span className="text-slate-200">Question #{questionNumber}</span>

@@ -33,8 +33,8 @@ export const RulesModal: React.FC<RulesModalProps> = ({ isOpen, onClose }) => {
           </button>
         </div>
 
-        <div className="space-y-4 text-xs font-mono text-slate-300">
-          <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800 space-y-1">
+        <div className="flex flex-col gap-4 text-xs font-mono text-slate-300">
+          <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 flex flex-col gap-1.5">
             <div className="flex items-center gap-2 text-cyan-400 font-bold uppercase">
               <Clock className="w-3.5 h-3.5" />
               1. 15-Minute Wall-Clock Countdown
@@ -44,19 +44,19 @@ export const RulesModal: React.FC<RulesModalProps> = ({ isOpen, onClose }) => {
             </p>
           </div>
 
-          <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800 space-y-1">
+          <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 flex flex-col gap-1.5">
             <div className="flex items-center gap-2 text-amber-400 font-bold uppercase">
               <Sparkles className="w-3.5 h-3.5" />
               2. Three Single-Use Tactical Lifelines
             </div>
-            <ul className="list-disc list-inside text-slate-400 space-y-1 font-sans">
+            <ul className="list-disc list-inside text-slate-400 flex flex-col gap-1 font-sans">
               <li><strong className="text-slate-200 font-mono">50-50:</strong> Instantly eliminates 2 incorrect options, preserving only the correct and closest choices.</li>
               <li><strong className="text-slate-200 font-mono">Swap Challenge:</strong> Replaces the active question with an un-attempted question from the identical difficulty tier.</li>
               <li><strong className="text-slate-200 font-mono">Ask AI:</strong> Opens a neural co-pilot transmission providing a conceptual hint without explicitly stating the answer.</li>
             </ul>
           </div>
 
-          <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 space-y-1 text-rose-200">
+          <div className="p-3.5 rounded-xl bg-slate-950 border border-rose-500/30 flex flex-col gap-1.5 text-rose-200">
             <div className="flex items-center gap-2 text-rose-400 font-bold uppercase">
               <ShieldAlert className="w-3.5 h-3.5" />
               3. Tab-Switch Sentinel Defense
@@ -66,7 +66,7 @@ export const RulesModal: React.FC<RulesModalProps> = ({ isOpen, onClose }) => {
             </p>
           </div>
 
-          <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800 space-y-1">
+          <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 flex flex-col gap-1.5">
             <div className="flex items-center gap-2 text-emerald-400 font-bold uppercase">
               <Award className="w-3.5 h-3.5" />
               4. Ranking & Tie-Breaker Logic

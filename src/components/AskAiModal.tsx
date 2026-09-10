@@ -80,7 +80,7 @@ export const AskAiModal: React.FC<AskAiModalProps> = ({
         </div>
 
         {/* Content Body */}
-        <div className="p-6 space-y-4">
+        <div className="p-6 flex flex-col gap-4">
           <div className="flex items-center gap-2 text-xs font-mono text-cyan-400">
             <Terminal className="w-3.5 h-3.5" />
             <span>NEURAL REASONING COPROCESSOR STREAM</span>

@@ -66,9 +66,9 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
   const StatusIcon = statusConfig.icon;
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-4 py-8 sm:py-12 space-y-8 animate-in fade-in duration-300">
+    <div className="w-full max-w-4xl mx-auto px-4 py-8 sm:py-12 flex flex-col gap-8 animate-in fade-in duration-300">
       {/* Result Hero Header */}
-      <div className="text-center space-y-3">
+      <div className="text-center flex flex-col items-center gap-3">
         <div
           className={`inline-flex items-center gap-2 px-3.5 py-1 rounded-full border text-xs font-mono font-bold uppercase tracking-widest ${statusConfig.badgeClass}`}
         >
@@ -198,7 +198,7 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
         </button>
 
         {showDetailedReview && (
-          <div className="mt-4 space-y-4">
+          <div className="mt-4 flex flex-col gap-4">
             {session.activeQuestions.map((q, idx) => {
               const selected = session.selectedAnswers[q.id];
               const isCorrect = selected === q.correctAnswer;
