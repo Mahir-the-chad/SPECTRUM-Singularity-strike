@@ -54,11 +54,6 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz }) => {
     }
   };
 
-  const handleFillCredentials = () => {
-    setUsername('admin');
-    setPassword('pass@123');
-    setAuthError('');
-  };
 
   // Real-time Firestore Subscription
   useEffect(() => {
@@ -249,15 +244,6 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz }) => {
               <span>Verify & Access Leaderboard</span>
             </button>
 
-            {/* Quick Demo Fill */}
-            <button
-              id="admin-auto-fill-btn"
-              type="button"
-              onClick={handleFillCredentials}
-              className="w-full py-2 px-3 rounded-lg bg-slate-800/60 hover:bg-slate-800 text-slate-400 hover:text-slate-200 text-xs font-mono transition-colors"
-            >
-              Auto-fill (admin / pass@123)
-            </button>
 
             <button
               type="button"
