@@ -35,19 +35,19 @@ export const ParticipantEntry: React.FC<ParticipantEntryProps> = ({
   const secondsRemaining = savedRemainingSeconds % 60;
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-4 py-8 sm:py-12 flex flex-col gap-4">
+    <div className="w-full max-w-4xl mx-auto px-4 py-8 sm:py-12 flex flex-col gap-6 h-auto overflow-visible">
       {/* Hero Header */}
-      <div className="text-center flex flex-col items-center gap-4">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-mono font-medium uppercase tracking-widest">
+      <div className="text-center flex flex-col items-center gap-3 h-auto overflow-visible">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-mono font-medium uppercase tracking-widest h-auto overflow-visible">
           <Zap className="w-3.5 h-3.5 text-cyan-400" />
           Tactical Tech Competition
         </div>
 
-        <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-100 font-mono">
-          SINGULARITY <span className="text-cyan-400 drop-shadow-[0_0_20px_rgba(6,182,212,0.4)]">STRIKE</span>
+        <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-100 font-mono h-auto overflow-visible">
+          SINGULARITY <span className="text-cyan-400">STRIKE</span>
         </h1>
 
-        <p className="text-sm sm:text-base text-slate-400 max-w-2xl mx-auto leading-relaxed">
+        <p className="text-sm sm:text-base text-slate-400 max-w-2xl mx-auto leading-relaxed h-auto overflow-visible">
           Prove your mastery across distributed systems, machine intelligence, cryptographic protocols,
           and low-level algorithms. 15 questions, 15 minutes, 3 tactical lifelines.
         </p>
@@ -55,11 +55,11 @@ export const ParticipantEntry: React.FC<ParticipantEntryProps> = ({
 
       {/* Active Session Recovery Alert */}
       {hasActiveSession && onResumeQuiz && (
-        <div className="h-auto p-4 sm:p-5 rounded-xl bg-amber-500/10 border border-amber-500/40 text-amber-200 flex flex-col gap-4">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="flex items-start gap-3">
+        <div className="max-w-3xl w-full mx-auto p-4 sm:p-5 rounded-xl bg-amber-500/10 border border-amber-500/40 text-amber-200 flex flex-col gap-4 h-auto overflow-visible">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 h-auto overflow-visible">
+            <div className="flex items-start gap-3 h-auto overflow-visible">
               <RefreshCw className="w-5 h-5 text-amber-400 shrink-0 mt-0.5 animate-spin" style={{ animationDuration: '8s' }} />
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-col gap-1 h-auto overflow-visible">
                 <h3 className="font-semibold text-sm sm:text-base text-amber-200">
                   Active Session Detected for &quot;{savedName}&quot;
                 </h3>
@@ -71,11 +71,12 @@ export const ParticipantEntry: React.FC<ParticipantEntryProps> = ({
             </div>
             <button
               id="resume-quiz-btn"
+              type="button"
               onClick={() => {
                 sounds.playSelect();
                 onResumeQuiz();
               }}
-              className="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-mono text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 cursor-pointer h-auto"
+              className="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-mono text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 cursor-pointer h-auto overflow-visible"
             >
               <span>Resume Active Strike</span>
               <ArrowRight className="w-4 h-4" />
@@ -84,10 +85,11 @@ export const ParticipantEntry: React.FC<ParticipantEntryProps> = ({
         </div>
       )}
 
-      {/* Main Entry Card */}
-      <div className="h-auto bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl flex flex-col gap-4">
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <div className="flex flex-col gap-2">
+      {/* Main Card Container */}
+      <div className="max-w-3xl w-full mx-auto p-6 flex flex-col gap-6 rounded-xl border border-cyan-500/30 bg-slate-900/50 h-auto overflow-visible">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-6 h-auto overflow-visible">
+          {/* PARTICIPANT IDENTITY input field in its own block at the top with clear padding */}
+          <div className="flex flex-col gap-2 p-3 rounded-lg bg-slate-950/60 border border-slate-800 h-auto overflow-visible">
             <label
               htmlFor="participant-name-input"
               className="block text-xs font-mono font-semibold text-slate-300 uppercase tracking-wider"
@@ -104,19 +106,20 @@ export const ParticipantEntry: React.FC<ParticipantEntryProps> = ({
               }}
               placeholder="e.g., Mahir Saraiya"
               autoFocus
-              className="w-full px-4 py-3.5 rounded-xl bg-slate-950 border border-slate-700 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/20 font-sans text-base transition-all h-auto"
+              className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 font-sans text-base transition-all h-auto overflow-visible"
             />
             {error && (
-              <p className="text-xs text-rose-400 flex items-center gap-1.5 font-mono">
+              <p className="text-xs text-rose-400 flex items-center gap-1.5 font-mono mt-1">
                 <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
                 {error}
               </p>
             )}
           </div>
 
-          {/* Tactical Briefing Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="h-auto p-4 rounded-xl bg-slate-950 border border-slate-800 flex flex-col gap-2">
+          {/* 3 feature cards inside a responsive grid row below the input field */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 h-auto overflow-visible">
+            {/* Feature 1: 15-Min Countdown */}
+            <div className="p-4 rounded-lg bg-slate-950/60 border border-slate-800 flex flex-col gap-2 h-auto overflow-visible">
               <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono font-semibold">
                 <Clock className="w-4 h-4 shrink-0" />
                 <span>15-MIN COUNTDOWN</span>
@@ -126,7 +129,8 @@ export const ParticipantEntry: React.FC<ParticipantEntryProps> = ({
               </p>
             </div>
 
-            <div className="h-auto p-4 rounded-xl bg-slate-950 border border-slate-800 flex flex-col gap-2">
+            {/* Feature 2: 3 Single-Use Lifelines */}
+            <div className="p-4 rounded-lg bg-slate-950/60 border border-slate-800 flex flex-col gap-2 h-auto overflow-visible">
               <div className="flex items-center gap-2 text-amber-400 text-xs font-mono font-semibold">
                 <Sparkles className="w-4 h-4 shrink-0" />
                 <span>3 SINGLE-USE LIFELINES</span>
@@ -136,7 +140,8 @@ export const ParticipantEntry: React.FC<ParticipantEntryProps> = ({
               </p>
             </div>
 
-            <div className="h-auto p-4 rounded-xl bg-slate-950 border border-rose-500/30 flex flex-col gap-2">
+            {/* Feature 3: Tab-Switch Defense */}
+            <div className="p-4 rounded-lg bg-slate-950/60 border border-rose-500/30 flex flex-col gap-2 h-auto overflow-visible">
               <div className="flex items-center gap-2 text-rose-400 text-xs font-mono font-semibold">
                 <ShieldAlert className="w-4 h-4 shrink-0" />
                 <span>TAB-SWITCH DEFENSE</span>
@@ -147,16 +152,16 @@ export const ParticipantEntry: React.FC<ParticipantEntryProps> = ({
             </div>
           </div>
 
-          {/* Security Notice Card */}
-          <div className="h-auto p-4 rounded-xl bg-cyan-950/40 border border-cyan-500/30 text-xs text-cyan-300 leading-relaxed font-mono">
+          {/* COMPETITION DIRECTIVE notice banner below the grid */}
+          <div className="p-3.5 rounded-lg border border-cyan-500/30 bg-cyan-950/30 text-xs text-cyan-300 leading-relaxed font-mono h-auto overflow-visible">
             <strong className="text-cyan-200">COMPETITION DIRECTIVE:</strong> Ensure an undisturbed environment. Once the 15-minute timer initiates, your attempt is logged and scored in real-time on the global Firestore leaderboard.
           </div>
 
-          {/* Launch Button */}
+          {/* INITIALIZE STRIKE RUN button prominently at the bottom with standard padding (py-3) */}
           <button
             id="start-quiz-btn"
             type="submit"
-            className="h-auto w-full py-4 px-6 rounded-xl bg-cyan-400 hover:bg-cyan-300 active:bg-cyan-500 text-slate-950 font-mono font-extrabold text-sm sm:text-base tracking-wider uppercase transition-all flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 cursor-pointer"
+            className="w-full py-3 px-6 rounded-lg bg-cyan-400 hover:bg-cyan-300 active:bg-cyan-500 text-slate-950 font-mono font-extrabold text-sm sm:text-base tracking-wider uppercase transition-colors flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/35 cursor-pointer h-auto overflow-visible"
           >
             <Play className="w-5 h-5 fill-slate-950 text-slate-950 shrink-0" />
             <span>INITIALIZE STRIKE RUN</span>
