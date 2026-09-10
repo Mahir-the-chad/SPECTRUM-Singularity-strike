@@ -1,0 +1,6 @@
+{
+  "name": "Singularity Strike",
+  "description": "High-stakes tech trivia quiz application with 15-minute timer, lifelines, tab-switch anti-cheat detection, and live Firebase Firestore leaderboard.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

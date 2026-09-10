@@ -1,0 +1,248 @@
+{
+  "easy": [
+    {
+      "id": "easy-1",
+      "question": "Which time complexity represents constant time execution regardless of input size in Big-O notation?",
+      "options": ["O(1)", "O(n)", "O(log n)", "O(n²)"],
+      "correctAnswer": "O(1)",
+      "closestAnswer": "O(log n)",
+      "aiHint": "Consider operations that take the exact same amount of processor cycles whether handling 1 element or 1 billion elements, like accessing an array element by index."
+    },
+    {
+      "id": "easy-2",
+      "question": "In Git, which command is used to download commits and objects from a remote repository into the local repository and immediately integrate them?",
+      "options": ["git pull", "git fetch", "git clone", "git push"],
+      "correctAnswer": "git pull",
+      "closestAnswer": "git fetch",
+      "aiHint": "This command performs two operations under the hood: retrieving remote changes and merging them into the current active branch."
+    },
+    {
+      "id": "easy-3",
+      "question": "Which HTTP status code signifies that a requested resource was successfully created on the server?",
+      "options": ["201 Created", "200 OK", "204 No Content", "301 Moved Permanently"],
+      "correctAnswer": "201 Created",
+      "closestAnswer": "200 OK",
+      "aiHint": "While 200 signifies general success, REST conventions define a specific 2xx code specifically returned after successful POST requests that instantiate new entities."
+    },
+    {
+      "id": "easy-4",
+      "question": "What data structure operates on a Last-In, First-Out (LIFO) order?",
+      "options": ["Stack", "Queue", "Linked List", "Binary Heap"],
+      "correctAnswer": "Stack",
+      "closestAnswer": "Queue",
+      "aiHint": "Think of a physical pile of cafeteria trays where the last tray placed on top is the first one someone picks up."
+    },
+    {
+      "id": "easy-5",
+      "question": "In relational databases, which SQL constraint ensures that every row in a table is uniquely identifiable and cannot contain NULL values?",
+      "options": ["PRIMARY KEY", "FOREIGN KEY", "UNIQUE", "NOT NULL"],
+      "correctAnswer": "PRIMARY KEY",
+      "closestAnswer": "UNIQUE",
+      "aiHint": "A UNIQUE constraint allows one NULL in most engines, but this key uniquely identifies records for relation indexing and strictly forbids nullity."
+    },
+    {
+      "id": "easy-6",
+      "question": "Which protocol is the default secure transport protocol used to encrypt web traffic via TLS/SSL?",
+      "options": ["HTTPS", "HTTP", "SFTP", "SSH"],
+      "correctAnswer": "HTTPS",
+      "closestAnswer": "SSH",
+      "aiHint": "It is the encrypted sibling of standard port 80 web requests, operating over port 443."
+    },
+    {
+      "id": "easy-7",
+      "question": "In JavaScript, which operator checks for both value equality and identical data type without type coercion?",
+      "options": ["===", "==", "=", "!="],
+      "correctAnswer": "===",
+      "closestAnswer": "==",
+      "aiHint": "Unlike loose equality which coerces types like '0' == 0, strict equality requires three characters."
+    },
+    {
+      "id": "easy-8",
+      "question": "Which standard format is most universally utilized for transmitting structured data between a web API and a browser client?",
+      "options": ["JSON", "XML", "YAML", "Protocol Buffers"],
+      "correctAnswer": "JSON",
+      "closestAnswer": "XML",
+      "aiHint": "It derives from JavaScript object syntax and uses lightweight key-value pairs formatted with curly brackets."
+    },
+    {
+      "id": "easy-9",
+      "question": "What does CPU cache provide compared to main system RAM?",
+      "options": ["Significantly lower latency and higher bandwidth", "Higher storage capacity at lower cost", "Persistent non-volatile storage", "Direct network interface routing"],
+      "correctAnswer": "Significantly lower latency and higher bandwidth",
+      "closestAnswer": "Persistent non-volatile storage",
+      "aiHint": "L1, L2, and L3 caches sit directly adjacent to or inside the CPU cores to avoid the slow bus trip across the motherboard to DRAM."
+    },
+    {
+      "id": "easy-10",
+      "question": "Which Linux command is used to modify file permissions using symbolic or octal notation?",
+      "options": ["chmod", "chown", "chgrp", "touch"],
+      "correctAnswer": "chmod",
+      "closestAnswer": "chown",
+      "aiHint": "The command name stands for 'change mode' and lets you set read, write, and execute bits."
+    }
+  ],
+  "medium": [
+    {
+      "id": "medium-1",
+      "question": "What mechanism in the JavaScript runtime is responsible for executing callbacks, handling async tasks, and draining microtask queues?",
+      "options": ["Event Loop", "V8 Just-In-Time Compiler", "Garbage Collector", "WebAssembly Sandbox"],
+      "correctAnswer": "Event Loop",
+      "closestAnswer": "Garbage Collector",
+      "aiHint": "It continuously inspects the call stack and moves queued promises and timers into execution once the stack clears."
+    },
+    {
+      "id": "medium-2",
+      "question": "In the CAP theorem for distributed systems, what does the 'P' stand for?",
+      "options": ["Partition Tolerance", "Persistence", "Parallelism", "Performance"],
+      "correctAnswer": "Partition Tolerance",
+      "closestAnswer": "Persistence",
+      "aiHint": "This property guarantees that the cluster continues to function despite network communications drops between arbitrary nodes."
+    },
+    {
+      "id": "medium-3",
+      "question": "Which cryptographic primitive generates a fixed-size deterministic digest from arbitrary-length input with one-way preimage resistance?",
+      "options": ["Cryptographic Hash Function", "Symmetric Cipher", "Asymmetric Key Pair", "Diffie-Hellman Exchange"],
+      "correctAnswer": "Cryptographic Hash Function",
+      "closestAnswer": "Symmetric Cipher",
+      "aiHint": "Examples include SHA-256 and BLAKE3; they transform data into a fixed avalanche digest and cannot be reversed mathematically."
+    },
+    {
+      "id": "medium-4",
+      "question": "In the Transformer neural network architecture (Vaswani et al.), which mechanism allows the model to dynamically weigh the importance of all input tokens simultaneously?",
+      "options": ["Scaled Dot-Product Multi-Head Attention", "Recurrent Hidden State Propagation", "Depthwise Convolutional Kernel", "Backpropagation Through Time"],
+      "correctAnswer": "Scaled Dot-Product Multi-Head Attention",
+      "closestAnswer": "Recurrent Hidden State Propagation",
+      "aiHint": "This mechanism computes Query, Key, and Value vector products across multiple representation subspaces in parallel."
+    },
+    {
+      "id": "medium-5",
+      "question": "Which isolation level in ANSI SQL prevents dirty reads and non-repeatable reads, but may still permit phantom reads in standard implementations?",
+      "options": ["Repeatable Read", "Read Committed", "Serializable", "Read Uncommitted"],
+      "correctAnswer": "Repeatable Read",
+      "closestAnswer": "Serializable",
+      "aiHint": "It locks accessed rows so consecutive SELECTs see the exact same values, but doesn't lock index ranges against newly inserted tuples."
+    },
+    {
+      "id": "medium-6",
+      "question": "What is the primary architectural purpose of a Reverse Proxy (such as NGINX or Envoy) situated in front of backend microservices?",
+      "options": ["Load balancing, SSL termination, and centralized routing", "Direct compilation of client TypeScript code", "Persistent relational ACID transactions", "Generating client browser cryptographic cookies"],
+      "correctAnswer": "Load balancing, SSL termination, and centralized routing",
+      "closestAnswer": "Persistent relational ACID transactions",
+      "aiHint": "It shields backend servers by acting as the public gateway, managing ingress traffic, security headers, and workload distribution."
+    },
+    {
+      "id": "medium-7",
+      "question": "In computer networking, what happens during the TCP Three-Way Handshake prior to data exchange?",
+      "options": ["SYN -> SYN-ACK -> ACK", "SYN -> ACK -> DATA", "HELLO -> VERIFY -> CONNECT", "ACK -> SYN-ACK -> FIN"],
+      "correctAnswer": "SYN -> SYN-ACK -> ACK",
+      "closestAnswer": "SYN -> ACK -> DATA",
+      "aiHint": "The client synchronizes sequence numbers, the server acknowledges and synchronizes its own, and the client sends final acknowledgement."
+    },
+    {
+      "id": "medium-8",
+      "question": "What problem does the Raft consensus algorithm solve in distributed state machines?",
+      "options": ["Electing a leader and maintaining an identical replicated log", "Compressing database backups across nodes", "Generating public-private key pairs for SSH", "Preventing memory leaks in C++ smart pointers"],
+      "correctAnswer": "Electing a leader and maintaining an identical replicated log",
+      "closestAnswer": "Preventing memory leaks in C++ smart pointers",
+      "aiHint": "Designed as an understandable alternative to Multi-Paxos, it uses heartbeats, terms, and quorum voting to agree on state transitions."
+    },
+    {
+      "id": "medium-9",
+      "question": "What prevents a Web Worker from modifying the DOM directly in a browser environment?",
+      "options": ["Workers run in isolated background threads without window/document access", "DOM modifications require synchronous WebGL contexts", "The Same-Origin Policy forbids DOM manipulation", "Microtasks preempt all worker thread mutations"],
+      "correctAnswer": "Workers run in isolated background threads without window/document access",
+      "closestAnswer": "The Same-Origin Policy forbids DOM manipulation",
+      "aiHint": "Because DOM nodes are not thread-safe, JavaScript isolates UI tree mutation to the primary UI thread; workers communicate via postMessage."
+    },
+    {
+      "id": "medium-10",
+      "question": "In Docker containerization, how do container layers behave when building an image from a Dockerfile?",
+      "options": ["Each instruction creates an immutable, cached read-only layer", "All commands overwrite a single mutable ext4 partition", "Layers are dynamically re-ordered at runtime for RAM optimization", "Every RUN instruction spawns a separate hypervisor kernel"],
+      "correctAnswer": "Each instruction creates an immutable, cached read-only layer",
+      "closestAnswer": "All commands overwrite a single mutable ext4 partition",
+      "aiHint": "Union filesystems (like overlay2) stack immutable filesystem diffs on top of each other, caching steps that haven't changed."
+    }
+  ],
+  "hard": [
+    {
+      "id": "hard-1",
+      "question": "In LLM training and inference, what does FlashAttention mathematically achieve to achieve a 2-4x speedup over standard attention?",
+      "options": ["Tiled computation computing softmax in SRAM without materializing the N×N matrix in HBM", "Quantizing all weights into 2-bit ternary integers", "Pruning 70% of attention heads using low-rank decomposition", "Replacing transformer self-attention with state-space linear recurrences"],
+      "correctAnswer": "Tiled computation computing softmax in SRAM without materializing the N×N matrix in HBM",
+      "closestAnswer": "Replacing transformer self-attention with state-space linear recurrences",
+      "aiHint": "Standard attention is IO-bound due to repeatedly reading/writing the quadratic sequence matrix between GPU High Bandwidth Memory and fast on-chip SRAM."
+    },
+    {
+      "id": "hard-2",
+      "question": "What is the ABA problem in lock-free concurrent programming using Compare-And-Swap (CAS) primitives?",
+      "options": ["A memory location changes from A to B and back to A, misleading a thread into assuming no intermediate modification occurred", "Two threads deadlock by acquiring mutex locks in reverse alphabetical sequence", "Atomic registers overflow when incrementing beyond 64-bit integer limits", "Cache coherence protocols drop write-invalidations during NUMA bus congestion"],
+      "correctAnswer": "A memory location changes from A to B and back to A, misleading a thread into assuming no intermediate modification occurred",
+      "closestAnswer": "Two threads deadlock by acquiring mutex locks in reverse alphabetical sequence",
+      "aiHint": "CAS checks if value == expected. If another thread alters the pointer and then restores it, CAS succeeds even though structural state or nodes were freed."
+    },
+    {
+      "id": "hard-3",
+      "question": "In modern CPUs, what hardware vulnerability class exploits speculative execution branch predictors to leak secret memory across process boundaries?",
+      "options": ["Spectre and Meltdown (transient execution side-channel attacks)", "Rowhammer DRAM bit-flipping attacks", "Buffer overflow return-oriented programming (ROP)", "DNS cache poisoning via birthday collisions"],
+      "correctAnswer": "Spectre and Meltdown (transient execution side-channel attacks)",
+      "closestAnswer": "Rowhammer DRAM bit-flipping attacks",
+      "aiHint": "CPUs speculate ahead on conditional branches before security checks finish; even when discarded, microarchitectural cache footprints leak data via timing."
+    },
+    {
+      "id": "hard-4",
+      "question": "In zero-knowledge proofs, what property defines a zk-SNARK where the proof verification time is logarithmic or constant relative to the witness statement size?",
+      "options": ["Succinctness", "Non-interactivity", "Zero-knowledge", "Soundness"],
+      "correctAnswer": "Succinctness",
+      "closestAnswer": "Soundness",
+      "aiHint": "The 'S' in SNARK denotes that proof size and verification work remain remarkably small regardless of how massive the computation circuit is."
+    },
+    {
+      "id": "hard-5",
+      "question": "In the Linux kernel network stack, what technology enables running sandboxed bytecode directly within the kernel at hook points like XDP without recompiling kernel modules?",
+      "options": ["eBPF (extended Berkeley Packet Filter)", "KVM (Kernel-based Virtual Machine)", "cgroups v2", "AppArmor seccomp profiles"],
+      "correctAnswer": "eBPF (extended Berkeley Packet Filter)",
+      "closestAnswer": "cgroups v2",
+      "aiHint": "A kernel in-situ verifier validates safety before executing tiny JIT-compiled bytecode programs attached to network drivers, tracepoints, or syscalls."
+    },
+    {
+      "id": "hard-6",
+      "question": "Why do Log-Structured Merge (LSM) trees offer substantially superior write throughput over B-Trees for heavy write workloads?",
+      "options": ["Writes are appended sequentially to an in-memory memtable and commit log before asynchronous batch compaction", "They eliminate disk storage by keeping all keys in distributed DRAM", "Every read-modify-write operation locks the entire tree root node", "They utilize hardware transactional memory (HTM) to bypass the OS page cache"],
+      "correctAnswer": "Writes are appended sequentially to an in-memory memtable and commit log before asynchronous batch compaction",
+      "closestAnswer": "They utilize hardware transactional memory (HTM) to bypass the OS page cache",
+      "aiHint": "LSM trees convert random disk IO into sequential writes by writing to a WAL and memtable, then flushing sorted runs (SSTables) to disk in background tiers."
+    },
+    {
+      "id": "hard-7",
+      "question": "What is the Byzantine Generals Problem in asynchronous distributed computing with faulty or malicious nodes?",
+      "options": ["Achieving consensus when arbitrary nodes can fail arbitrarily, delay messages, or send conflicting malicious information", "Resolving merge conflicts in distributed version control systems", "Preventing hash collisions in Merkle directed acyclic graphs", "Scheduling processes across asymmetric multi-core ARM big.LITTLE architectures"],
+      "correctAnswer": "Achieving consensus when arbitrary nodes can fail arbitrarily, delay messages, or send conflicting malicious information",
+      "closestAnswer": "Resolving merge conflicts in distributed version control systems",
+      "aiHint": "To tolerate 'f' malicious traitors who forge or equivocate messages, classical BFT protocols require at least 3f + 1 total participating nodes."
+    },
+    {
+      "id": "hard-8",
+      "question": "In reinforcement learning from human feedback (RLHF), what mathematical function is optimized in Direct Preference Optimization (DPO) to bypass training an explicit reward model?",
+      "options": ["An implicit reward formulation derived directly from the closed-form Bradley-Terry preference model and reference policy ratio", "A Monte Carlo Tree Search policy gradient with epsilon exploration", "A deep Q-learning Bellman expectation residual loss", "An adversarial discriminator cross-entropy loss function"],
+      "correctAnswer": "An implicit reward formulation derived directly from the closed-form Bradley-Terry preference model and reference policy ratio",
+      "closestAnswer": "A deep Q-learning Bellman expectation residual loss",
+      "aiHint": "Rafailov et al. proved you can express the ground-truth reward analytically using the log-ratio of the policy and base model, turning RL into supervised binary cross-entropy."
+    },
+    {
+      "id": "hard-9",
+      "question": "What phenomenon occurs in cache hierarchies when multiple processor cores write to distinct variables located on the identical 64-byte cache line?",
+      "options": ["False Sharing", "Cache Miss Thrashing", "Memory Bank Conflict", "Spectre Speculation"],
+      "correctAnswer": "False Sharing",
+      "closestAnswer": "Cache Miss Thrashing",
+      "aiHint": "Even though the threads modify completely independent variables, the MESI cache coherence protocol repeatedly invalidates the entire cache line across CPU cores."
+    },
+    {
+      "id": "hard-10",
+      "question": "In quantum computing, what algorithmic speedup does Grover's search algorithm provide over classical unstructured search algorithms?",
+      "options": ["Quadratic speedup (O(√N) versus classical O(N))", "Exponential speedup (O(log N) versus classical O(N))", "Super-polynomial speedup (O(N^(1/4)))", "Constant time search (O(1))"],
+      "correctAnswer": "Quadratic speedup (O(√N) versus classical O(N))",
+      "closestAnswer": "Exponential speedup (O(log N) versus classical O(N))",
+      "aiHint": "Using amplitude amplification, the quantum state rotates toward the target basis state in square-root time of the database size N."
+    }
+  ]
+}
