@@ -23,12 +23,14 @@ interface ResultScreenProps {
   session: QuizSessionState;
   onResetQuiz: () => void;
   onViewLeaderboard: () => void;
+  onResumeQuiz?: () => void;
 }
 
 export const ResultScreen: React.FC<ResultScreenProps> = ({
   session,
   onResetQuiz,
   onViewLeaderboard,
+  onResumeQuiz,
 }) => {
   const [showDetailedReview, setShowDetailedReview] = useState(false);
   const result = session.submissionResult;
@@ -152,6 +154,38 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
           Status Code: <span className="text-slate-300">{status}</span>
         </div>
       </div>
+
+      {/* Tab-Switch Disqualification Notice & Revocation Status */}
+      {status === 'tab_switched' && (
+        <div className="p-5 rounded-2xl bg-rose-500/10 border border-rose-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-start gap-3">
+            <div className="p-2.5 rounded-xl bg-rose-500/20 text-rose-400 shrink-0">
+              <ShieldAlert className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold font-mono text-rose-300 uppercase">
+                Anti-Cheat Sentinel Disqualification
+              </h3>
+              <p className="text-xs text-slate-300 font-sans mt-0.5 max-w-xl">
+                Session was locked due to browser window tab-switch detection. The competition administrator can revoke your disqualification from the Command Center, which immediately resumes your countdown timer from where you left off ({formatTimeMMSS(session.remainingSeconds)} banked).
+              </p>
+            </div>
+          </div>
+          {onResumeQuiz && (
+            <button
+              id="resume-strike-action-btn"
+              onClick={() => {
+                sounds.playLifeline();
+                onResumeQuiz();
+              }}
+              className="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 active:scale-95 text-slate-950 font-mono text-xs font-extrabold uppercase tracking-wider transition-all shadow-md shadow-emerald-500/25 shrink-0 cursor-pointer flex items-center gap-1.5"
+            >
+              <Zap className="w-4 h-4" />
+              <span>Resume Strike ({formatTimeMMSS(session.remainingSeconds)})</span>
+            </button>
+          )}
+        </div>
+      )}
 
       {/* Navigation Actions */}
       <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">

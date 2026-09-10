@@ -22,7 +22,7 @@ export interface LifelinesState {
   askAi: boolean;
 }
 
-export type SubmissionStatus = 'completed' | 'time_expired' | 'tab_switched';
+export type SubmissionStatus = 'completed' | 'time_expired' | 'tab_switched' | 'reinstated';
 
 export interface Submission {
   id?: string;
@@ -30,8 +30,10 @@ export interface Submission {
   correctAnswers: number;
   totalAttempted: number;
   timeTakenSeconds: number;
+  remainingSeconds?: number;
   submittedAt: any;
   submissionStatus: SubmissionStatus;
+  reinstatedAt?: any;
 }
 
 export interface QuizSessionState {

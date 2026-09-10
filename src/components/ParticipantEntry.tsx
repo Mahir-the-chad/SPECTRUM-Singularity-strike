@@ -104,9 +104,8 @@ export const ParticipantEntry: React.FC<ParticipantEntryProps> = ({
                 setName(e.target.value);
                 if (error) setError('');
               }}
-              placeholder="e.g., Mahir Saraiya"
               autoFocus
-              className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 font-sans text-base transition-all h-auto overflow-visible"
+              className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-slate-100 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 font-sans text-base transition-all h-auto overflow-visible"
             />
             {error && (
               <p className="text-xs text-rose-400 flex items-center gap-1.5 font-mono mt-1">

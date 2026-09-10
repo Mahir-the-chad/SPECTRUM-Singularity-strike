@@ -8,9 +8,12 @@ import {
   query,
   orderBy,
   Timestamp,
+  doc,
+  updateDoc,
+  setDoc,
 } from 'firebase/firestore';
 import { getAnalytics, isSupported } from 'firebase/analytics';
-import type { Submission } from '../types';
+import type { Submission, SubmissionStatus } from '../types';
 
 export const firebaseConfig = {
   apiKey: "AIzaSyD4_WcMBPG6MnbwVYUiQ7kP5r69a3nUaHM",
@@ -55,6 +58,7 @@ export async function saveSubmission(
       correctAnswers: submission.correctAnswers,
       totalAttempted: submission.totalAttempted,
       timeTakenSeconds: submission.timeTakenSeconds,
+      remainingSeconds: submission.remainingSeconds ?? 0,
       submittedAt: serverTimestamp(),
       submissionStatus: submission.submissionStatus,
     });
@@ -159,6 +163,93 @@ export function subscribeToSubmissions(
   } catch (err: any) {
     console.error('Error establishing Firestore subscription:', err);
     callback(getLocalFallbackSubmissions(), false, err?.message);
+    return () => {};
+  }
+}
+
+/**
+ * Revoke disqualification for a submission in Firestore
+ */
+export async function revokeDisqualification(
+  submissionId?: string,
+  participantName: string = ''
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    // 1. Update the submission document in Firestore to status 'reinstated'
+    if (submissionId && !submissionId.startsWith('loc_')) {
+      const docRef = doc(db, 'submissions', submissionId);
+      await updateDoc(docRef, {
+        submissionStatus: 'reinstated',
+        reinstatedAt: serverTimestamp(),
+      });
+    }
+
+    // 2. Also register in 'reinstatements' collection with participant name as key
+    // so active participant devices can listen and automatically unlock in real-time
+    const sanitizedName = participantName.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '_');
+    if (sanitizedName) {
+      const reinstateRef = doc(db, 'reinstatements', sanitizedName);
+      await setDoc(reinstateRef, {
+        participantName: participantName.trim(),
+        reinstatedAt: serverTimestamp(),
+        active: true,
+      });
+    }
+
+    // 3. Update local fallback list if present
+    const localSubs = getLocalFallbackSubmissions();
+    const updated = localSubs.map((s) =>
+      (submissionId && s.id === submissionId) ||
+      (participantName && s.name.toLowerCase() === participantName.toLowerCase())
+        ? { ...s, submissionStatus: 'reinstated' as SubmissionStatus }
+        : s
+    );
+    localStorage.setItem(LOCAL_STORAGE_SUBMISSIONS_KEY, JSON.stringify(updated));
+
+    return { success: true };
+  } catch (err: any) {
+    console.error('Error revoking disqualification in Firestore:', err);
+    // Local fallback update
+    const localSubs = getLocalFallbackSubmissions();
+    const updated = localSubs.map((s) =>
+      (submissionId && s.id === submissionId) ||
+      (participantName && s.name.toLowerCase() === participantName.toLowerCase())
+        ? { ...s, submissionStatus: 'reinstated' as SubmissionStatus }
+        : s
+    );
+    localStorage.setItem(LOCAL_STORAGE_SUBMISSIONS_KEY, JSON.stringify(updated));
+    return { success: true, error: err?.message };
+  }
+}
+
+/**
+ * Subscribe to reinstatement notifications for a specific participant
+ */
+export function subscribeToReinstatement(
+  participantName: string,
+  onReinstated: () => void
+): () => void {
+  const sanitizedName = participantName.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '_');
+  if (!sanitizedName) return () => {};
+
+  try {
+    const reinstateRef = doc(db, 'reinstatements', sanitizedName);
+    const unsubscribe = onSnapshot(
+      reinstateRef,
+      (docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          if (data && data.active) {
+            onReinstated();
+          }
+        }
+      },
+      (err) => {
+        console.warn('Reinstatement listener notice:', err);
+      }
+    );
+    return unsubscribe;
+  } catch {
     return () => {};
   }
 }

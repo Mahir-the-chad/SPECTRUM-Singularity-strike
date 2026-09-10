@@ -7,8 +7,9 @@ import {
   clearStoredSession,
   computeQuizScore,
   formatTimeMMSS,
+  reinstateDisqualifiedSession,
 } from './lib/quizEngine';
-import { saveSubmission } from './lib/firebase';
+import { saveSubmission, subscribeToReinstatement } from './lib/firebase';
 import { sounds } from './lib/audio';
 import { Navbar } from './components/Navbar';
 import { ParticipantEntry } from './components/ParticipantEntry';
@@ -81,10 +82,73 @@ export default function App() {
 
   // Resume active quiz session
   const handleResumeQuiz = () => {
-    if (session && session.isStarted && !session.isSubmitted) {
-      navigateTo('quiz');
+    if (session && session.isStarted) {
+      if (session.isSubmitted && session.submissionStatus === 'tab_switched') {
+        const reinstated = reinstateDisqualifiedSession(session);
+        setSession(reinstated);
+        isSubmittingRef.current = false;
+        setIsSubmitting(false);
+        navigateTo('quiz');
+      } else if (!session.isSubmitted) {
+        navigateTo('quiz');
+      }
     }
   };
+
+  // Revoke disqualification handler (updates active session and restarts timer from banked time)
+  const handleRevokeDisqualification = useCallback((participantName: string) => {
+    setSession((prev) => {
+      if (!prev) return prev;
+      if (prev.participantName.toLowerCase() === participantName.toLowerCase()) {
+        const reinstated = reinstateDisqualifiedSession(prev);
+        isSubmittingRef.current = false;
+        setIsSubmitting(false);
+        return reinstated;
+      }
+      return prev;
+    });
+  }, []);
+
+  // Real-time synchronization: listen for admin revoking disqualification for this participant
+  useEffect(() => {
+    if (!session || !session.participantName) return;
+    if (!session.isSubmitted || session.submissionStatus !== 'tab_switched') return;
+
+    const unsubscribe = subscribeToReinstatement(session.participantName, () => {
+      sounds.playLifeline();
+      setSession((prev) => {
+        if (!prev) return prev;
+        const reinstated = reinstateDisqualifiedSession(prev);
+        isSubmittingRef.current = false;
+        setIsSubmitting(false);
+        return reinstated;
+      });
+      navigateTo('quiz');
+    });
+
+    return () => unsubscribe();
+  }, [session?.participantName, session?.isSubmitted, session?.submissionStatus, navigateTo]);
+
+  // Multi-tab storage listener to resume strike if revoked in another window
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'singularity_strike_session_v1' && e.newValue) {
+        try {
+          const updated = JSON.parse(e.newValue);
+          if (updated && !updated.isSubmitted && updated.isStarted) {
+            setSession(updated);
+            isSubmittingRef.current = false;
+            setIsSubmitting(false);
+            if (currentView === 'result') {
+              navigateTo('quiz');
+            }
+          }
+        } catch {}
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, [currentView, navigateTo]);
 
   // Reset quiz for a fresh run
   const handleResetQuiz = () => {
@@ -208,11 +272,15 @@ export default function App() {
             session={session}
             onResetQuiz={handleResetQuiz}
             onViewLeaderboard={() => navigateTo('admin')}
+            onResumeQuiz={handleResumeQuiz}
           />
         )}
 
         {currentView === 'admin' && (
-          <AdminPanel onBackToQuiz={() => navigateTo(session?.isSubmitted ? 'result' : 'entry')} />
+          <AdminPanel
+            onBackToQuiz={() => navigateTo(session?.isSubmitted ? 'result' : (session?.isStarted ? 'quiz' : 'entry'))}
+            onRevokeDisqualification={handleRevokeDisqualification}
+          />
         )}
       </main>
 

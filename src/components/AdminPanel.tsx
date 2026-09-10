@@ -18,17 +18,19 @@ import {
   PlusCircle,
   BarChart3,
   ExternalLink,
+  RotateCcw,
 } from 'lucide-react';
 import type { Submission, SubmissionStatus } from '../types';
-import { subscribeToSubmissions, saveSubmission } from '../lib/firebase';
+import { subscribeToSubmissions, saveSubmission, revokeDisqualification } from '../lib/firebase';
 import { formatTimeMMSS } from '../lib/quizEngine';
 import { sounds } from '../lib/audio';
 
 interface AdminPanelProps {
   onBackToQuiz: () => void;
+  onRevokeDisqualification?: (participantName: string) => void;
 }
 
-export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz }) => {
+export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDisqualification }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -40,6 +42,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | SubmissionStatus>('all');
   const [isSeeding, setIsSeeding] = useState(false);
+  const [revokingName, setRevokingName] = useState<string | null>(null);
+  const [revokeToast, setRevokeToast] = useState<{ name: string; message: string } | null>(null);
 
   // Authenticate Admin
   const handleLogin = (e: React.FormEvent) => {
@@ -50,7 +54,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz }) => {
       setAuthError('');
     } else {
       sounds.playWarning();
-      setAuthError('Invalid credentials. Expected Username: admin | Password: pass@123');
+      setAuthError('Invalid credentials. Access denied.');
     }
   };
 
@@ -182,6 +186,41 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz }) => {
     setIsSeeding(false);
   };
 
+  // Revoke tab-switch disqualification & allow participant timer to resume
+  const handleRevokeDisqualification = async (sub: Submission) => {
+    sounds.playSelect();
+    const identifier = sub.name;
+    setRevokingName(identifier);
+
+    try {
+      await revokeDisqualification(sub.id, sub.name);
+      if (onRevokeDisqualification) {
+        onRevokeDisqualification(sub.name);
+      }
+
+      // Update current displayed list immediately
+      setSubmissions((prev) =>
+        prev.map((s) =>
+          (sub.id && s.id === sub.id) || s.name.toLowerCase() === sub.name.toLowerCase()
+            ? { ...s, submissionStatus: 'reinstated' as SubmissionStatus }
+            : s
+        )
+      );
+
+      sounds.playLifeline();
+      const bankedSeconds = sub.remainingSeconds ?? Math.max(0, 15 * 60 - sub.timeTakenSeconds);
+      setRevokeToast({
+        name: sub.name,
+        message: `Disqualification revoked for "${sub.name}". Timer restored to resume with ${formatTimeMMSS(bankedSeconds)} remaining.`,
+      });
+      setTimeout(() => setRevokeToast(null), 6000);
+    } catch (err: any) {
+      console.error('Failed to revoke disqualification:', err);
+    } finally {
+      setRevokingName(null);
+    }
+  };
+
   // Login View
   if (!isAuthenticated) {
     return (
@@ -210,7 +249,6 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz }) => {
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="admin"
                 className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-sm font-mono focus:outline-none focus:border-cyan-400 transition-all"
               />
             </div>
@@ -224,7 +262,6 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz }) => {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="pass@123"
                 className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-sm font-mono focus:outline-none focus:border-cyan-400 transition-all"
               />
             </div>
@@ -361,8 +398,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz }) => {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search operative by name..."
-            className="w-full pl-10 pr-4 py-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-xs font-mono placeholder-slate-500 focus:outline-none focus:border-cyan-400"
+            className="w-full pl-10 pr-4 py-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-xs font-mono focus:outline-none focus:border-cyan-400"
           />
         </div>
 
@@ -370,7 +406,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz }) => {
           <span className="text-xs font-mono text-slate-500 mr-1 flex items-center gap-1">
             <Filter className="w-3 h-3" /> Status:
           </span>
-          {(['all', 'completed', 'time_expired', 'tab_switched'] as const).map((st) => (
+          {(['all', 'completed', 'time_expired', 'tab_switched', 'reinstated'] as const).map((st) => (
             <button
               key={st}
               id={`filter-btn-${st}`}
@@ -390,6 +426,22 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz }) => {
         </div>
       </div>
 
+      {/* Revocation Alert Toast */}
+      {revokeToast && (
+        <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs font-mono flex items-center justify-between gap-3 shadow-lg shadow-emerald-500/5 animate-in fade-in">
+          <div className="flex items-center gap-2.5">
+            <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+            <span className="font-semibold">{revokeToast.message}</span>
+          </div>
+          <button
+            onClick={() => setRevokeToast(null)}
+            className="text-emerald-400 hover:text-emerald-200 cursor-pointer font-bold px-2 py-1 rounded bg-emerald-500/20 text-xs"
+          >
+            DISMISS
+          </button>
+        </div>
+      )}
+
       {/* Leaderboard Table */}
       <div className="bg-slate-900/80 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl">
         <div className="overflow-x-auto">
@@ -402,12 +454,13 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz }) => {
                 <th className="py-4 px-4 text-center">Total Attempted</th>
                 <th className="py-4 px-4 text-center">Time Taken (MM:SS)</th>
                 <th className="py-4 px-4 text-center">Submission Status</th>
+                <th className="py-4 px-4 text-center">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800/60">
               {filteredSubmissions.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="py-12 text-center text-slate-500 font-mono">
+                  <td colSpan={7} className="py-12 text-center text-slate-500 font-mono">
                     <div className="flex flex-col items-center justify-center gap-2">
                       <Trophy className="w-8 h-8 text-slate-600" />
                       <span>No submissions recorded yet matching filter criteria.</span>
@@ -431,6 +484,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz }) => {
                     completed: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
                     time_expired: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
                     tab_switched: 'bg-rose-500/10 text-rose-400 border-rose-500/30',
+                    reinstated: 'bg-cyan-500/15 text-cyan-300 border-cyan-500/40',
                   }[sub.submissionStatus] || 'bg-slate-800 text-slate-400 border-slate-700';
 
                   return (
@@ -497,8 +551,31 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz }) => {
                           {sub.submissionStatus === 'completed' && <CheckCircle2 className="w-3 h-3" />}
                           {sub.submissionStatus === 'time_expired' && <Clock className="w-3 h-3" />}
                           {sub.submissionStatus === 'tab_switched' && <ShieldAlert className="w-3 h-3" />}
+                          {sub.submissionStatus === 'reinstated' && <CheckCircle2 className="w-3 h-3" />}
                           <span>{sub.submissionStatus.replace('_', ' ')}</span>
                         </span>
+                      </td>
+
+                      {/* Action */}
+                      <td className="py-4 px-4 text-center">
+                        {sub.submissionStatus === 'tab_switched' ? (
+                          <button
+                            id={`revoke-btn-${sub.id || index}`}
+                            onClick={() => handleRevokeDisqualification(sub)}
+                            disabled={revokingName === sub.name}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 active:scale-95 text-slate-950 font-mono font-bold text-[11px] uppercase tracking-wider transition-all shadow-md shadow-emerald-500/25 cursor-pointer disabled:opacity-50 whitespace-nowrap"
+                            title="Revoke disqualification & resume operative timer from where they left off"
+                          >
+                            <RotateCcw className={`w-3.5 h-3.5 ${revokingName === sub.name ? 'animate-spin' : ''}`} />
+                            <span>Revoke Disqualification</span>
+                          </button>
+                        ) : sub.submissionStatus === 'reinstated' ? (
+                          <span className="inline-flex items-center gap-1 text-[11px] text-emerald-400 font-mono font-semibold">
+                            <CheckCircle2 className="w-3.5 h-3.5" /> Reinstated
+                          </span>
+                        ) : (
+                          <span className="text-slate-600 text-xs font-mono">—</span>
+                        )}
                       </td>
                     </tr>
                   );

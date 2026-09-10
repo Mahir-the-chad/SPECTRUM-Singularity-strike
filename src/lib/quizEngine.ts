@@ -131,6 +131,31 @@ export function clearStoredSession() {
 }
 
 /**
+ * Revoke disqualification for a session and resume countdown from where the participant left off
+ */
+export function reinstateDisqualifiedSession(session: QuizSessionState): QuizSessionState {
+  // Ensure remainingSeconds is at least 1 second (default to 60 if somehow non-positive)
+  const remaining = session.remainingSeconds > 0
+    ? session.remainingSeconds
+    : Math.max(1, session.totalDurationSeconds - (session.submissionResult?.timeTakenSeconds ?? 0));
+
+  const targetEndTime = Date.now() + remaining * 1000;
+
+  const reinstated: QuizSessionState = {
+    ...session,
+    isStarted: true,
+    isSubmitted: false,
+    submissionStatus: null,
+    submissionResult: null,
+    remainingSeconds: remaining,
+    targetEndTime,
+  };
+
+  saveSessionToStorage(reinstated);
+  return reinstated;
+}
+
+/**
  * Calculate 50-50 eliminated options
  * "Instantly hides two incorrect options, leaving only the correctAnswer and the closestAnswer"
  */
@@ -204,6 +229,7 @@ export function computeQuizScore(
     correctAnswers,
     totalAttempted,
     timeTakenSeconds,
+    remainingSeconds: Math.max(0, Math.floor(remainingSeconds)),
     submissionStatus,
   };
 }
