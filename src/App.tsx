@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import type { QuizSessionState, SubmissionStatus, Submission } from './types';
 import {
   createNewSession,
@@ -22,75 +23,65 @@ import { RulesModal } from './components/RulesModal';
 import { LeaderboardModal } from './components/LeaderboardModal';
 
 export default function App() {
-  const [currentView, setCurrentView] = useState<
-    'landing' | 'register' | 'rules' | 'quiz' | 'result' | 'admin'
-  >('landing');
-  const [session, setSession] = useState<QuizSessionState | null>(null);
-  const [pendingName, setPendingName] = useState<string>('');
-  const [pendingParticipantId, setPendingParticipantId] = useState<string>('');
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const [session, setSession] = useState<QuizSessionState | null>(() => loadPersistedSession());
+  const [pendingName, setPendingName] = useState<string>(() => {
+    const saved = loadPersistedSession();
+    return saved?.participantName || '';
+  });
+  const [pendingParticipantId, setPendingParticipantId] = useState<string>(() => {
+    const saved = loadPersistedSession();
+    return saved?.participantId || '';
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [isRulesModalOpen, setIsRulesModalOpen] = useState(false);
   const [isLeaderboardModalOpen, setIsLeaderboardModalOpen] = useState(false);
 
-  // Synchronize URL route with view (/admin)
-  useEffect(() => {
-    const handleUrlRoute = () => {
-      const path = window.location.pathname;
-      const hash = window.location.hash;
-      if (path === '/admin' || hash === '#admin') {
-        setCurrentView('admin');
-      } else {
-        setCurrentView((prev) => {
-          if (prev === 'admin') {
-            const saved = loadPersistedSession();
-            if (saved?.isSubmitted) return 'result';
-            if (saved?.isStarted) return 'quiz';
-            return 'landing';
-          }
-          return prev;
-        });
-      }
-    };
+  // Compute active high-level view based on current route
+  const getCurrentView = (): 'landing' | 'register' | 'rules' | 'quiz' | 'result' | 'admin' => {
+    const path = location.pathname.toLowerCase().replace(/\/$/, '') || '/';
+    if (path === '/admin' || location.hash === '#admin') return 'admin';
+    if (path === '/register') return 'register';
+    if (path === '/rules') return 'rules';
+    if (path === '/quiz') return 'quiz';
+    if (path === '/result') return 'result';
+    return 'landing';
+  };
+  const currentView = getCurrentView();
 
-    handleUrlRoute();
-    window.addEventListener('popstate', handleUrlRoute);
-    return () => window.removeEventListener('popstate', handleUrlRoute);
-  }, []);
+  // Backward compatibility for #admin hash URLs
+  useEffect(() => {
+    if (window.location.hash === '#admin' && location.pathname !== '/admin') {
+      navigate('/admin', { replace: true });
+    }
+  }, [location.pathname, navigate]);
 
   const navigateTo = useCallback(
     (view: 'landing' | 'register' | 'rules' | 'quiz' | 'result' | 'admin') => {
-      setCurrentView(view);
-      if (view === 'admin') {
-        window.history.pushState(null, '', '/admin');
-      } else {
-        if (window.location.pathname === '/admin') {
-          window.history.pushState(null, '', '/');
-        }
-      }
+      const viewToPath: Record<string, string> = {
+        landing: '/',
+        register: '/register',
+        rules: '/rules',
+        quiz: '/quiz',
+        result: '/result',
+        admin: '/admin',
+      };
+      navigate(viewToPath[view] || '/');
     },
-    []
+    [navigate]
   );
 
-  // Check and restore persisted session on mount
+  // Check persisted session on mount: handle time expiry if quiz was running
   useEffect(() => {
     const saved = loadPersistedSession();
     if (saved) {
       setSession(saved);
 
-      if (saved.isSubmitted) {
-        if (window.location.pathname !== '/admin') {
-          setCurrentView('result');
-        }
-      } else if (saved.isStarted) {
-        if (saved.remainingSeconds <= 0) {
-          // Time had expired while away
-          handleFinalizeSubmit('time_expired', saved);
-        } else {
-          if (window.location.pathname !== '/admin') {
-            setCurrentView('quiz');
-          }
-        }
+      if (saved.isStarted && !saved.isSubmitted && saved.remainingSeconds <= 0) {
+        handleFinalizeSubmit('time_expired', saved);
       }
     }
   }, []);
@@ -286,69 +277,117 @@ export default function App() {
         onOpenRules={() => setIsRulesModalOpen(true)}
       />
 
-      {/* Main Content Area */}
+      {/* Main Content Area with React Router */}
       <main className="flex-1 flex flex-col justify-start">
-        {/* Step 1: Landing Page */}
-        {currentView === 'landing' && (
-          <LandingPage
-            onGoToRegister={handleGoToRegister}
-            onResumeQuiz={handleResumeQuiz}
-            hasActiveSession={Boolean(session && session.isStarted && !session.isSubmitted)}
-            savedName={session?.participantName}
-            savedParticipantId={session?.participantId}
-            savedRemainingSeconds={session?.remainingSeconds}
+        <Routes>
+          {/* Step 1: Landing Page */}
+          <Route
+            path="/"
+            element={
+              <LandingPage
+                onGoToRegister={handleGoToRegister}
+                onResumeQuiz={handleResumeQuiz}
+                hasActiveSession={Boolean(session && session.isStarted && !session.isSubmitted)}
+                savedName={session?.participantName}
+                savedParticipantId={session?.participantId}
+                savedRemainingSeconds={session?.remainingSeconds}
+              />
+            }
           />
-        )}
 
-        {/* Step 2: Registration Page */}
-        {currentView === 'register' && (
-          <RegistrationPage
-            onCompleteRegistration={handleCompleteRegistration}
-            onBackToLanding={() => navigateTo('landing')}
-            initialName={pendingName || ''}
-            initialParticipantId={pendingParticipantId || ''}
+          {/* Step 2: Registration Page */}
+          <Route
+            path="/register"
+            element={
+              <RegistrationPage
+                onCompleteRegistration={handleCompleteRegistration}
+                onBackToLanding={() => navigateTo('landing')}
+                initialName={pendingName || ''}
+                initialParticipantId={pendingParticipantId || ''}
+              />
+            }
           />
-        )}
 
-        {/* Step 3: Rules Page with Timer Trigger & Required Agreement Checkbox */}
-        {currentView === 'rules' && (
-          <RulesPage
-            participantName={pendingName || session?.participantName || 'Operative'}
-            participantId={pendingParticipantId || session?.participantId || 'N/A'}
-            onInitializeStrikeRun={handleInitializeStrikeRun}
-            onBackToRegistration={() => navigateTo('register')}
+          {/* Step 3: Rules Page */}
+          <Route
+            path="/rules"
+            element={
+              <RulesPage
+                participantName={pendingName || session?.participantName || 'Operative'}
+                participantId={pendingParticipantId || session?.participantId || 'N/A'}
+                onInitializeStrikeRun={handleInitializeStrikeRun}
+                onBackToRegistration={() => navigateTo('register')}
+              />
+            }
           />
-        )}
 
-        {/* Step 4: Live Quiz Arena (15-Minute Countdown) */}
-        {currentView === 'quiz' && session && (
-          <QuizArena
-            session={session}
-            onUpdateSession={(updater) => setSession((prev) => (prev ? updater(prev) : prev))}
-            onSubmitQuiz={(status) => handleFinalizeSubmit(status)}
-            isSubmitting={isSubmitting}
-          />
-        )}
-
-        {/* Step 5: Result & Debrief Screen */}
-        {currentView === 'result' && session && (
-          <ResultScreen
-            session={session}
-            onViewLeaderboard={() => setIsLeaderboardModalOpen(true)}
-          />
-        )}
-
-        {/* Step 6: Admin Panel & Leaderboard with Participant ID */}
-        {currentView === 'admin' && (
-          <AdminPanel
-            onBackToQuiz={() =>
-              navigateTo(
-                session?.isSubmitted ? 'result' : session?.isStarted ? 'quiz' : 'landing'
+          {/* Step 4: Live Quiz Arena */}
+          <Route
+            path="/quiz"
+            element={
+              session && session.isStarted && !session.isSubmitted ? (
+                <QuizArena
+                  session={session}
+                  onUpdateSession={(updater) => setSession((prev) => (prev ? updater(prev) : prev))}
+                  onSubmitQuiz={(status) => handleFinalizeSubmit(status)}
+                  isSubmitting={isSubmitting}
+                />
+              ) : session?.isSubmitted ? (
+                <Navigate to="/result" replace />
+              ) : (
+                <Navigate to="/" replace />
               )
             }
-            onRevokeDisqualification={handleRevokeDisqualification}
           />
-        )}
+
+          {/* Step 5: Result & Debrief Screen */}
+          <Route
+            path="/result"
+            element={
+              session ? (
+                <ResultScreen
+                  session={session}
+                  onViewLeaderboard={() => setIsLeaderboardModalOpen(true)}
+                />
+              ) : (
+                <Navigate to="/" replace />
+              )
+            }
+          />
+
+          {/* Step 6: Admin Panel & Leaderboard with Participant ID */}
+          <Route
+            path="/admin"
+            element={
+              <AdminPanel
+                onBackToQuiz={() =>
+                  navigateTo(
+                    session?.isSubmitted ? 'result' : session?.isStarted ? 'quiz' : 'landing'
+                  )
+                }
+                onRevokeDisqualification={handleRevokeDisqualification}
+              />
+            }
+          />
+
+          {/* Fallback for trailing slash /admin/* */}
+          <Route
+            path="/admin/*"
+            element={
+              <AdminPanel
+                onBackToQuiz={() =>
+                  navigateTo(
+                    session?.isSubmitted ? 'result' : session?.isStarted ? 'quiz' : 'landing'
+                  )
+                }
+                onRevokeDisqualification={handleRevokeDisqualification}
+              />
+            }
+          />
+
+          {/* Wildcard catch-all fallback */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
       </main>
 
       {/* Rules & Competition Briefing Modal */}
