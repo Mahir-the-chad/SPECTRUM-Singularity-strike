@@ -8,6 +8,7 @@ interface LifelineToolbarProps {
   onUseSwapChallenge: () => void;
   onUseAskAi: () => void;
   isFiftyFiftyActiveOnCurrent: boolean;
+  isAskAiActiveOnCurrent?: boolean;
   disabled?: boolean;
 }
 
@@ -17,6 +18,7 @@ export const LifelineToolbar: React.FC<LifelineToolbarProps> = ({
   onUseSwapChallenge,
   onUseAskAi,
   isFiftyFiftyActiveOnCurrent,
+  isAskAiActiveOnCurrent = false,
   disabled = false,
 }) => {
   return (
@@ -102,38 +104,59 @@ export const LifelineToolbar: React.FC<LifelineToolbarProps> = ({
         </button>
 
         {/* Ask AI Lifeline */}
-        <button
-          id="lifeline-ask-ai-btn"
-          onClick={onUseAskAi}
-          disabled={disabled || lifelines.askAi}
-          title={
-            lifelines.askAi
-              ? 'Ask AI lifeline already used in this session'
-              : 'Consult AI neural co-pilot for a conceptual hint'
-          }
-          className={`group relative flex items-center gap-2 px-3 sm:px-3.5 py-2 rounded-xl text-xs font-mono transition-all ${
-            lifelines.askAi
-              ? 'bg-slate-950/60 border border-slate-800/80 text-slate-600 cursor-not-allowed'
-              : 'bg-slate-800/90 border border-slate-700 hover:border-purple-400 hover:bg-slate-800 text-slate-200 hover:text-purple-300 shadow-sm cursor-pointer'
-          }`}
-        >
-          <div
-            className={`w-5 h-5 rounded-md flex items-center justify-center ${
-              lifelines.askAi
-                ? 'bg-slate-800 text-slate-600'
-                : 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
-            }`}
-          >
-            <Bot className="w-3.5 h-3.5" />
-          </div>
-          <div className="text-left">
-            <div className="font-bold flex items-center gap-1.5">
-              <span>Ask AI</span>
-              {lifelines.askAi && <span className="text-[10px] text-slate-600 font-normal">[USED]</span>}
-              {!lifelines.askAi && <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse" />}
-            </div>
-          </div>
-        </button>
+        {(() => {
+          const isGloballyUsed = lifelines.askAi;
+          const canViewHintOnCurrent = isGloballyUsed && isAskAiActiveOnCurrent;
+          const isButtonDisabled = disabled || (isGloballyUsed && !isAskAiActiveOnCurrent);
+
+          return (
+            <button
+              id="lifeline-ask-ai-btn"
+              onClick={onUseAskAi}
+              disabled={isButtonDisabled}
+              title={
+                canViewHintOnCurrent
+                  ? 'Re-open and view AI Hint for this question (No extra lifeline consumed)'
+                  : isGloballyUsed
+                  ? 'Ask AI lifeline already used in this session on another question'
+                  : 'Consult AI neural co-pilot for a conceptual hint'
+              }
+              className={`group relative flex items-center gap-2 px-3 sm:px-3.5 py-2 rounded-xl text-xs font-mono transition-all ${
+                isButtonDisabled
+                  ? 'bg-slate-950/60 border border-slate-800/80 text-slate-600 cursor-not-allowed'
+                  : canViewHintOnCurrent
+                  ? 'bg-purple-500/20 border border-purple-400 text-purple-200 shadow-md shadow-purple-500/25 hover:bg-purple-500/30 cursor-pointer active:scale-95'
+                  : 'bg-slate-800/90 border border-slate-700 hover:border-purple-400 hover:bg-slate-800 text-slate-200 hover:text-purple-300 shadow-sm cursor-pointer'
+              }`}
+            >
+              <div
+                className={`w-5 h-5 rounded-md flex items-center justify-center ${
+                  isButtonDisabled
+                    ? 'bg-slate-800 text-slate-600'
+                    : canViewHintOnCurrent
+                    ? 'bg-purple-500 text-slate-950 font-bold'
+                    : 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
+                }`}
+              >
+                <Bot className="w-3.5 h-3.5" />
+              </div>
+              <div className="text-left">
+                <div className="font-bold flex items-center gap-1.5">
+                  <span>Ask AI</span>
+                  {canViewHintOnCurrent ? (
+                    <span className="text-[10px] text-purple-300 font-bold uppercase tracking-wider">
+                      [VIEW HINT]
+                    </span>
+                  ) : isGloballyUsed ? (
+                    <span className="text-[10px] text-slate-600 font-normal">[USED]</span>
+                  ) : (
+                    <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse" />
+                  )}
+                </div>
+              </div>
+            </button>
+          );
+        })()}
       </div>
     </div>
   );

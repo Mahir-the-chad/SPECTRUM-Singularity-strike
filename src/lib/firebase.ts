@@ -58,27 +58,57 @@ export async function saveSubmission(
       submission.isDisqualified === true;
 
     const submissionsRef = collection(db, 'submissions');
-    const docRef = await addDoc(submissionsRef, {
-      name: submission.name,
-      participantId: submission.participantId || 'N/A',
-      correctAnswers: submission.correctAnswers,
-      totalAttempted: submission.totalAttempted,
-      timeTakenSeconds: submission.timeTakenSeconds,
-      remainingSeconds: submission.remainingSeconds ?? 0,
-      submittedAt: serverTimestamp(),
-      submissionStatus: submission.submissionStatus,
-      isDisqualified: isDisq,
-    });
+    let docRefId = '';
+
+    // Check if an existing document for this participant exists (e.g. from active session registration)
+    if (submission.participantId && submission.participantId !== 'N/A') {
+      try {
+        const q = query(submissionsRef, where('participantId', '==', submission.participantId.trim()));
+        const existingDocs = await getDocs(q);
+        if (!existingDocs.empty) {
+          const firstDoc = existingDocs.docs[0];
+          docRefId = firstDoc.id;
+          await updateDoc(doc(db, 'submissions', docRefId), {
+            name: submission.name,
+            participantId: submission.participantId || 'N/A',
+            correctAnswers: submission.correctAnswers,
+            totalAttempted: submission.totalAttempted,
+            timeTakenSeconds: submission.timeTakenSeconds,
+            remainingSeconds: submission.remainingSeconds ?? 0,
+            submittedAt: serverTimestamp(),
+            submissionStatus: submission.submissionStatus,
+            isDisqualified: isDisq,
+          });
+        }
+      } catch (checkErr) {
+        console.warn('Notice checking existing participant document:', checkErr);
+      }
+    }
+
+    if (!docRefId) {
+      const docRef = await addDoc(submissionsRef, {
+        name: submission.name,
+        participantId: submission.participantId || 'N/A',
+        correctAnswers: submission.correctAnswers,
+        totalAttempted: submission.totalAttempted,
+        timeTakenSeconds: submission.timeTakenSeconds,
+        remainingSeconds: submission.remainingSeconds ?? 0,
+        submittedAt: serverTimestamp(),
+        submissionStatus: submission.submissionStatus,
+        isDisqualified: isDisq,
+      });
+      docRefId = docRef.id;
+    }
 
     // Also cache locally in case of offline/backup
     saveSubmissionToLocal({
       ...submission,
-      id: docRef.id,
+      id: docRefId,
       isDisqualified: isDisq,
       submittedAt: new Date().toISOString(),
     });
 
-    return { success: true, id: docRef.id };
+    return { success: true, id: docRefId };
   } catch (err: any) {
     console.error('Firestore addDoc error, saving to local fallback:', err);
     // Fallback save to localStorage
@@ -94,6 +124,7 @@ export async function saveSubmission(
       isDisqualified: isDisq,
       submittedAt: new Date().toISOString(),
     });
+
     return { success: true, id: localId, error: err?.message };
   }
 }
@@ -413,6 +444,189 @@ export function subscribeToReinstatement(
       },
       (err) => {
         console.warn('Reinstatement listener notice:', err);
+      }
+    );
+    return unsubscribe;
+  } catch {
+    return () => {};
+  }
+}
+
+/**
+ * Register active participant in Firestore as 'active' status
+ * so the admin can monitor them in the leaderboard and grant extra time in real-time
+ */
+export async function registerActiveParticipant(
+  name: string,
+  participantId: string,
+  remainingSeconds: number
+): Promise<{ success: boolean; id?: string }> {
+  try {
+    const submissionsRef = collection(db, 'submissions');
+    const cleanId = participantId.trim();
+    const q = query(submissionsRef, where('participantId', '==', cleanId));
+    const snaps = await getDocs(q);
+
+    let docId = '';
+    if (!snaps.empty) {
+      docId = snaps.docs[0].id;
+      await updateDoc(doc(db, 'submissions', docId), {
+        name: name.trim(),
+        participantId: cleanId,
+        submissionStatus: 'active',
+        remainingSeconds,
+        isDisqualified: false,
+        startedAt: serverTimestamp(),
+      });
+    } else {
+      const newDoc = await addDoc(submissionsRef, {
+        name: name.trim(),
+        participantId: cleanId,
+        correctAnswers: 0,
+        totalAttempted: 0,
+        timeTakenSeconds: 0,
+        remainingSeconds,
+        submittedAt: serverTimestamp(),
+        submissionStatus: 'active',
+        isDisqualified: false,
+      });
+      docId = newDoc.id;
+    }
+
+    // Also register in local storage fallback
+    saveSubmissionToLocal({
+      id: docId,
+      name: name.trim(),
+      participantId: cleanId,
+      correctAnswers: 0,
+      totalAttempted: 0,
+      timeTakenSeconds: 0,
+      remainingSeconds,
+      submittedAt: new Date().toISOString(),
+      submissionStatus: 'active',
+      isDisqualified: false,
+    });
+
+    return { success: true, id: docId };
+  } catch (err) {
+    console.warn('Could not register active participant in Firestore:', err);
+    return { success: false };
+  }
+}
+
+/**
+ * Grant extra time in minutes to a participant.
+ * Dynamically updates Firestore time_grants collection and updates the submission document.
+ */
+export async function grantExtraTime(
+  participantId: string,
+  participantName: string,
+  additionalMinutes: number
+): Promise<{ success: boolean; addedSeconds: number; error?: string }> {
+  const addedSeconds = Math.round(additionalMinutes * 60);
+  if (addedSeconds <= 0) return { success: false, addedSeconds: 0, error: 'Invalid time amount' };
+
+  try {
+    const sanitizedId = (participantId || participantName).trim().toLowerCase().replace(/[^a-z0-9_-]/g, '_');
+    const grantId = `${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+
+    // 1. Write to time_grants collection for real-time notification
+    const grantRef = doc(db, 'time_grants', sanitizedId);
+    await setDoc(grantRef, {
+      participantId: participantId.trim(),
+      participantName: participantName.trim(),
+      addedMinutes: additionalMinutes,
+      addedSeconds,
+      grantId,
+      grantedAt: serverTimestamp(),
+      active: true,
+    });
+
+    // 2. Also update in submissions collection for this participant
+    try {
+      const q = query(collection(db, 'submissions'), where('participantId', '==', participantId.trim()));
+      const snaps = await getDocs(q);
+      for (const d of snaps.docs) {
+        const currentData = d.data();
+        const currentRemaining = Number(currentData.remainingSeconds || 0);
+        const newRemaining = currentRemaining + addedSeconds;
+        await updateDoc(doc(db, 'submissions', d.id), {
+          remainingSeconds: newRemaining,
+          lastTimeGrantMinutes: additionalMinutes,
+          lastTimeGrantAt: serverTimestamp(),
+          // If status was time_expired, update to reinstated or active
+          ...(currentData.submissionStatus === 'time_expired' ? { submissionStatus: 'reinstated' } : {}),
+        });
+      }
+    } catch (e) {
+      console.warn('Error updating submission remainingSeconds:', e);
+    }
+
+    // 3. Update localStorage session if running on this device / browser tab
+    const activeRaw = localStorage.getItem('singularity_strike_session_v1');
+    if (activeRaw) {
+      try {
+        const parsed = JSON.parse(activeRaw);
+        if (
+          parsed &&
+          ((participantId && parsed.participantId?.toLowerCase() === participantId.toLowerCase()) ||
+            (participantName && parsed.participantName?.toLowerCase() === participantName.toLowerCase()))
+        ) {
+          parsed.remainingSeconds = (parsed.remainingSeconds || 0) + addedSeconds;
+          parsed.totalDurationSeconds = (parsed.totalDurationSeconds || 900) + addedSeconds;
+          parsed.targetEndTime = Date.now() + parsed.remainingSeconds * 1000;
+          if (parsed.submissionStatus === 'time_expired') {
+            parsed.isSubmitted = false;
+            parsed.submissionStatus = null;
+          }
+          localStorage.setItem('singularity_strike_session_v1', JSON.stringify(parsed));
+        }
+      } catch {}
+    }
+
+    return { success: true, addedSeconds };
+  } catch (err: any) {
+    console.error('Error granting extra time in Firestore:', err);
+    return { success: false, addedSeconds, error: err?.message };
+  }
+}
+
+/**
+ * Subscribe to time grant notifications for a specific participant
+ */
+export function subscribeToTimeGrants(
+  identifier: string,
+  onTimeGranted: (addedSeconds: number, grantId: string, addedMinutes: number) => void
+): () => void {
+  const sanitized = identifier.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '_');
+  if (!sanitized) return () => {};
+
+  try {
+    const grantRef = doc(db, 'time_grants', sanitized);
+    let initialSnapshotSkipped = false;
+    let initialDocGrantId: string | null = null;
+
+    const unsubscribe = onSnapshot(
+      grantRef,
+      (docSnap) => {
+        if (!docSnap.exists()) return;
+        const data = docSnap.data();
+        if (!data || !data.active || !data.grantId) return;
+
+        // Skip any existing grant on initial snapshot so we only fire on newly issued grants
+        if (!initialSnapshotSkipped) {
+          initialSnapshotSkipped = true;
+          initialDocGrantId = data.grantId;
+          return;
+        }
+
+        if (data.grantId !== initialDocGrantId) {
+          initialDocGrantId = data.grantId;
+          onTimeGranted(data.addedSeconds || 0, data.grantId, data.addedMinutes || 0);
+        }
+      },
+      (err) => {
+        console.warn('Time grant listener notice:', err);
       }
     );
     return unsubscribe;

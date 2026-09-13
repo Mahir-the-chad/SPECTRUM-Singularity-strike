@@ -19,6 +19,7 @@ import { QuizArena } from './components/QuizArena';
 import { ResultScreen } from './components/ResultScreen';
 import { AdminPanel } from './components/AdminPanel';
 import { RulesModal } from './components/RulesModal';
+import { LeaderboardModal } from './components/LeaderboardModal';
 
 export default function App() {
   const [currentView, setCurrentView] = useState<
@@ -30,6 +31,7 @@ export default function App() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [isRulesModalOpen, setIsRulesModalOpen] = useState(false);
+  const [isLeaderboardModalOpen, setIsLeaderboardModalOpen] = useState(false);
 
   // Synchronize URL route with view (/admin)
   useEffect(() => {
@@ -38,6 +40,16 @@ export default function App() {
       const hash = window.location.hash;
       if (path === '/admin' || hash === '#admin') {
         setCurrentView('admin');
+      } else {
+        setCurrentView((prev) => {
+          if (prev === 'admin') {
+            const saved = loadPersistedSession();
+            if (saved?.isSubmitted) return 'result';
+            if (saved?.isStarted) return 'quiz';
+            return 'landing';
+          }
+          return prev;
+        });
       }
     };
 
@@ -120,18 +132,10 @@ export default function App() {
     navigateTo('quiz');
   };
 
-  // Resume active quiz session
+  // Resume active quiz session (only allowed if session is active and not submitted/disqualified)
   const handleResumeQuiz = () => {
-    if (session && session.isStarted) {
-      if (session.isSubmitted && session.submissionStatus === 'tab_switched') {
-        const reinstated = reinstateDisqualifiedSession(session);
-        setSession(reinstated);
-        isSubmittingRef.current = false;
-        setIsSubmitting(false);
-        navigateTo('quiz');
-      } else if (!session.isSubmitted) {
-        navigateTo('quiz');
-      }
+    if (session && session.isStarted && !session.isSubmitted) {
+      navigateTo('quiz');
     }
   };
 
@@ -330,9 +334,7 @@ export default function App() {
         {currentView === 'result' && session && (
           <ResultScreen
             session={session}
-            onResetQuiz={handleResetQuiz}
-            onViewLeaderboard={() => navigateTo('admin')}
-            onResumeQuiz={handleResumeQuiz}
+            onViewLeaderboard={() => setIsLeaderboardModalOpen(true)}
           />
         )}
 
@@ -355,6 +357,13 @@ export default function App() {
         onClose={() => setIsRulesModalOpen(false)}
       />
 
+      {/* Public Read-Only Leaderboard Modal */}
+      <LeaderboardModal
+        isOpen={isLeaderboardModalOpen}
+        onClose={() => setIsLeaderboardModalOpen(false)}
+        currentParticipantId={session?.participantId}
+      />
+
       {/* Footer */}
       <footer className="w-full border-t border-slate-900 py-4 px-4 text-center text-xs font-mono text-slate-500">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
@@ -365,17 +374,11 @@ export default function App() {
             <span>FIRESTORE BACKED</span>
             <span>&bull;</span>
             <button
+              id="footer-directives-btn"
               onClick={() => setIsRulesModalOpen(true)}
               className="hover:text-cyan-400 transition-colors cursor-pointer"
             >
               Directives
-            </button>
-            <span>&bull;</span>
-            <button
-              onClick={() => navigateTo('admin')}
-              className="hover:text-cyan-400 transition-colors cursor-pointer"
-            >
-              /admin
             </button>
           </div>
         </div>

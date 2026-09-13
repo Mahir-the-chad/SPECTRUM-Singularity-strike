@@ -9,6 +9,8 @@ import {
   HelpCircle,
   Sparkles,
   Award,
+  Bot,
+  CheckCircle2,
 } from 'lucide-react';
 import type { Question, QuizSessionState, SubmissionStatus } from '../types';
 import { LifelineToolbar } from './LifelineToolbar';
@@ -20,7 +22,9 @@ import {
   calculateFiftyFiftyHiddenOptions,
   getSwapReplacement,
   saveSessionToStorage,
+  extendSessionTime,
 } from '../lib/quizEngine';
+import { registerActiveParticipant, subscribeToTimeGrants } from '../lib/firebase';
 import { sounds } from '../lib/audio';
 
 interface QuizArenaProps {
@@ -40,6 +44,11 @@ export const QuizArena: React.FC<QuizArenaProps> = ({
   const [isSwapModalOpen, setIsSwapModalOpen] = useState(false);
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
   const [tabSwitchWarning, setTabSwitchWarning] = useState(false);
+  const [timeGrantNotification, setTimeGrantNotification] = useState<{
+    minutes: number;
+    timestamp: number;
+  } | null>(null);
+  const lastProcessedGrantRef = useRef<string | null>(null);
 
   const currentQuestion: Question | undefined = session.activeQuestions[session.currentIndex];
   const difficulty = currentQuestion?.difficulty || 'medium';
@@ -49,10 +58,68 @@ export const QuizArena: React.FC<QuizArenaProps> = ({
     currentQuestion && session.hiddenOptions[currentQuestion.id]?.length
   );
 
+  // Is Ask AI active on this current question?
+  const isAskAiActiveOnCurrent = Boolean(
+    currentQuestion && session.askAiQuestionId === currentQuestion.id
+  );
+
   // Hidden options for current question
   const currentHiddenOptions = new Set(
     currentQuestion ? session.hiddenOptions[currentQuestion.id] || [] : []
   );
+
+  // Register active participant & subscribe to real-time Admin Extra Time Grants
+  useEffect(() => {
+    if (!session.participantId || session.isSubmitted) return;
+
+    // Register active participant in Firestore so Admin can view and grant time
+    registerActiveParticipant(
+      session.participantName,
+      session.participantId,
+      session.remainingSeconds
+    ).catch((err) => {
+      console.warn('Error registering active participant:', err);
+    });
+
+    // Real-time listener for Admin Time Grants on this participant's document
+    const unsubscribe = subscribeToTimeGrants(
+      session.participantId,
+      (addedSeconds, grantId, addedMinutes) => {
+        if (!addedSeconds || addedSeconds <= 0) return;
+
+        // Prevent applying the same grant multiple times
+        if (lastProcessedGrantRef.current === grantId) return;
+        lastProcessedGrantRef.current = grantId;
+
+        sounds.playSuccess();
+
+        // Extend countdown timer dynamically in real-time
+        onUpdateSession((prev) => {
+          const updated = extendSessionTime(prev, addedSeconds, false);
+          saveSessionToStorage(updated);
+          return updated;
+        });
+
+        setTimeGrantNotification({
+          minutes: addedMinutes || Math.round(addedSeconds / 60),
+          timestamp: Date.now(),
+        });
+      }
+    );
+
+    return () => {
+      unsubscribe();
+    };
+  }, [session.participantId, session.participantName, session.isSubmitted, onUpdateSession]);
+
+  // Auto-dismiss time grant notification banner after 8 seconds
+  useEffect(() => {
+    if (!timeGrantNotification) return;
+    const timer = setTimeout(() => {
+      setTimeGrantNotification(null);
+    }, 8000);
+    return () => clearTimeout(timer);
+  }, [timeGrantNotification]);
 
   // Remaining seconds calculation & 1-second interval ticker
   const targetEndTime = session.targetEndTime;
@@ -203,13 +270,24 @@ export const QuizArena: React.FC<QuizArenaProps> = ({
 
   // Lifeline: Ask AI
   const handleUseAskAi = () => {
-    if (!currentQuestion || session.usedLifelines.askAi) return;
+    if (!currentQuestion) return;
+
+    // If already used on THIS question, allow re-opening modal without penalty!
+    if (session.usedLifelines.askAi && session.askAiQuestionId === currentQuestion.id) {
+      sounds.playSelect();
+      setIsAiModalOpen(true);
+      return;
+    }
+
+    // If already used on ANOTHER question, do not allow
+    if (session.usedLifelines.askAi) return;
 
     sounds.playLifeline();
     onUpdateSession((prev) => {
       const updated = {
         ...prev,
         usedLifelines: { ...prev.usedLifelines, askAi: true },
+        askAiQuestionId: currentQuestion.id,
       };
       saveSessionToStorage(updated);
       return updated;
@@ -321,6 +399,38 @@ export const QuizArena: React.FC<QuizArenaProps> = ({
         </div>
       </div>
 
+      {/* Real-time Admin Time Grant Alert Banner */}
+      {timeGrantNotification && (
+        <div
+          id="admin-time-grant-banner"
+          className="p-4 rounded-2xl bg-cyan-950/90 border-2 border-cyan-400/80 text-cyan-200 flex items-center justify-between gap-3 shadow-xl shadow-cyan-500/20 animate-in slide-in-from-top-2 duration-300"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-cyan-400 text-slate-950 flex items-center justify-center font-bold shrink-0 shadow-md">
+              <Clock className="w-5 h-5 text-slate-950" />
+            </div>
+            <div>
+              <div className="font-mono font-bold text-sm text-cyan-300 flex items-center gap-2">
+                <span>EXTRA TIME GRANTED BY ADMIN</span>
+                <span className="px-2 py-0.5 rounded-md bg-cyan-500/30 text-cyan-200 border border-cyan-400/50 text-xs font-mono font-bold">
+                  +{timeGrantNotification.minutes} MIN
+                </span>
+              </div>
+              <p className="text-xs font-mono text-slate-300 mt-0.5">
+                Your countdown timer has been dynamically extended in real-time. Keep going!
+              </p>
+            </div>
+          </div>
+          <button
+            id="dismiss-time-grant-btn"
+            onClick={() => setTimeGrantNotification(null)}
+            className="text-xs font-mono px-3 py-1.5 rounded-lg bg-cyan-900/80 hover:bg-cyan-900 text-cyan-200 border border-cyan-500/40 cursor-pointer active:scale-95 transition-all"
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
+
       {/* Lifeline Toolbar */}
       <LifelineToolbar
         lifelines={session.usedLifelines}
@@ -328,6 +438,7 @@ export const QuizArena: React.FC<QuizArenaProps> = ({
         onUseSwapChallenge={() => setIsSwapModalOpen(true)}
         onUseAskAi={handleUseAskAi}
         isFiftyFiftyActiveOnCurrent={isFiftyFiftyActiveOnCurrent}
+        isAskAiActiveOnCurrent={isAskAiActiveOnCurrent}
         disabled={session.isSubmitted || isSubmitting}
       />
 
@@ -362,6 +473,39 @@ export const QuizArena: React.FC<QuizArenaProps> = ({
               {currentQuestion.question}
             </h2>
           </div>
+
+          {/* Ask AI active hint banner on this specific question */}
+          {session.askAiQuestionId === currentQuestion.id && (
+            <div
+              id="active-ai-hint-banner"
+              className="mb-6 p-3.5 sm:p-4 rounded-2xl bg-purple-950/40 border border-purple-500/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-lg shadow-purple-500/10"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-xl bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-purple-300 shrink-0">
+                  <Bot className="w-4 h-4 text-purple-400" />
+                </div>
+                <div>
+                  <div className="font-mono text-xs font-bold text-purple-200 flex items-center gap-2">
+                    <span>AI NEURAL HINT ACTIVE FOR THIS QUESTION</span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-ping" />
+                  </div>
+                  <p className="text-[11px] font-mono text-slate-300 mt-0.5">
+                    Lifeline transmission unlocked. You can re-open and view this hint as many times as you need.
+                  </p>
+                </div>
+              </div>
+              <button
+                id="reopen-ai-hint-card-btn"
+                onClick={() => {
+                  sounds.playSelect();
+                  setIsAiModalOpen(true);
+                }}
+                className="px-4 py-2 rounded-xl bg-purple-500 hover:bg-purple-400 active:scale-95 text-slate-950 font-mono text-xs font-bold uppercase tracking-wider transition-all cursor-pointer shadow-md shadow-purple-500/20 whitespace-nowrap"
+              >
+                View AI Hint
+              </button>
+            </div>
+          )}
 
           {/* Options Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mb-8">

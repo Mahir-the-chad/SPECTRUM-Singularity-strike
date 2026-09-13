@@ -23,7 +23,7 @@ export interface LifelinesState {
   askAi: boolean;
 }
 
-export type SubmissionStatus = 'completed' | 'time_expired' | 'tab_switched' | 'disqualified' | 'reinstated';
+export type SubmissionStatus = 'active' | 'completed' | 'time_expired' | 'tab_switched' | 'disqualified' | 'reinstated';
 
 export interface Submission {
   id?: string;
@@ -37,6 +37,8 @@ export interface Submission {
   submissionStatus: SubmissionStatus;
   isDisqualified?: boolean;
   reinstatedAt?: any;
+  lastTimeGrantMinutes?: number;
+  lastTimeGrantAt?: any;
 }
 
 export interface QuizSessionState {
@@ -55,4 +57,5 @@ export interface QuizSessionState {
   isSubmitted: boolean;
   submissionStatus: SubmissionStatus | null;
   submissionResult: Submission | null;
+  askAiQuestionId?: string; // ID of the specific question where Ask AI was activated
 }

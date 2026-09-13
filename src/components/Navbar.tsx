@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShieldAlert, Trophy, Volume2, VolumeX, User, HelpCircle } from 'lucide-react';
+import { Volume2, VolumeX, User, HelpCircle } from 'lucide-react';
 import { sounds } from '../lib/audio';
 
 interface NavbarProps {
@@ -28,9 +28,8 @@ export const Navbar: React.FC<NavbarProps> = ({
         <button
           id="nav-logo-btn"
           onClick={() => {
-            if (currentView !== 'quiz') {
-              onNavigate('landing');
-            }
+            sounds.playSelect();
+            onNavigate('landing');
           }}
           className="flex items-center gap-3 group text-left transition-opacity hover:opacity-90 cursor-pointer"
         >
@@ -103,26 +102,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             ) : (
               <VolumeX className="w-4 h-4 text-slate-500" />
             )}
-          </button>
-
-          {/* Admin / Leaderboard Nav Button */}
-          <button
-            id="nav-admin-btn"
-            onClick={() => {
-              if (currentView === 'admin') {
-                onNavigate('landing');
-              } else {
-                onNavigate('admin');
-              }
-            }}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-medium border transition-all cursor-pointer ${
-              currentView === 'admin'
-                ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/50 shadow-sm'
-                : 'bg-slate-900/90 text-slate-300 border-slate-800 hover:border-cyan-500/40 hover:text-cyan-200'
-            }`}
-          >
-            <Trophy className="w-3.5 h-3.5 text-amber-400" />
-            <span>{currentView === 'admin' ? 'Exit Admin' : 'Admin & Board'}</span>
           </button>
         </div>
       </div>

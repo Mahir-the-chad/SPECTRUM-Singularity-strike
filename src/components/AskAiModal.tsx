@@ -22,8 +22,12 @@ export const AskAiModal: React.FC<AskAiModalProps> = ({
 
   useEffect(() => {
     if (!isOpen) {
-      setDisplayedText('');
-      setIsTyping(true);
+      return;
+    }
+
+    // If text is already loaded or user is re-opening, show immediately
+    if (displayedText === aiHint) {
+      setIsTyping(false);
       return;
     }
 
@@ -40,10 +44,15 @@ export const AskAiModal: React.FC<AskAiModalProps> = ({
         setIsTyping(false);
         clearInterval(timer);
       }
-    }, 12);
+    }, 10);
 
     return () => clearInterval(timer);
   }, [isOpen, aiHint]);
+
+  const handleSkipTyping = () => {
+    setDisplayedText(aiHint);
+    setIsTyping(false);
+  };
 
   if (!isOpen) return null;
 
@@ -89,7 +98,13 @@ export const AskAiModal: React.FC<AskAiModalProps> = ({
             )}
           </div>
 
-          <div className="p-4 rounded-xl bg-slate-950/80 border border-cyan-500/20 text-slate-200 font-mono text-sm leading-relaxed min-h-[100px] select-text">
+          <div
+            onClick={isTyping ? handleSkipTyping : undefined}
+            className={`p-4 rounded-xl bg-slate-950/80 border border-cyan-500/20 text-slate-200 font-mono text-sm leading-relaxed min-h-[100px] select-text ${
+              isTyping ? 'cursor-pointer hover:border-cyan-400/50' : ''
+            }`}
+            title={isTyping ? 'Click to reveal immediately' : undefined}
+          >
             {displayedText}
             {isTyping && <span className="inline-block w-2 h-4 bg-cyan-400 ml-1 animate-pulse" />}
           </div>
@@ -97,22 +112,37 @@ export const AskAiModal: React.FC<AskAiModalProps> = ({
           <div className="flex items-center gap-2 text-[11px] text-slate-400 font-mono">
             <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
             <span>
-              Conceptual hint loaded without revealing the explicit answer. Lifeline is now marked as used.
+              Hint unlocked for Question #{questionIndex + 1}. You can re-open and view this transmission at any time without consuming extra lifelines.
             </span>
           </div>
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 bg-slate-950/60 border-t border-slate-800 flex justify-end">
+        <div className="px-6 py-4 bg-slate-950/60 border-t border-slate-800 flex items-center justify-between">
+          {isTyping ? (
+            <button
+              type="button"
+              id="skip-ai-typing-btn"
+              onClick={handleSkipTyping}
+              className="text-[11px] font-mono text-cyan-400 hover:text-cyan-300 underline cursor-pointer"
+            >
+              Skip animation &amp; view full hint
+            </button>
+          ) : (
+            <div className="text-[11px] font-mono text-slate-500 flex items-center gap-1.5">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Hint available in Question #{questionIndex + 1}</span>
+            </div>
+          )}
           <button
             id="dismiss-ai-hint-btn"
             onClick={() => {
               sounds.playSelect();
               onClose();
             }}
-            className="px-5 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-mono text-xs font-bold uppercase tracking-wider transition-all"
+            className="px-5 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 active:scale-95 text-slate-950 font-mono text-xs font-bold uppercase tracking-wider transition-all cursor-pointer shadow-md shadow-cyan-500/20"
           >
-            Acknowledge & Return to Arena
+            Close &amp; Return to Arena
           </button>
         </div>
       </div>

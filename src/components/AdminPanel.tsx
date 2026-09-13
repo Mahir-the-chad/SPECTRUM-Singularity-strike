@@ -19,11 +19,13 @@ import {
   BarChart3,
   ExternalLink,
   RotateCcw,
+  Plus,
 } from 'lucide-react';
 import type { Submission, SubmissionStatus } from '../types';
-import { subscribeToSubmissions, saveSubmission, revokeDisqualification } from '../lib/firebase';
+import { subscribeToSubmissions, saveSubmission, revokeDisqualification, grantExtraTime } from '../lib/firebase';
 import { formatTimeMMSS } from '../lib/quizEngine';
 import { sounds } from '../lib/audio';
+import { GrantTimeModal } from './GrantTimeModal';
 
 interface AdminPanelProps {
   onBackToQuiz: () => void;
@@ -40,10 +42,15 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
   const [isLive, setIsLive] = useState(false);
   const [streamNotice, setStreamNotice] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'completed' | 'time_expired' | 'disqualified' | 'reinstated'>('all');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'reinstated' | 'completed' | 'disqualified' | 'time_expired'>('all');
   const [isSeeding, setIsSeeding] = useState(false);
   const [revokingName, setRevokingName] = useState<string | null>(null);
   const [revokeToast, setRevokeToast] = useState<{ name: string; message: string } | null>(null);
+
+  // Extra time granting states
+  const [timeGrantTarget, setTimeGrantTarget] = useState<Submission | null>(null);
+  const [isGrantingTime, setIsGrantingTime] = useState(false);
+  const [grantTimeToast, setGrantTimeToast] = useState<{ name: string; message: string } | null>(null);
 
   // Authenticate Admin
   const handleLogin = (e: React.FormEvent) => {
@@ -208,6 +215,15 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
         timeTakenSeconds: 310,
         submissionStatus: 'tab_switched',
       },
+      {
+        name: 'Siddharth Rao',
+        participantId: 'SPEC-506',
+        correctAnswers: 7,
+        totalAttempted: 9,
+        timeTakenSeconds: 240,
+        remainingSeconds: 660,
+        submissionStatus: 'active',
+      },
     ];
 
     for (const record of demoRecords) {
@@ -249,6 +265,58 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
       console.error('Failed to revoke disqualification:', err);
     } finally {
       setRevokingName(null);
+    }
+  };
+
+  // Grant extra time to active or reinstated participant
+  const handleConfirmGrantTime = async (minutes: number) => {
+    if (!timeGrantTarget) return;
+
+    setIsGrantingTime(true);
+    sounds.playSelect();
+
+    try {
+      const target = timeGrantTarget;
+      const result = await grantExtraTime(
+        target.participantId,
+        target.name,
+        minutes
+      );
+
+      sounds.playLifeline();
+      const addedSec = minutes * 60;
+
+      // Update current displayed list immediately
+      setSubmissions((prev) =>
+        prev.map((s) => {
+          const match =
+            (target.id && s.id === target.id) ||
+            (target.participantId && s.participantId === target.participantId) ||
+            s.name.toLowerCase() === target.name.toLowerCase();
+
+          if (match) {
+            return {
+              ...s,
+              remainingSeconds: (s.remainingSeconds || 0) + addedSec,
+              submissionStatus: s.submissionStatus === 'time_expired' ? 'reinstated' : s.submissionStatus,
+              lastTimeGrantMinutes: minutes,
+            };
+          }
+          return s;
+        })
+      );
+
+      setGrantTimeToast({
+        name: target.name,
+        message: `Successfully added +${minutes} min (+${addedSec}s) to ${target.name} (${target.participantId || 'N/A'}). Countdown dynamically extended in Firestore!`,
+      });
+      setTimeout(() => setGrantTimeToast(null), 7000);
+      setTimeGrantTarget(null);
+    } catch (err: any) {
+      console.error('Failed to grant extra time:', err);
+      alert('Failed to grant extra time: ' + err?.message);
+    } finally {
+      setIsGrantingTime(false);
     }
   };
 
@@ -437,7 +505,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
           <span className="text-xs font-mono text-slate-500 mr-1 flex items-center gap-1">
             <Filter className="w-3 h-3" /> Status:
           </span>
-          {(['all', 'completed', 'time_expired', 'disqualified', 'reinstated'] as const).map((st) => (
+          {(['all', 'active', 'reinstated', 'completed', 'disqualified', 'time_expired'] as const).map((st) => (
             <button
               key={st}
               id={`filter-btn-${st}`}
@@ -467,6 +535,22 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
           <button
             onClick={() => setRevokeToast(null)}
             className="text-emerald-400 hover:text-emerald-200 cursor-pointer font-bold px-2 py-1 rounded bg-emerald-500/20 text-xs"
+          >
+            DISMISS
+          </button>
+        </div>
+      )}
+
+      {/* Grant Time Alert Toast */}
+      {grantTimeToast && (
+        <div className="p-4 rounded-2xl bg-cyan-500/15 border border-cyan-500/40 text-cyan-200 text-xs font-mono flex items-center justify-between gap-3 shadow-lg shadow-cyan-500/10 animate-in fade-in">
+          <div className="flex items-center gap-2.5">
+            <Clock className="w-5 h-5 text-cyan-400 shrink-0" />
+            <span className="font-semibold">{grantTimeToast.message}</span>
+          </div>
+          <button
+            onClick={() => setGrantTimeToast(null)}
+            className="text-cyan-400 hover:text-cyan-200 cursor-pointer font-bold px-2 py-1 rounded bg-cyan-500/20 text-xs"
           >
             DISMISS
           </button>
@@ -519,6 +603,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
                     sub.submissionStatus !== 'reinstated';
 
                   const statusBadges = {
+                    active: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40 animate-pulse',
                     completed: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
                     time_expired: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
                     tab_switched: 'bg-rose-500/10 text-rose-400 border-rose-500/30',
@@ -613,24 +698,49 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
 
                       {/* Action */}
                       <td className="py-4 px-4 text-center">
-                        {isDisqualified ? (
-                          <button
-                            id={`revoke-btn-${sub.id || index}`}
-                            onClick={() => handleRevokeDisqualification(sub)}
-                            disabled={revokingName === (sub.participantId || sub.name)}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 active:scale-95 text-slate-950 font-mono font-bold text-[11px] uppercase tracking-wider transition-all shadow-md shadow-emerald-500/25 cursor-pointer disabled:opacity-50 whitespace-nowrap"
-                            title="Revoke disqualification & reset status in Firestore"
-                          >
-                            <RotateCcw className={`w-3.5 h-3.5 ${revokingName === (sub.participantId || sub.name) ? 'animate-spin' : ''}`} />
-                            <span>Revoke Disqualification</span>
-                          </button>
-                        ) : sub.submissionStatus === 'reinstated' ? (
-                          <span className="inline-flex items-center gap-1 text-[11px] text-emerald-400 font-mono font-semibold">
-                            <CheckCircle2 className="w-3.5 h-3.5" /> Reinstated
-                          </span>
-                        ) : (
-                          <span className="text-slate-600 text-xs font-mono">—</span>
-                        )}
+                        <div className="flex items-center justify-center gap-2">
+                          {isDisqualified ? (
+                            <button
+                              id={`revoke-btn-${sub.id || index}`}
+                              onClick={() => handleRevokeDisqualification(sub)}
+                              disabled={revokingName === (sub.participantId || sub.name)}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 active:scale-95 text-slate-950 font-mono font-bold text-[11px] uppercase tracking-wider transition-all shadow-md shadow-emerald-500/25 cursor-pointer disabled:opacity-50 whitespace-nowrap"
+                              title="Revoke disqualification & reset status in Firestore"
+                            >
+                              <RotateCcw className={`w-3.5 h-3.5 ${revokingName === (sub.participantId || sub.name) ? 'animate-spin' : ''}`} />
+                              <span>Revoke</span>
+                            </button>
+                          ) : sub.submissionStatus === 'reinstated' ? (
+                            <span className="inline-flex items-center gap-1 text-[11px] text-emerald-400 font-mono font-semibold">
+                              <CheckCircle2 className="w-3.5 h-3.5" /> Reinstated
+                            </span>
+                          ) : null}
+
+                          {/* Add Time action button for active, reinstated, or expired participants */}
+                          {(sub.submissionStatus === 'active' ||
+                            sub.submissionStatus === 'reinstated' ||
+                            sub.submissionStatus === 'time_expired') && (
+                            <button
+                              id={`add-time-btn-${sub.id || index}`}
+                              onClick={() => {
+                                sounds.playSelect();
+                                setTimeGrantTarget(sub);
+                              }}
+                              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 hover:border-cyan-400 font-mono font-bold text-[11px] uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap shadow-sm shadow-cyan-500/10 active:scale-95"
+                              title={`Grant extra countdown time to ${sub.name}`}
+                            >
+                              <Clock className="w-3.5 h-3.5 text-cyan-400" />
+                              <span>+ Add Time</span>
+                            </button>
+                          )}
+
+                          {!isDisqualified &&
+                            sub.submissionStatus !== 'reinstated' &&
+                            sub.submissionStatus !== 'active' &&
+                            sub.submissionStatus !== 'time_expired' && (
+                              <span className="text-slate-600 text-xs font-mono">—</span>
+                            )}
+                        </div>
                       </td>
                     </tr>
                   );
@@ -640,6 +750,15 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
           </table>
         </div>
       </div>
+
+      {/* Grant Extra Time Modal */}
+      <GrantTimeModal
+        isOpen={!!timeGrantTarget}
+        onClose={() => setTimeGrantTarget(null)}
+        participant={timeGrantTarget}
+        onConfirmGrant={handleConfirmGrantTime}
+        isGranting={isGrantingTime}
+      />
     </div>
   );
 };

@@ -6,7 +6,6 @@ import {
   Clock,
   ShieldAlert,
   AlertTriangle,
-  RotateCcw,
   ExternalLink,
   ChevronDown,
   ChevronUp,
@@ -21,16 +20,14 @@ import { sounds } from '../lib/audio';
 
 interface ResultScreenProps {
   session: QuizSessionState;
-  onResetQuiz: () => void;
   onViewLeaderboard: () => void;
+  onResetQuiz?: () => void;
   onResumeQuiz?: () => void;
 }
 
 export const ResultScreen: React.FC<ResultScreenProps> = ({
   session,
-  onResetQuiz,
   onViewLeaderboard,
-  onResumeQuiz,
 }) => {
   const [showDetailedReview, setShowDetailedReview] = useState(false);
   const result = session.submissionResult;
@@ -163,60 +160,33 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
 
       {/* Tab-Switch Disqualification Notice & Revocation Status */}
       {status === 'tab_switched' && (
-        <div className="p-5 rounded-2xl bg-rose-500/10 border border-rose-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="flex items-start gap-3">
-            <div className="p-2.5 rounded-xl bg-rose-500/20 text-rose-400 shrink-0">
-              <ShieldAlert className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="text-sm font-bold font-mono text-rose-300 uppercase">
-                Anti-Cheat Sentinel Disqualification
-              </h3>
-              <p className="text-xs text-slate-300 font-sans mt-0.5 max-w-xl">
-                Session was locked due to browser window tab-switch detection. The competition administrator can revoke your disqualification from the Command Center, which immediately resumes your countdown timer from where you left off ({formatTimeMMSS(session.remainingSeconds)} banked).
-              </p>
-            </div>
+        <div className="p-5 rounded-2xl bg-rose-500/10 border border-rose-500/30 flex items-start gap-3">
+          <div className="p-2.5 rounded-xl bg-rose-500/20 text-rose-400 shrink-0 mt-0.5">
+            <ShieldAlert className="w-5 h-5" />
           </div>
-          {onResumeQuiz && (
-            <button
-              id="resume-strike-action-btn"
-              onClick={() => {
-                sounds.playLifeline();
-                onResumeQuiz();
-              }}
-              className="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 active:scale-95 text-slate-950 font-mono text-xs font-extrabold uppercase tracking-wider transition-all shadow-md shadow-emerald-500/25 shrink-0 cursor-pointer flex items-center gap-1.5"
-            >
-              <Zap className="w-4 h-4" />
-              <span>Resume Strike ({formatTimeMMSS(session.remainingSeconds)})</span>
-            </button>
-          )}
+          <div>
+            <h3 className="text-sm font-bold font-mono text-rose-300 uppercase">
+              Anti-Cheat Sentinel Disqualification
+            </h3>
+            <p className="text-xs text-slate-300 font-sans mt-1 leading-relaxed max-w-2xl">
+              Session was locked due to browser window tab-switch detection. The competition administrator can revoke your disqualification from the Command Center, which immediately restores your active session and countdown timer ({formatTimeMMSS(session.remainingSeconds)} banked).
+            </p>
+          </div>
         </div>
       )}
 
       {/* Navigation Actions */}
-      <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+      <div className="flex items-center justify-center pt-2">
         <button
           id="view-leaderboard-btn"
           onClick={() => {
             sounds.playSelect();
             onViewLeaderboard();
           }}
-          className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-cyan-400 hover:from-cyan-400 hover:to-cyan-300 text-slate-950 font-mono text-sm font-extrabold uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/25 cursor-pointer"
+          className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-cyan-400 hover:from-cyan-400 hover:to-cyan-300 text-slate-950 font-mono text-sm font-extrabold uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/25 cursor-pointer"
         >
           <Trophy className="w-4 h-4" />
           <span>Inspect Global Leaderboard</span>
-        </button>
-
-        <button
-          id="reset-quiz-btn"
-          onClick={() => {
-            sounds.playSelect();
-            onResetQuiz();
-          }}
-          className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-mono text-sm font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 border border-slate-700 cursor-pointer"
-        >
-          <RotateCcw className="w-4 h-4" />
-          <span>New Strike Run</span>
         </button>
       </div>
 

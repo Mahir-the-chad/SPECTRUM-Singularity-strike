@@ -76,6 +76,7 @@ export function createNewSession(participantName: string, participantId: string 
     isSubmitted: false,
     submissionStatus: null,
     submissionResult: null,
+    askAiQuestionId: undefined,
   };
 
   saveSessionToStorage(initialState);
@@ -158,6 +159,34 @@ export function reinstateDisqualifiedSession(session: QuizSessionState): QuizSes
 
   saveSessionToStorage(reinstated);
   return reinstated;
+}
+
+/**
+ * Extend countdown timer for an active or reinstated participant session
+ */
+export function extendSessionTime(
+  session: QuizSessionState,
+  addedTime: number,
+  isMinutes: boolean = false
+): QuizSessionState {
+  const addedSeconds = isMinutes ? addedTime * 60 : addedTime;
+  const currentRemaining = session.remainingSeconds > 0 ? session.remainingSeconds : 0;
+  const newRemaining = currentRemaining + addedSeconds;
+  const newTotal = (session.totalDurationSeconds || TOTAL_QUIZ_DURATION_SECONDS) + addedSeconds;
+  const newTargetEndTime = Date.now() + newRemaining * 1000;
+
+  const updated: QuizSessionState = {
+    ...session,
+    remainingSeconds: newRemaining,
+    totalDurationSeconds: newTotal,
+    targetEndTime: newTargetEndTime,
+    // If the session was stopped due to time expiration, allow immediate resumption
+    isSubmitted: session.submissionStatus === 'time_expired' ? false : session.isSubmitted,
+    submissionStatus: session.submissionStatus === 'time_expired' ? null : session.submissionStatus,
+  };
+
+  saveSessionToStorage(updated);
+  return updated;
 }
 
 /**
