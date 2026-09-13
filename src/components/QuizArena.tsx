@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import {
   Clock,
   ShieldAlert,
@@ -11,8 +12,10 @@ import {
   Award,
   Bot,
   CheckCircle2,
+  Bookmark,
+  RefreshCw,
 } from 'lucide-react';
-import type { Question, QuizSessionState, SubmissionStatus } from '../types';
+import type { Question, QuestionOption, QuizSessionState, SubmissionStatus } from '../types';
 import { LifelineToolbar } from './LifelineToolbar';
 import { AskAiModal } from './AskAiModal';
 import { SwapModal } from './SwapModal';
@@ -44,6 +47,8 @@ export const QuizArena: React.FC<QuizArenaProps> = ({
   const [isSwapModalOpen, setIsSwapModalOpen] = useState(false);
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
   const [tabSwitchWarning, setTabSwitchWarning] = useState(false);
+  const [direction, setDirection] = useState<number>(1);
+  const [flaggedQuestions, setFlaggedQuestions] = useState<Set<string>>(new Set());
   const [timeGrantNotification, setTimeGrantNotification] = useState<{
     minutes: number;
     timestamp: number;
@@ -52,6 +57,23 @@ export const QuizArena: React.FC<QuizArenaProps> = ({
 
   const currentQuestion: Question | undefined = session.activeQuestions[session.currentIndex];
   const difficulty = currentQuestion?.difficulty || 'medium';
+
+  // Toggle flag for review on current question
+  const toggleFlagCurrentQuestion = () => {
+    if (!currentQuestion) return;
+    sounds.playSelect();
+    setFlaggedQuestions((prev) => {
+      const next = new Set(prev);
+      if (next.has(currentQuestion.id)) {
+        next.delete(currentQuestion.id);
+      } else {
+        next.add(currentQuestion.id);
+      }
+      return next;
+    });
+  };
+
+  const isCurrentFlagged = currentQuestion ? flaggedQuestions.has(currentQuestion.id) : false;
 
   // Has 50-50 been used on this current question?
   const isFiftyFiftyActiveOnCurrent = Boolean(
@@ -173,16 +195,16 @@ export const QuizArena: React.FC<QuizArenaProps> = ({
     };
   }, [session.isSubmitted, onSubmitQuiz]);
 
-  // Handle Option Selection
-  const handleSelectOption = (option: string) => {
+  // Handle Option Selection by Option ID
+  const handleSelectOption = (optionId: string) => {
     if (!currentQuestion || session.isSubmitted) return;
-    if (currentHiddenOptions.has(option)) return; // Option was eliminated by 50-50
+    if (currentHiddenOptions.has(optionId)) return; // Option was eliminated by 50-50
 
     sounds.playSelect();
     onUpdateSession((prev) => {
       const updatedAnswers = {
         ...prev.selectedAnswers,
-        [currentQuestion.id]: option,
+        [currentQuestion.id]: optionId,
       };
       const updated = { ...prev, selectedAnswers: updatedAnswers };
       saveSessionToStorage(updated);
@@ -296,10 +318,11 @@ export const QuizArena: React.FC<QuizArenaProps> = ({
     setIsAiModalOpen(true);
   };
 
-  // Navigation between questions
+  // Navigation between questions with transition direction
   const goToQuestion = (index: number) => {
     if (index >= 0 && index < session.activeQuestions.length) {
       sounds.playSelect();
+      setDirection(index > session.currentIndex ? 1 : -1);
       onUpdateSession((prev) => {
         const updated = { ...prev, currentIndex: index };
         saveSessionToStorage(updated);
@@ -324,8 +347,8 @@ export const QuizArena: React.FC<QuizArenaProps> = ({
 
       if (selectedOptIndex >= 0 && selectedOptIndex < currentQuestion.options.length) {
         const opt = currentQuestion.options[selectedOptIndex];
-        if (!currentHiddenOptions.has(opt)) {
-          handleSelectOption(opt);
+        if (!currentHiddenOptions.has(opt.id) && !currentHiddenOptions.has(opt.text)) {
+          handleSelectOption(opt.id);
         }
       }
 
@@ -355,283 +378,373 @@ export const QuizArena: React.FC<QuizArenaProps> = ({
   const isTimeCritical = session.remainingSeconds < 120; // less than 2 minutes
 
   const difficultyColor = {
-    easy: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30',
-    medium: 'text-amber-400 bg-amber-500/10 border-amber-500/30',
-    hard: 'text-rose-400 bg-rose-500/10 border-rose-500/30',
+    easy: 'text-[#FFE853] bg-[#221E12] border-[#423A20]',
+    medium: 'text-[#FFD000] bg-[#221E12] border-[#FFD000]',
+    hard: 'text-[#E59500] bg-[#221E12] border-[#E59500]',
   }[difficulty];
 
   const optionLetters = ['A', 'B', 'C', 'D'];
 
   return (
-    <div className="w-full max-w-5xl mx-auto px-3 sm:px-6 py-4 sm:py-6 flex flex-col gap-5">
-      {/* Top Banner: Anti-Cheat Sentinel & Timer telemetry */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-3.5 rounded-2xl bg-slate-900 border border-slate-800 shadow-xl">
-        {/* Anti-cheat banner */}
-        <div className="flex items-center gap-2.5 text-xs font-mono">
-          <div className="relative flex items-center justify-center w-7 h-7 rounded-lg bg-rose-500/20 text-rose-400 border border-rose-500/40 shrink-0">
-            <ShieldAlert className="w-4 h-4 animate-pulse" />
-          </div>
-          <div>
-            <div className="font-bold text-rose-300 uppercase tracking-wider flex items-center gap-2">
-              <span>ACTIVE SENTINEL DEFENSE</span>
-              <span className="w-1.5 h-1.5 rounded-full bg-rose-400 animate-ping" />
+    <div className="w-full h-full max-w-6xl mx-auto px-2 sm:px-4 md:px-6 py-2 flex flex-col justify-between overflow-hidden font-mono select-none">
+      {/* Top Bar: Compact Meta (h-14) */}
+      <div className="w-full bg-[#18160E] border-2 border-[#423A20] shadow-[3px_3px_0px_#000000] shrink-0">
+        <div className="h-14 px-3 sm:px-5 flex items-center justify-between gap-2 sm:gap-4">
+          {/* Left: Question Counter & Difficulty & Sentinel */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex items-baseline gap-1 font-mono">
+              <span className="text-[10px] sm:text-xs text-[#A89F81] uppercase font-bold tracking-wider">Q:</span>
+              <span className="text-base sm:text-lg font-extrabold text-[#FFE853] tabular-nums">
+                {String(session.currentIndex + 1).padStart(2, '0')}
+              </span>
+              <span className="text-xs text-[#A89F81] font-bold">/ {String(totalQuestions).padStart(2, '0')}</span>
             </div>
-            <p className="text-[11px] text-slate-400">
-              Switching tabs or minimizing window triggers immediate auto-submission.
-            </p>
+
+            <span className={`text-[10px] font-mono font-bold uppercase px-2 py-0.5 border ${difficultyColor}`}>
+              {difficulty}
+            </span>
+
+            {/* Sentinel Security Badge */}
+            <div className="hidden lg:flex items-center gap-1.5 px-2 py-0.5 bg-[#221E12] border border-[#E59500] text-[#E59500] text-[10px] font-bold uppercase tracking-wider">
+              <ShieldAlert className="w-3 h-3 text-[#E59500] animate-pulse" />
+              <span>Sentinel Active</span>
+            </div>
+          </div>
+
+          {/* Center: Tactical Lifelines */}
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            {/* 50-50 Lifeline */}
+            <button
+              id="lifeline-fifty-fifty-btn"
+              onClick={handleUseFiftyFifty}
+              disabled={session.isSubmitted || isSubmitting || session.usedLifelines.fiftyFifty}
+              title={
+                session.usedLifelines.fiftyFifty
+                  ? '50-50 already used in this session'
+                  : 'Eliminate two incorrect answers'
+              }
+              className={`flex items-center gap-1.5 px-2 sm:px-2.5 py-1 text-xs font-mono font-bold border transition-all ${
+                session.usedLifelines.fiftyFifty
+                  ? 'bg-[#0D0C07] border-[#423A20] text-[#A89F81]/40 cursor-not-allowed'
+                  : isFiftyFiftyActiveOnCurrent
+                  ? 'bg-[#FFD000] border-[#FFD000] text-[#0D0C07] shadow-[2px_2px_0px_#000000]'
+                  : 'bg-[#221E12] border-[#423A20] hover:border-[#FFD000] text-[#FFF6D1] hover:text-[#FFD000] shadow-[2px_2px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none cursor-pointer'
+              }`}
+            >
+              <span className="text-[10px] sm:text-xs">50%</span>
+              <span className="hidden sm:inline text-[10px]">50-50</span>
+              {session.usedLifelines.fiftyFifty && <span className="text-[9px] text-[#A89F81]">[USED]</span>}
+            </button>
+
+            {/* Swap Challenge Lifeline */}
+            <button
+              id="lifeline-swap-challenge-btn"
+              onClick={() => setIsSwapModalOpen(true)}
+              disabled={session.isSubmitted || isSubmitting || session.usedLifelines.swapChallenge}
+              title={
+                session.usedLifelines.swapChallenge
+                  ? 'Swap challenge already used in this session'
+                  : 'Replace current question with a fresh one'
+              }
+              className={`flex items-center gap-1.5 px-2 sm:px-2.5 py-1 text-xs font-mono font-bold border transition-all ${
+                session.usedLifelines.swapChallenge
+                  ? 'bg-[#0D0C07] border-[#423A20] text-[#A89F81]/40 cursor-not-allowed'
+                  : 'bg-[#221E12] border-[#423A20] hover:border-[#FFD000] text-[#FFF6D1] hover:text-[#FFD000] shadow-[2px_2px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none cursor-pointer'
+              }`}
+            >
+              <RefreshCw className="w-3 h-3 text-[#E59500]" />
+              <span className="hidden sm:inline text-[10px]">Swap</span>
+              {session.usedLifelines.swapChallenge && <span className="text-[9px] text-[#A89F81]">[USED]</span>}
+            </button>
+
+            {/* Ask AI Lifeline */}
+            {(() => {
+              const isGloballyUsed = session.usedLifelines.askAi;
+              const canViewHintOnCurrent = isGloballyUsed && isAskAiActiveOnCurrent;
+              const isButtonDisabled =
+                session.isSubmitted || isSubmitting || (isGloballyUsed && !isAskAiActiveOnCurrent);
+
+              return (
+                <button
+                  id="lifeline-ask-ai-btn"
+                  onClick={handleUseAskAi}
+                  disabled={isButtonDisabled}
+                  title={
+                    canViewHintOnCurrent
+                      ? 'Re-open and view AI Hint for this question'
+                      : isGloballyUsed
+                      ? 'Ask AI already used on another question'
+                      : 'Consult AI neural co-pilot for a hint'
+                  }
+                  className={`flex items-center gap-1.5 px-2 sm:px-2.5 py-1 text-xs font-mono font-bold border transition-all ${
+                    isButtonDisabled
+                      ? 'bg-[#0D0C07] border-[#423A20] text-[#A89F81]/40 cursor-not-allowed'
+                      : canViewHintOnCurrent
+                      ? 'bg-[#FFD000] border-[#FFD000] text-[#0D0C07] shadow-[2px_2px_0px_#000000] cursor-pointer'
+                      : 'bg-[#221E12] border-[#423A20] hover:border-[#FFD000] text-[#FFF6D1] hover:text-[#FFD000] shadow-[2px_2px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none cursor-pointer'
+                  }`}
+                >
+                  <Bot className="w-3 h-3 text-[#FFE853]" />
+                  <span className="hidden sm:inline text-[10px]">
+                    {canViewHintOnCurrent ? 'Hint' : 'Ask AI'}
+                  </span>
+                  {isGloballyUsed && !canViewHintOnCurrent && (
+                    <span className="text-[9px] text-[#A89F81]">[USED]</span>
+                  )}
+                </button>
+              );
+            })()}
+          </div>
+
+          {/* Right: Countdown Timer */}
+          <div
+            id="countdown-timer-display"
+            className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1 border-2 font-mono tabular-nums transition-all shrink-0 ${
+              isTimeCritical
+                ? 'bg-[#221E12] border-[#E59500] text-[#E59500] shadow-[2px_2px_0px_#000000] animate-pulse'
+                : 'bg-[#0D0C07] border-[#FFD000] text-[#FFD000] shadow-[2px_2px_0px_#000000]'
+            }`}
+          >
+            <Clock className={`w-3.5 h-3.5 ${isTimeCritical ? 'text-[#E59500] animate-spin' : 'text-[#FFD000]'}`} />
+            <span className="text-sm sm:text-base font-extrabold tracking-wider text-[#FFE853] tabular-nums">
+              {formatTimeMMSS(session.remainingSeconds)}
+            </span>
           </div>
         </div>
 
-        {/* 15-Minute Continuous Countdown Timer */}
-        <div
-          id="countdown-timer-display"
-          className={`flex items-center justify-center gap-2 px-4 py-2 rounded-xl border font-mono transition-all ${
-            isTimeCritical
-              ? 'bg-rose-950/60 border-rose-500 text-rose-300 shadow-lg shadow-rose-500/20 animate-pulse'
-              : 'bg-slate-950 border-cyan-500/40 text-cyan-300 shadow-inner'
-          }`}
-        >
-          <Clock className={`w-4 h-4 ${isTimeCritical ? 'text-rose-400 animate-spin' : 'text-cyan-400'}`} />
-          <div className="text-xs uppercase text-slate-400 font-semibold mr-1">REMAINING:</div>
-          <span className="text-lg sm:text-xl font-extrabold tracking-wider">
-            {formatTimeMMSS(session.remainingSeconds)}
-          </span>
+        {/* Thin Linear Progress Bar */}
+        <div className="w-full bg-[#0D0C07] h-1 border-t border-[#423A20] relative overflow-hidden">
+          <div
+            className="h-full bg-gradient-to-r from-[#E59500] to-[#FFD000] transition-all duration-300 ease-out"
+            style={{ width: `${(answeredCount / totalQuestions) * 100}%` }}
+          />
         </div>
       </div>
 
-      {/* Real-time Admin Time Grant Alert Banner */}
+      {/* Real-time Admin Time Grant Alert Banner (Overlay/Toast strip) */}
       {timeGrantNotification && (
         <div
           id="admin-time-grant-banner"
-          className="p-4 rounded-2xl bg-cyan-950/90 border-2 border-cyan-400/80 text-cyan-200 flex items-center justify-between gap-3 shadow-xl shadow-cyan-500/20 animate-in slide-in-from-top-2 duration-300"
+          className="my-1.5 p-2 bg-[#18160E] border-2 border-[#FFD000] text-[#FFF6D1] flex items-center justify-between gap-2 shadow-[2px_2px_0px_#000000] animate-in slide-in-from-top-2 duration-200 shrink-0"
         >
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-cyan-400 text-slate-950 flex items-center justify-center font-bold shrink-0 shadow-md">
-              <Clock className="w-5 h-5 text-slate-950" />
-            </div>
-            <div>
-              <div className="font-mono font-bold text-sm text-cyan-300 flex items-center gap-2">
-                <span>EXTRA TIME GRANTED BY ADMIN</span>
-                <span className="px-2 py-0.5 rounded-md bg-cyan-500/30 text-cyan-200 border border-cyan-400/50 text-xs font-mono font-bold">
-                  +{timeGrantNotification.minutes} MIN
-                </span>
-              </div>
-              <p className="text-xs font-mono text-slate-300 mt-0.5">
-                Your countdown timer has been dynamically extended in real-time. Keep going!
-              </p>
+          <div className="flex items-center gap-2">
+            <Clock className="w-4 h-4 text-[#FFD000] shrink-0" />
+            <div className="text-xs font-mono">
+              <span className="font-bold text-[#FFD000]">EXTRA TIME GRANTED: </span>
+              <span className="text-[#FFE853] font-bold">+{timeGrantNotification.minutes} MIN</span>
             </div>
           </div>
           <button
             id="dismiss-time-grant-btn"
             onClick={() => setTimeGrantNotification(null)}
-            className="text-xs font-mono px-3 py-1.5 rounded-lg bg-cyan-900/80 hover:bg-cyan-900 text-cyan-200 border border-cyan-500/40 cursor-pointer active:scale-95 transition-all"
+            className="text-[10px] font-mono px-2 py-0.5 bg-[#221E12] hover:bg-[#FFD000] text-[#FFD000] hover:text-[#0D0C07] border border-[#FFD000] cursor-pointer transition-all uppercase font-bold"
           >
             Dismiss
           </button>
         </div>
       )}
 
-      {/* Lifeline Toolbar */}
-      <LifelineToolbar
-        lifelines={session.usedLifelines}
-        onUseFiftyFifty={handleUseFiftyFifty}
-        onUseSwapChallenge={() => setIsSwapModalOpen(true)}
-        onUseAskAi={handleUseAskAi}
-        isFiftyFiftyActiveOnCurrent={isFiftyFiftyActiveOnCurrent}
-        isAskAiActiveOnCurrent={isAskAiActiveOnCurrent}
-        disabled={session.isSubmitted || isSubmitting}
-      />
-
-      {/* Main Question Arena Card */}
+      {/* Center Stage: Question & Options Canvas (flex-1 flex flex-col justify-center min-h-0) */}
       {currentQuestion && (
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 sm:p-8 shadow-2xl relative overflow-hidden">
-          {/* Subtle Ambient Accent Glow */}
-          <div className="absolute top-0 right-0 w-80 h-80 bg-cyan-500/5 rounded-full blur-3xl -z-10" />
-
-          {/* Question Header & Meta */}
-          <div className="flex flex-wrap items-center justify-between gap-3 pb-5 border-b border-slate-800/80">
-            <div className="flex items-center gap-3">
-              <span className="font-mono text-xs font-bold uppercase tracking-widest text-cyan-400">
-                QUESTION {String(session.currentIndex + 1).padStart(2, '0')} / {String(totalQuestions).padStart(2, '0')}
-              </span>
-              <span
-                className={`text-[11px] font-mono font-bold uppercase px-2.5 py-0.5 rounded-full border ${difficultyColor}`}
+        <div className="flex-1 min-h-0 flex flex-col justify-center py-1 sm:py-2 overflow-y-auto">
+          <div className="w-full max-w-4xl mx-auto flex flex-col justify-center">
+            <AnimatePresence mode="wait" custom={direction}>
+              <motion.div
+                key={currentQuestion.id}
+                custom={direction}
+                initial={{ x: direction > 0 ? 15 : -15, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ x: direction > 0 ? -15 : 15, opacity: 0 }}
+                transition={{ duration: 0.12, ease: 'easeOut' }}
+                className="w-full flex flex-col"
               >
-                {difficulty}
-              </span>
-            </div>
-
-            <div className="text-xs font-mono text-slate-400">
-              Score progress:{' '}
-              <span className="text-slate-100 font-bold">{answeredCount} answered</span>
-            </div>
-          </div>
-
-          {/* Question Content */}
-          <div className="py-6 sm:py-8">
-            <h2 className="text-lg sm:text-2xl font-bold text-slate-100 leading-relaxed font-sans">
-              {currentQuestion.question}
-            </h2>
-          </div>
-
-          {/* Ask AI active hint banner on this specific question */}
-          {session.askAiQuestionId === currentQuestion.id && (
-            <div
-              id="active-ai-hint-banner"
-              className="mb-6 p-3.5 sm:p-4 rounded-2xl bg-purple-950/40 border border-purple-500/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-lg shadow-purple-500/10"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-purple-300 shrink-0">
-                  <Bot className="w-4 h-4 text-purple-400" />
-                </div>
-                <div>
-                  <div className="font-mono text-xs font-bold text-purple-200 flex items-center gap-2">
-                    <span>AI NEURAL HINT ACTIVE FOR THIS QUESTION</span>
-                    <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-ping" />
+                {/* Question Box */}
+                <div className="bg-[#18160E] border-2 border-[#423A20] p-3.5 sm:p-5 shadow-[3px_3px_0px_#000000] mb-2 sm:mb-3">
+                  <div className="flex items-center justify-between gap-2 pb-1.5 mb-1.5 border-b border-[#423A20] text-xs font-mono text-[#A89F81]">
+                    <span className="uppercase text-[#FFD000] font-bold tracking-wider text-[11px]">
+                      QUESTION {String(session.currentIndex + 1).padStart(2, '0')} OF {String(totalQuestions).padStart(2, '0')}
+                    </span>
+                    <span className="text-[11px] tabular-nums">{answeredCount} answered</span>
                   </div>
-                  <p className="text-[11px] font-mono text-slate-300 mt-0.5">
-                    Lifeline transmission unlocked. You can re-open and view this hint as many times as you need.
-                  </p>
+                  <h2 className="text-base sm:text-lg md:text-xl font-medium text-[#FFF6D1] leading-snug sm:leading-relaxed font-mono">
+                    {currentQuestion.question}
+                  </h2>
                 </div>
-              </div>
-              <button
-                id="reopen-ai-hint-card-btn"
-                onClick={() => {
-                  sounds.playSelect();
-                  setIsAiModalOpen(true);
-                }}
-                className="px-4 py-2 rounded-xl bg-purple-500 hover:bg-purple-400 active:scale-95 text-slate-950 font-mono text-xs font-bold uppercase tracking-wider transition-all cursor-pointer shadow-md shadow-purple-500/20 whitespace-nowrap"
-              >
-                View AI Hint
-              </button>
-            </div>
-          )}
 
-          {/* Options Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mb-8">
-            {currentQuestion.options.map((option, idx) => {
-              const letter = optionLetters[idx];
-              const isSelected = session.selectedAnswers[currentQuestion.id] === option;
-              const isEliminated = currentHiddenOptions.has(option);
+                {/* AI Hint active banner (if unlocked for this question) */}
+                {session.askAiQuestionId === currentQuestion.id && (
+                  <div
+                    id="active-ai-hint-banner"
+                    className="mb-2 px-3 py-1.5 bg-[#221E12] border border-[#FFD000] flex items-center justify-between gap-2 shadow-[2px_2px_0px_#000000]"
+                  >
+                    <div className="flex items-center gap-2 text-xs font-mono text-[#FFD000]">
+                      <Bot className="w-3.5 h-3.5 text-[#FFE853]" />
+                      <span className="font-bold uppercase tracking-wider text-[10px] sm:text-xs">
+                        AI Neural Hint Active
+                      </span>
+                    </div>
+                    <button
+                      id="reopen-ai-hint-card-btn"
+                      onClick={() => {
+                        sounds.playSelect();
+                        setIsAiModalOpen(true);
+                      }}
+                      className="px-2 py-0.5 bg-[#FFD000] hover:bg-[#FFE853] text-[#0D0C07] font-mono text-[10px] font-bold uppercase tracking-wider transition-all cursor-pointer border border-[#FFD000]"
+                    >
+                      View Hint
+                    </button>
+                  </div>
+                )}
+
+                {/* Options Grid: Balanced 2x2 grid with compact internal padding */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5">
+                  {currentQuestion.options.map((option, idx) => {
+                    const letter = optionLetters[idx];
+                    const isSelected =
+                      session.selectedAnswers[currentQuestion.id] === option.id ||
+                      session.selectedAnswers[currentQuestion.id] === option.text;
+                    const isEliminated =
+                      currentHiddenOptions.has(option.id) ||
+                      currentHiddenOptions.has(option.text);
+
+                    return (
+                      <button
+                        key={option.id}
+                        id={`option-btn-${letter.toLowerCase()}`}
+                        onClick={() => handleSelectOption(option.id)}
+                        disabled={isEliminated || session.isSubmitted || isSubmitting}
+                        className={`group relative flex items-center gap-2.5 sm:gap-3 py-2.5 sm:py-3 px-3 sm:px-4 rounded-none text-left transition-all duration-150 focus-visible:ring-2 focus-visible:ring-[#FFD000] focus:outline-none ${
+                          isEliminated
+                            ? 'bg-[#0D0C07] border-2 border-[#423A20] text-[#A89F81]/30 cursor-not-allowed opacity-40 shadow-none'
+                            : isSelected
+                            ? 'bg-[#FFD000] border-2 border-[#FFD000] text-[#0D0C07] shadow-[3px_3px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px]'
+                            : 'bg-[#221E12] border-2 border-[#423A20] text-[#FFF6D1] hover:border-[#FFD000] hover:text-[#FFF6D1] shadow-[2px_2px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none cursor-pointer'
+                        }`}
+                      >
+                        {/* Option Letter Badge */}
+                        <span
+                          className={`w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center text-xs font-mono font-bold shrink-0 border tabular-nums ${
+                            isEliminated
+                              ? 'bg-[#0D0C07] text-[#A89F81]/30 border-[#423A20] line-through'
+                              : isSelected
+                              ? 'bg-[#0D0C07] text-[#FFD000] border-[#0D0C07]'
+                              : 'bg-[#0D0C07] text-[#FFF6D1] border-[#423A20] group-hover:text-[#FFD000] group-hover:border-[#FFD000]'
+                          }`}
+                        >
+                          {letter}
+                        </span>
+
+                        {/* Option Text */}
+                        <div className="flex-1 font-mono min-w-0">
+                          <span
+                            className={`text-xs sm:text-sm font-medium leading-snug block break-words ${
+                              isEliminated ? 'line-through text-[#A89F81]/30' : ''
+                            }`}
+                          >
+                            {option.text}
+                          </span>
+                          {isEliminated && (
+                            <span className="text-[9px] font-mono text-[#A89F81]/60 block uppercase">
+                              [Eliminated by 50-50]
+                            </span>
+                          )}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </div>
+      )}
+
+      {/* Bottom Bar: Action Controls (Pinned Footer) */}
+      <div className="w-full bg-[#18160E] border-2 border-[#423A20] p-2 sm:p-2.5 shadow-[3px_3px_0px_#000000] shrink-0 font-mono">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
+          {/* Navigation & Review Controls */}
+          <div className="flex items-center gap-1.5 sm:gap-2 w-full sm:w-auto justify-between sm:justify-start">
+            {/* Previous Question Button */}
+            <button
+              id="prev-question-btn"
+              onClick={() => goToQuestion(session.currentIndex - 1)}
+              disabled={session.currentIndex === 0}
+              className="px-3 sm:px-4 py-1.5 rounded-none bg-[#221E12] hover:bg-[#FFD000] hover:text-[#0D0C07] disabled:opacity-30 disabled:cursor-not-allowed text-xs font-mono font-bold text-[#FFF6D1] transition-all flex items-center justify-center gap-1 border-2 border-[#423A20] hover:border-[#FFD000] shadow-[2px_2px_0px_#000000] cursor-pointer"
+            >
+              <ChevronLeft className="w-3.5 h-3.5" />
+              <span>Prev</span>
+            </button>
+
+            {/* Flag for Review Button */}
+            <button
+              id="flag-review-btn"
+              onClick={toggleFlagCurrentQuestion}
+              title="Flag this question to review later"
+              className={`px-2.5 sm:px-3 py-1.5 rounded-none text-xs font-mono font-bold transition-all flex items-center gap-1.5 border-2 cursor-pointer ${
+                isCurrentFlagged
+                  ? 'bg-[#221E12] border-[#E59500] text-[#FFE853] shadow-[2px_2px_0px_#000000]'
+                  : 'bg-[#221E12] border-[#423A20] hover:border-[#E59500] text-[#A89F81] hover:text-[#FFE853] shadow-[2px_2px_0px_#000000]'
+              }`}
+            >
+              <Bookmark className={`w-3.5 h-3.5 ${isCurrentFlagged ? 'fill-[#E59500] text-[#E59500]' : 'text-[#A89F81]'}`} />
+              <span>{isCurrentFlagged ? 'Flagged' : 'Flag'}</span>
+            </button>
+
+            {/* Next Question Button */}
+            <button
+              id="next-question-btn"
+              onClick={() => goToQuestion(session.currentIndex + 1)}
+              disabled={session.currentIndex === totalQuestions - 1}
+              className="px-3 sm:px-4 py-1.5 rounded-none bg-[#221E12] hover:bg-[#FFD000] hover:text-[#0D0C07] disabled:opacity-30 disabled:cursor-not-allowed text-xs font-mono font-bold text-[#FFF6D1] transition-all flex items-center justify-center gap-1 border-2 border-[#423A20] hover:border-[#FFD000] shadow-[2px_2px_0px_#000000] cursor-pointer"
+            >
+              <span>Next</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
+          {/* Center: Mission Progress Matrix (Question Jump Buttons 1-15) */}
+          <div className="flex items-center gap-1 overflow-x-auto max-w-full py-0.5 px-1">
+            {session.activeQuestions.map((q, idx) => {
+              const isAnswered = Boolean(session.selectedAnswers[q.id]);
+              const isCurrent = session.currentIndex === idx;
+              const isFlagged = flaggedQuestions.has(q.id);
 
               return (
                 <button
-                  key={idx}
-                  id={`option-btn-${letter.toLowerCase()}`}
-                  onClick={() => handleSelectOption(option)}
-                  disabled={isEliminated || session.isSubmitted || isSubmitting}
-                  className={`group relative flex items-start gap-3.5 p-4 sm:p-5 rounded-2xl text-left transition-all duration-150 ${
-                    isEliminated
-                      ? 'bg-slate-950/40 border border-slate-900 text-slate-700 cursor-not-allowed opacity-40'
-                      : isSelected
-                      ? 'bg-cyan-500/15 border-2 border-cyan-400 text-slate-50 shadow-lg shadow-cyan-500/20'
-                      : 'bg-slate-950/70 border border-slate-800/90 text-slate-300 hover:border-cyan-500/50 hover:bg-slate-950/90 hover:text-slate-100 cursor-pointer'
+                  key={q.id}
+                  id={`jump-question-btn-${idx + 1}`}
+                  onClick={() => goToQuestion(idx)}
+                  title={`Question ${idx + 1} (${q.difficulty}) - ${isAnswered ? 'Answered' : 'Unanswered'}${isFlagged ? ' [Flagged]' : ''}`}
+                  className={`relative w-6 h-6 sm:w-7 sm:h-7 rounded-none font-mono text-[10px] sm:text-xs font-bold transition-all flex items-center justify-center cursor-pointer border ${
+                    isCurrent
+                      ? 'bg-[#FFD000] border-[#FFD000] text-[#0D0C07] shadow-[2px_2px_0px_#000000]'
+                      : isAnswered
+                      ? 'bg-[#221E12] border-[#FFD000] text-[#FFD000]'
+                      : 'bg-[#0D0C07] border-[#423A20] text-[#A89F81] hover:border-[#FFD000] hover:text-[#FFF6D1]'
                   }`}
                 >
-                  {/* Option Letter Badge */}
-                  <span
-                    className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-mono font-bold shrink-0 transition-colors ${
-                      isEliminated
-                        ? 'bg-slate-900 text-slate-700 line-through'
-                        : isSelected
-                        ? 'bg-cyan-400 text-slate-950'
-                        : 'bg-slate-800/90 text-slate-400 group-hover:text-cyan-300 group-hover:bg-slate-800'
-                    }`}
-                  >
-                    {letter}
-                  </span>
-
-                  {/* Option Text */}
-                  <div className="flex-1 pt-0.5">
-                    <span
-                      className={`text-sm sm:text-base leading-snug block ${
-                        isEliminated ? 'line-through text-slate-700' : ''
-                      }`}
-                    >
-                      {option}
-                    </span>
-                    {isEliminated && (
-                      <span className="text-[10px] font-mono text-slate-600 block mt-1 uppercase">
-                        [Eliminated by 50-50]
-                      </span>
-                    )}
-                  </div>
+                  {idx + 1}
+                  {isFlagged && (
+                    <span className="absolute -top-1 -right-1 w-2 h-2 bg-[#E59500] rounded-full ring-1 ring-[#0D0C07]" />
+                  )}
                 </button>
               );
             })}
           </div>
 
-          {/* Navigation Controls & Action Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-800/80">
-            <div className="flex items-center gap-2 w-full sm:w-auto">
-              <button
-                id="prev-question-btn"
-                onClick={() => goToQuestion(session.currentIndex - 1)}
-                disabled={session.currentIndex === 0}
-                className="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed text-xs font-mono font-semibold text-slate-200 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
-              >
-                <ChevronLeft className="w-4 h-4" />
-                <span>Prev</span>
-              </button>
-
-              <button
-                id="next-question-btn"
-                onClick={() => goToQuestion(session.currentIndex + 1)}
-                disabled={session.currentIndex === totalQuestions - 1}
-                className="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed text-xs font-mono font-semibold text-slate-200 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
-              >
-                <span>Next</span>
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
-
-            {/* Final Submit Button */}
-            <button
-              id="finalize-submit-btn"
-              onClick={() => {
-                sounds.playSelect();
-                setIsSubmitModalOpen(true);
-              }}
-              disabled={isSubmitting}
-              className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-cyan-400 hover:from-cyan-400 hover:to-cyan-300 text-slate-950 font-mono text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20 cursor-pointer"
-            >
-              <Send className="w-3.5 h-3.5" />
-              <span>Submit & Lock Score</span>
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Question Progress Map / Jump Grid */}
-      <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80">
-        <div className="flex items-center justify-between mb-3 text-xs font-mono text-slate-400">
-          <span>MISSION PROGRESS MATRIX:</span>
-          <span>{answeredCount} / {totalQuestions} Completed</span>
-        </div>
-
-        <div className="grid grid-cols-5 sm:grid-cols-15 gap-2">
-          {session.activeQuestions.map((q, idx) => {
-            const isAnswered = Boolean(session.selectedAnswers[q.id]);
-            const isCurrent = session.currentIndex === idx;
-
-            return (
-              <button
-                key={q.id}
-                id={`jump-question-btn-${idx + 1}`}
-                onClick={() => goToQuestion(idx)}
-                title={`Question ${idx + 1} (${q.difficulty}) - ${isAnswered ? 'Answered' : 'Unanswered'}`}
-                className={`h-9 rounded-lg font-mono text-xs font-bold transition-all flex items-center justify-center cursor-pointer ${
-                  isCurrent
-                    ? 'ring-2 ring-cyan-400 bg-cyan-500/30 text-cyan-200 shadow-md shadow-cyan-500/30'
-                    : isAnswered
-                    ? 'bg-cyan-950/60 border border-cyan-500/40 text-cyan-300 hover:bg-cyan-900/60'
-                    : 'bg-slate-950 border border-slate-800 text-slate-500 hover:border-slate-700 hover:text-slate-300'
-                }`}
-              >
-                {idx + 1}
-              </button>
-            );
-          })}
+          {/* Final Submit & Lock Score Button */}
+          <button
+            id="finalize-submit-btn"
+            onClick={() => {
+              sounds.playSelect();
+              setIsSubmitModalOpen(true);
+            }}
+            disabled={isSubmitting}
+            className="w-full sm:w-auto px-4 sm:px-5 py-1.5 rounded-none bg-[#FFD000] hover:bg-[#FFE853] text-[#0D0C07] font-mono text-xs font-extrabold uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 border-2 border-[#FFD000] shadow-[3px_3px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none cursor-pointer shrink-0"
+          >
+            <Send className="w-3 h-3" />
+            <span>Submit Run</span>
+          </button>
         </div>
       </div>
 

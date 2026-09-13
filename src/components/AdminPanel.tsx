@@ -68,7 +68,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
   // Authenticate Admin
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (username.trim() === 'admin' && password === 'pass@123') {
+    if (username.trim() === 'Admin' && password === 'SpectrumSS@1234') {
       sounds.playSelect();
       setIsAuthenticated(true);
       setAuthError('');
@@ -373,23 +373,21 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
   if (!isAuthenticated) {
     return (
       <div className="w-full max-w-md mx-auto px-4 py-16">
-        <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl backdrop-blur-md relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-48 h-48 bg-cyan-500/5 rounded-full blur-2xl -z-10" />
-
-          <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 mx-auto mb-4">
+        <div className="bg-[#18160E] border-2 border-[#423A20] p-6 sm:p-8 shadow-[6px_6px_0px_#000000] relative overflow-hidden font-mono">
+          <div className="flex items-center justify-center w-12 h-12 bg-[#221E12] border-2 border-[#FFD000] text-[#FFD000] mx-auto mb-4 shadow-[3px_3px_0px_#000000]">
             <Lock className="w-6 h-6" />
           </div>
 
-          <h2 className="text-xl font-bold font-mono text-center text-slate-100 uppercase tracking-wider">
+          <h2 className="text-xl font-bold font-mono text-center text-[#FFF6D1] uppercase tracking-wider">
             Command Center Login
           </h2>
-          <p className="text-xs text-slate-400 text-center mt-1 mb-6 font-mono">
+          <p className="text-xs text-[#A89F81] text-center mt-1 mb-6 font-mono">
             Restricted Admin Authorization (/admin)
           </p>
 
           <form onSubmit={handleLogin} className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
-              <label className="block text-xs font-mono font-semibold text-slate-300 uppercase tracking-wider">
+              <label className="block text-xs font-mono font-bold text-[#A89F81] uppercase tracking-wider">
                 Admin Username
               </label>
               <input
@@ -397,12 +395,12 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-sm font-mono focus:outline-none focus:border-cyan-400 transition-all"
+                className="w-full px-4 py-3 bg-[#0D0C07] border-2 border-[#423A20] text-[#FFF6D1] text-sm font-mono focus:outline-none focus:border-[#FFD000] transition-colors rounded-none"
               />
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label className="block text-xs font-mono font-semibold text-slate-300 uppercase tracking-wider">
+              <label className="block text-xs font-mono font-bold text-[#A89F81] uppercase tracking-wider">
                 Security Passkey
               </label>
               <input
@@ -410,12 +408,12 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-sm font-mono focus:outline-none focus:border-cyan-400 transition-all"
+                className="w-full px-4 py-3 bg-[#0D0C07] border-2 border-[#423A20] text-[#FFF6D1] text-sm font-mono focus:outline-none focus:border-[#FFD000] transition-colors rounded-none"
               />
             </div>
 
             {authError && (
-              <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs font-mono">
+              <div className="p-3 bg-[#221E12] border-2 border-[#E59500] text-[#E59500] text-xs font-mono shadow-[2px_2px_0px_#000000]">
                 {authError}
               </div>
             )}
@@ -423,17 +421,16 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
             <button
               id="admin-login-btn"
               type="submit"
-              className="w-full py-3.5 px-4 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-mono font-extrabold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20 cursor-pointer"
+              className="w-full py-3.5 px-4 bg-[#FFD000] hover:bg-[#FFE853] text-[#0D0C07] font-mono font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 border-2 border-[#FFD000] shadow-[4px_4px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none cursor-pointer rounded-none"
             >
               <ShieldCheck className="w-4 h-4" />
               <span>Verify & Access Leaderboard</span>
             </button>
 
-
             <button
               type="button"
               onClick={onBackToQuiz}
-              className="w-full text-center text-xs font-mono text-slate-500 hover:text-slate-300 transition-colors pt-2 block"
+              className="w-full text-center text-xs font-mono text-[#A89F81] hover:text-[#FFD000] transition-colors pt-2 block cursor-pointer"
             >
               &larr; Return to Quiz Arena
             </button>
@@ -447,21 +444,21 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
   return (
     <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 flex flex-col gap-6">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-3xl bg-slate-900 border border-slate-800 shadow-xl">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 bg-[#18160E] border-2 border-[#423A20] shadow-[4px_4px_0px_#000000]">
         <div>
           <div className="flex items-center gap-2.5">
-            <span className="font-mono text-xs font-bold uppercase tracking-widest text-cyan-400">
+            <span className="font-mono text-xs font-bold uppercase tracking-widest text-[#FFD000]">
               STRIKE OPERATIONS PANEL
             </span>
-            <span className="flex items-center gap-1.5 text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-500/30">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+            <span className="flex items-center gap-1.5 text-[10px] font-mono px-2 py-0.5 bg-[#221E12] text-[#FFE853] border border-[#FFD000]">
+              <span className="w-1.5 h-1.5 bg-[#FFD000] animate-ping" />
               FIRESTORE LIVE
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-100 font-mono mt-1">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#FFF6D1] font-mono mt-1 uppercase tracking-wide">
             Global Live Leaderboard
           </h1>
-          <p className="text-xs text-slate-400 font-mono mt-0.5">
+          <p className="text-xs text-[#A89F81] font-mono mt-0.5">
             Tie-Breaker Rule: Correct Answers (DESC) &rarr; Least Time Taken (ASC)
           </p>
         </div>
@@ -471,9 +468,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
             id="admin-export-csv-btn"
             onClick={handleExportCSV}
             title="Download CSV Report"
-            className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-mono text-xs font-semibold flex items-center gap-1.5 border border-slate-700 transition-all cursor-pointer"
+            className="px-3.5 py-2 bg-[#221E12] hover:bg-[#2A2416] text-[#FFF6D1] font-mono text-xs font-bold uppercase flex items-center gap-1.5 border-2 border-[#423A20] hover:border-[#FFD000] transition-all cursor-pointer shadow-[3px_3px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none"
           >
-            <Download className="w-3.5 h-3.5" />
+            <Download className="w-3.5 h-3.5 text-[#FFD000]" />
             <span>Export CSV</span>
           </button>
 
@@ -482,9 +479,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
             onClick={handleSeedDemoData}
             disabled={isSeeding}
             title="Seed sample competition records"
-            className="px-3.5 py-2 rounded-xl bg-cyan-950/70 hover:bg-cyan-900/70 text-cyan-300 font-mono text-xs font-semibold flex items-center gap-1.5 border border-cyan-500/30 transition-all cursor-pointer"
+            className="px-3.5 py-2 bg-[#221E12] hover:bg-[#2A2416] text-[#FFD000] font-mono text-xs font-bold uppercase flex items-center gap-1.5 border-2 border-[#FFD000] transition-all cursor-pointer shadow-[3px_3px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none disabled:opacity-50"
           >
-            <PlusCircle className="w-3.5 h-3.5" />
+            <PlusCircle className="w-3.5 h-3.5 text-[#FFE853]" />
             <span>{isSeeding ? 'Seeding...' : 'Seed Sample Runs'}</span>
           </button>
 
@@ -494,9 +491,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
               sounds.playSelect();
               setIsAuthenticated(false);
             }}
-            className="px-3.5 py-2 rounded-xl bg-slate-950 hover:bg-rose-950/40 text-slate-400 hover:text-rose-300 font-mono text-xs font-semibold flex items-center gap-1.5 border border-slate-800 hover:border-rose-500/30 transition-all cursor-pointer"
+            className="px-3.5 py-2 bg-[#0D0C07] hover:bg-[#221E12] text-[#A89F81] hover:text-[#FFF6D1] font-mono text-xs font-bold uppercase flex items-center gap-1.5 border-2 border-[#423A20] hover:border-[#E59500] transition-all cursor-pointer shadow-[3px_3px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none"
           >
-            <LogOut className="w-3.5 h-3.5" />
+            <LogOut className="w-3.5 h-3.5 text-[#E59500]" />
             <span>Lock</span>
           </button>
         </div>
@@ -504,55 +501,55 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
 
       {/* Stats Summary Bar */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
-        <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
-          <div className="text-[11px] font-mono text-slate-400 uppercase">Submissions</div>
-          <div className="text-2xl font-extrabold font-mono text-slate-100 mt-1">
+        <div className="p-4 bg-[#18160E] border-2 border-[#423A20] shadow-[3px_3px_0px_#000000]">
+          <div className="text-[11px] font-mono text-[#A89F81] uppercase font-bold">Submissions</div>
+          <div className="text-2xl font-extrabold font-mono text-[#FFF6D1] mt-1">
             {stats.total}
           </div>
-          <div className="text-[10px] text-cyan-400 font-mono">Logged to Firestore</div>
+          <div className="text-[10px] text-[#FFD000] font-mono">Logged to Firestore</div>
         </div>
 
-        <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
-          <div className="text-[11px] font-mono text-slate-400 uppercase">Avg Score</div>
-          <div className="text-2xl font-extrabold font-mono text-slate-100 mt-1">
-            {stats.avgCorrect} <span className="text-xs text-slate-500">/ 15</span>
+        <div className="p-4 bg-[#18160E] border-2 border-[#423A20] shadow-[3px_3px_0px_#000000]">
+          <div className="text-[11px] font-mono text-[#A89F81] uppercase font-bold">Avg Score</div>
+          <div className="text-2xl font-extrabold font-mono text-[#FFD000] mt-1">
+            {stats.avgCorrect} <span className="text-xs text-[#A89F81]">/ 15</span>
           </div>
-          <div className="text-[10px] text-emerald-400 font-mono">Benchmark Accuracy</div>
+          <div className="text-[10px] text-[#FFE853] font-mono">Benchmark Accuracy</div>
         </div>
 
-        <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
-          <div className="text-[11px] font-mono text-slate-400 uppercase">Avg Elapsed</div>
-          <div className="text-2xl font-extrabold font-mono text-slate-100 mt-1">
+        <div className="p-4 bg-[#18160E] border-2 border-[#423A20] shadow-[3px_3px_0px_#000000]">
+          <div className="text-[11px] font-mono text-[#A89F81] uppercase font-bold">Avg Elapsed</div>
+          <div className="text-2xl font-extrabold font-mono text-[#FFF6D1] mt-1">
             {formatTimeMMSS(stats.avgTime)}
           </div>
-          <div className="text-[10px] text-amber-400 font-mono">Average Completion</div>
+          <div className="text-[10px] text-[#A89F81] font-mono">Average Completion</div>
         </div>
 
-        <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
-          <div className="text-[11px] font-mono text-slate-400 uppercase">Integrity Flags</div>
-          <div className="text-2xl font-extrabold font-mono text-rose-400 mt-1">
+        <div className="p-4 bg-[#18160E] border-2 border-[#423A20] shadow-[3px_3px_0px_#000000]">
+          <div className="text-[11px] font-mono text-[#A89F81] uppercase font-bold">Integrity Flags</div>
+          <div className="text-2xl font-extrabold font-mono text-[#E59500] mt-1">
             {stats.tabSwitchedCount}
           </div>
-          <div className="text-[10px] text-rose-400/80 font-mono">Tab-Switch Penalties</div>
+          <div className="text-[10px] text-[#E59500]/80 font-mono">Tab-Switch Penalties</div>
         </div>
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-3.5 rounded-2xl bg-slate-900/60 border border-slate-800">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-3.5 bg-[#18160E] border-2 border-[#423A20] shadow-[3px_3px_0px_#000000]">
         <div className="relative flex-1">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-[#A89F81] absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             id="admin-search-input"
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-xs font-mono focus:outline-none focus:border-cyan-400"
+            className="w-full pl-10 pr-4 py-2 bg-[#0D0C07] border-2 border-[#423A20] text-[#FFF6D1] text-xs font-mono focus:outline-none focus:border-[#FFD000] rounded-none"
           />
         </div>
 
         <div className="flex items-center gap-1.5 overflow-x-auto">
-          <span className="text-xs font-mono text-slate-500 mr-1 flex items-center gap-1">
-            <Filter className="w-3 h-3" /> Status:
+          <span className="text-xs font-mono text-[#A89F81] mr-1 flex items-center gap-1 font-bold">
+            <Filter className="w-3 h-3 text-[#FFD000]" /> Status:
           </span>
           {(['all', 'active', 'reinstated', 'completed', 'disqualified', 'time_expired'] as const).map((st) => (
             <button
@@ -562,10 +559,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
                 sounds.playSelect();
                 setStatusFilter(st);
               }}
-              className={`px-3 py-1.5 rounded-lg text-xs font-mono uppercase transition-colors whitespace-nowrap cursor-pointer ${
+              className={`px-3 py-1.5 text-xs font-mono uppercase transition-colors whitespace-nowrap cursor-pointer rounded-none ${
                 statusFilter === st
-                  ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-bold'
-                  : 'bg-slate-950 text-slate-400 border border-slate-800 hover:text-slate-200'
+                  ? 'bg-[#FFD000] text-[#0D0C07] border-2 border-[#FFD000] font-black shadow-[2px_2px_0px_#000000]'
+                  : 'bg-[#0D0C07] text-[#A89F81] border-2 border-[#423A20] hover:text-[#FFF6D1] hover:border-[#FFD000] font-bold'
               }`}
             >
               {st === 'all' ? 'All' : st === 'disqualified' ? 'Disqualified' : st.replace('_', ' ')}
@@ -576,14 +573,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
 
       {/* Revocation Alert Toast */}
       {revokeToast && (
-        <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs font-mono flex items-center justify-between gap-3 shadow-lg shadow-emerald-500/5 animate-in fade-in">
+        <div className="p-4 bg-[#18160E] border-2 border-[#FFD000] text-[#FFF6D1] text-xs font-mono flex items-center justify-between gap-3 shadow-[4px_4px_0px_#000000] animate-in fade-in">
           <div className="flex items-center gap-2.5">
-            <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+            <CheckCircle2 className="w-5 h-5 text-[#FFD000] shrink-0" />
             <span className="font-semibold">{revokeToast.message}</span>
           </div>
           <button
             onClick={() => setRevokeToast(null)}
-            className="text-emerald-400 hover:text-emerald-200 cursor-pointer font-bold px-2 py-1 rounded bg-emerald-500/20 text-xs"
+            className="text-[#0D0C07] bg-[#FFD000] hover:bg-[#FFE853] cursor-pointer font-bold px-2.5 py-1 text-xs uppercase border border-[#FFD000]"
           >
             DISMISS
           </button>
@@ -592,14 +589,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
 
       {/* Grant Time Alert Toast */}
       {grantTimeToast && (
-        <div className="p-4 rounded-2xl bg-cyan-500/15 border border-cyan-500/40 text-cyan-200 text-xs font-mono flex items-center justify-between gap-3 shadow-lg shadow-cyan-500/10 animate-in fade-in">
+        <div className="p-4 bg-[#18160E] border-2 border-[#FFD000] text-[#FFF6D1] text-xs font-mono flex items-center justify-between gap-3 shadow-[4px_4px_0px_#000000] animate-in fade-in">
           <div className="flex items-center gap-2.5">
-            <Clock className="w-5 h-5 text-cyan-400 shrink-0" />
+            <Clock className="w-5 h-5 text-[#FFD000] shrink-0" />
             <span className="font-semibold">{grantTimeToast.message}</span>
           </div>
           <button
             onClick={() => setGrantTimeToast(null)}
-            className="text-cyan-400 hover:text-cyan-200 cursor-pointer font-bold px-2 py-1 rounded bg-cyan-500/20 text-xs"
+            className="text-[#0D0C07] bg-[#FFD000] hover:bg-[#FFE853] cursor-pointer font-bold px-2.5 py-1 text-xs uppercase border border-[#FFD000]"
           >
             DISMISS
           </button>
@@ -608,14 +605,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
 
       {/* Delete User Alert Toast */}
       {deleteToast && (
-        <div className="p-4 rounded-2xl bg-rose-500/15 border border-rose-500/40 text-rose-200 text-xs font-mono flex items-center justify-between gap-3 shadow-lg shadow-rose-500/10 animate-in fade-in">
+        <div className="p-4 bg-[#18160E] border-2 border-[#E59500] text-[#FFF6D1] text-xs font-mono flex items-center justify-between gap-3 shadow-[4px_4px_0px_#000000] animate-in fade-in">
           <div className="flex items-center gap-2.5">
-            <Trash2 className="w-5 h-5 text-rose-400 shrink-0" />
+            <Trash2 className="w-5 h-5 text-[#E59500] shrink-0" />
             <span className="font-semibold">{deleteToast.message}</span>
           </div>
           <button
             onClick={() => setDeleteToast(null)}
-            className="text-rose-400 hover:text-rose-200 cursor-pointer font-bold px-2 py-1 rounded bg-rose-500/20 text-xs"
+            className="text-[#0D0C07] bg-[#E59500] hover:bg-[#FFD000] cursor-pointer font-bold px-2.5 py-1 text-xs uppercase border border-[#E59500]"
           >
             DISMISS
           </button>
@@ -623,11 +620,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
       )}
 
       {/* Leaderboard Table */}
-      <div className="bg-slate-900/80 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl">
+      <div className="bg-[#18160E] border-2 border-[#423A20] shadow-[4px_4px_0px_#000000] overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs font-mono">
             <thead>
-              <tr className="border-b border-slate-800 bg-slate-950/60 text-slate-400 font-bold uppercase tracking-wider">
+              <tr className="border-b-2 border-[#423A20] bg-[#221E12] text-[#A89F81] font-bold uppercase tracking-wider">
                 <th className="py-4 px-4 sm:px-6 w-16">Rank</th>
                 <th className="py-4 px-4">Participant Name</th>
                 <th className="py-4 px-4">Participant ID</th>
@@ -638,16 +635,16 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
                 <th className="py-4 px-4 text-center">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60">
+            <tbody className="divide-y-2 divide-[#423A20]">
               {filteredSubmissions.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="py-12 text-center text-slate-500 font-mono">
+                  <td colSpan={8} className="py-12 text-center text-[#A89F81] font-mono">
                     <div className="flex flex-col items-center justify-center gap-2">
-                      <Trophy className="w-8 h-8 text-slate-600" />
+                      <Trophy className="w-8 h-8 text-[#423A20]" />
                       <span>No submissions recorded yet matching filter criteria.</span>
                       <button
                         onClick={handleSeedDemoData}
-                        className="mt-2 text-xs text-cyan-400 hover:underline cursor-pointer"
+                        className="mt-2 text-xs text-[#FFD000] hover:underline cursor-pointer font-bold uppercase"
                       >
                         + Click to seed sample submissions
                       </button>
@@ -668,76 +665,76 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
                     sub.submissionStatus !== 'reinstated';
 
                   const statusBadges = {
-                    active: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40 animate-pulse',
-                    completed: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
-                    time_expired: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
-                    tab_switched: 'bg-rose-500/10 text-rose-400 border-rose-500/30',
-                    disqualified: 'bg-rose-500/10 text-rose-400 border-rose-500/30',
-                    reinstated: 'bg-cyan-500/15 text-cyan-300 border-cyan-500/40',
+                    active: 'bg-[#221E12] text-[#FFE853] border-[#FFD000] animate-pulse',
+                    completed: 'bg-[#221E12] text-[#FFD000] border-[#FFD000]',
+                    time_expired: 'bg-[#221E12] text-[#E59500] border-[#E59500]',
+                    tab_switched: 'bg-[#221E12] text-[#E59500] border-[#E59500]',
+                    disqualified: 'bg-[#221E12] text-[#E59500] border-[#E59500]',
+                    reinstated: 'bg-[#221E12] text-[#FFE853] border-[#FFE853]',
                   }[sub.submissionStatus] ||
                     (isDisqualified
-                      ? 'bg-rose-500/10 text-rose-400 border-rose-500/30'
-                      : 'bg-slate-800 text-slate-400 border-slate-700');
+                      ? 'bg-[#221E12] text-[#E59500] border-[#E59500]'
+                      : 'bg-[#221E12] text-[#A89F81] border-[#423A20]');
 
                   return (
                     <tr
                       key={sub.id || index}
-                      className={`hover:bg-slate-850/50 transition-colors ${
-                        isGold ? 'bg-amber-500/[0.03]' : ''
+                      className={`hover:bg-[#221E12]/60 transition-colors ${
+                        isGold ? 'bg-[#FFD000]/[0.05]' : ''
                       }`}
                     >
                       {/* Rank */}
                       <td className="py-4 px-4 sm:px-6 font-bold">
                         {isGold ? (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs">
-                            <Trophy className="w-3 h-3 text-amber-400" /> #1
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-[#FFD000] text-[#0D0C07] font-bold border border-[#FFD000] text-xs shadow-[2px_2px_0px_#000000]">
+                            <Trophy className="w-3 h-3 text-[#0D0C07]" /> #1
                           </span>
                         ) : isSilver ? (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-300/20 text-slate-200 border border-slate-300/40 text-xs">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-[#221E12] text-[#FFF6D1] border border-[#FFD000] text-xs shadow-[2px_2px_0px_#000000]">
                             #2
                           </span>
                         ) : isBronze ? (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-700/20 text-amber-500 border border-amber-700/40 text-xs">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-[#221E12] text-[#E59500] border border-[#E59500] text-xs shadow-[2px_2px_0px_#000000]">
                             #3
                           </span>
                         ) : (
-                          <span className="text-slate-400 px-2">#{rank}</span>
+                          <span className="text-[#A89F81] px-2 font-mono">#{rank}</span>
                         )}
                       </td>
 
                       {/* Participant Name */}
-                      <td className="py-4 px-4 font-semibold text-slate-100">
-                        <div className="flex items-center gap-2 font-sans text-sm">
-                          <div className="w-6 h-6 rounded-full bg-slate-800 flex items-center justify-center text-xs font-mono text-cyan-400 border border-slate-700">
+                      <td className="py-4 px-4 font-bold text-[#FFF6D1]">
+                        <div className="flex items-center gap-2 font-mono text-sm">
+                          <div className="w-6 h-6 bg-[#221E12] border border-[#423A20] flex items-center justify-center text-xs font-mono text-[#FFD000]">
                             {sub.name.charAt(0).toUpperCase()}
                           </div>
-                          <span className="font-medium text-slate-100">{sub.name}</span>
+                          <span className="font-bold text-[#FFF6D1]">{sub.name}</span>
                         </div>
                       </td>
 
                       {/* Participant ID */}
                       <td className="py-4 px-4 font-mono text-xs">
-                        <span className="px-2.5 py-1 rounded-md bg-slate-950 border border-cyan-500/30 text-cyan-300 font-bold">
+                        <span className="px-2.5 py-1 bg-[#0D0C07] border border-[#423A20] text-[#FFD000] font-bold">
                           {sub.participantId || 'N/A'}
                         </span>
                       </td>
 
                       {/* Correct Answers */}
                       <td className="py-4 px-4 text-center">
-                        <span className="inline-block px-3 py-1 rounded-lg bg-slate-950 font-bold text-slate-100 text-sm border border-slate-800">
-                          <span className="text-cyan-400">{sub.correctAnswers}</span>
-                          <span className="text-slate-500 text-xs"> / 20</span>
+                        <span className="inline-block px-3 py-1 bg-[#0D0C07] font-bold text-[#FFF6D1] text-sm border border-[#423A20]">
+                          <span className="text-[#FFD000]">{sub.correctAnswers}</span>
+                          <span className="text-[#A89F81] text-xs"> / 20</span>
                         </span>
                       </td>
 
                       {/* Total Attempted */}
-                      <td className="py-4 px-4 text-center text-slate-300">
+                      <td className="py-4 px-4 text-center text-[#A89F81] font-bold">
                         {sub.totalAttempted} / 20
                       </td>
 
                       {/* Time Taken (MM:SS) */}
-                      <td className="py-4 px-4 text-center font-bold text-slate-200">
-                        <span className="px-2.5 py-1 rounded-md bg-slate-950 border border-slate-800">
+                      <td className="py-4 px-4 text-center font-bold text-[#FFF6D1]">
+                        <span className="px-2.5 py-1 bg-[#0D0C07] border border-[#423A20]">
                           {formatTimeMMSS(sub.timeTakenSeconds)}
                         </span>
                       </td>
@@ -745,7 +742,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
                       {/* Submission Status */}
                       <td className="py-4 px-4 text-center">
                         <span
-                          className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase border ${statusBadges}`}
+                          className={`inline-flex items-center gap-1 px-2.5 py-0.5 text-[10px] font-bold uppercase border ${statusBadges}`}
                         >
                           {sub.submissionStatus === 'completed' && <CheckCircle2 className="w-3 h-3" />}
                           {sub.submissionStatus === 'time_expired' && <Clock className="w-3 h-3" />}
@@ -769,14 +766,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
                               id={`revoke-btn-${sub.id || index}`}
                               onClick={() => handleRevokeDisqualification(sub)}
                               disabled={revokingName === (sub.participantId || sub.name)}
-                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 active:scale-95 text-slate-950 font-mono font-bold text-[11px] uppercase tracking-wider transition-all shadow-md shadow-emerald-500/25 cursor-pointer disabled:opacity-50 whitespace-nowrap"
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#FFD000] hover:bg-[#FFE853] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none text-[#0D0C07] font-mono font-bold text-[11px] uppercase tracking-wider transition-all border-2 border-[#FFD000] shadow-[2px_2px_0px_#000000] cursor-pointer disabled:opacity-50 whitespace-nowrap"
                               title="Revoke disqualification & reset status in Firestore"
                             >
                               <RotateCcw className={`w-3.5 h-3.5 ${revokingName === (sub.participantId || sub.name) ? 'animate-spin' : ''}`} />
                               <span>Revoke</span>
                             </button>
                           ) : sub.submissionStatus === 'reinstated' ? (
-                            <span className="inline-flex items-center gap-1 text-[11px] text-emerald-400 font-mono font-semibold">
+                            <span className="inline-flex items-center gap-1 text-[11px] text-[#FFD000] font-mono font-bold">
                               <CheckCircle2 className="w-3.5 h-3.5" /> Reinstated
                             </span>
                           ) : null}
@@ -791,10 +788,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
                                 sounds.playSelect();
                                 setTimeGrantTarget(sub);
                               }}
-                              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 hover:border-cyan-400 font-mono font-bold text-[11px] uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap shadow-sm shadow-cyan-500/10 active:scale-95"
+                              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-[#221E12] hover:bg-[#2A2416] text-[#FFD000] border-2 border-[#FFD000] hover:border-[#FFE853] font-mono font-bold text-[11px] uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap shadow-[2px_2px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none"
                               title={`Grant extra countdown time to ${sub.name}`}
                             >
-                              <Clock className="w-3.5 h-3.5 text-cyan-400" />
+                              <Clock className="w-3.5 h-3.5 text-[#FFD000]" />
                               <span>+ Add Time</span>
                             </button>
                           )}
@@ -806,10 +803,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
                               sounds.playSelect();
                               setUserToDelete(sub);
                             }}
-                            className="inline-flex items-center gap-1 px-2 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 hover:border-rose-400 font-mono font-bold text-[11px] uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap shadow-sm shadow-rose-500/10 active:scale-95"
+                            className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-[#221E12] hover:bg-[#2A2416] text-[#E59500] hover:text-[#FFF6D1] border-2 border-[#423A20] hover:border-[#E59500] font-mono font-bold text-[11px] uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap shadow-[2px_2px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none"
                             title={`Permanently delete ${sub.name} from database`}
                           >
-                            <Trash2 className="w-3.5 h-3.5 text-rose-400" />
+                            <Trash2 className="w-3.5 h-3.5 text-[#E59500]" />
                             <span>Delete</span>
                           </button>
                         </div>

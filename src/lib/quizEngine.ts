@@ -1,4 +1,4 @@
-import rawQuestionsData from '../data/questions.json';
+import { getQuestionBank } from './questionBank';
 import type {
   Question,
   QuestionBank,
@@ -13,10 +13,8 @@ export const TOTAL_QUIZ_DURATION_SECONDS = 15 * 60; // 15 minutes = 900 seconds
 export const QUESTIONS_DISTRIBUTION = { easy: 12, medium: 6, hard: 2 }; // 20 questions total
 export const LOCAL_STORAGE_SESSION_KEY = 'singularity_strike_session_v1';
 
-const typedQuestionBank: QuestionBank = rawQuestionsData as QuestionBank;
-
-// Shuffle array using Fisher-Yates
-export function shuffleArray<T>(array: T[]): T[] {
+// Non-mutating Fisher-Yates array shuffle
+export function shuffleArray<T>(array: readonly T[] | T[]): T[] {
   const arr = [...array];
   for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -27,16 +25,31 @@ export function shuffleArray<T>(array: T[]): T[] {
 
 /**
  * Generate randomized questions: 12 Easy, 6 Medium, 2 Hard (20 total)
+ * Shuffles questions pool and randomizes choices order per question without mutation.
  */
 export function generateBalancedQuestions(): Question[] {
+  const bank = getQuestionBank();
+
   const easyShuffled = shuffleArray(
-    (typedQuestionBank.easy || []).map((q) => ({ ...q, difficulty: 'easy' as Difficulty }))
+    (bank.easy || []).map((q) => ({
+      ...q,
+      difficulty: 'easy' as Difficulty,
+      options: shuffleArray(q.options),
+    }))
   );
   const mediumShuffled = shuffleArray(
-    (typedQuestionBank.medium || []).map((q) => ({ ...q, difficulty: 'medium' as Difficulty }))
+    (bank.medium || []).map((q) => ({
+      ...q,
+      difficulty: 'medium' as Difficulty,
+      options: shuffleArray(q.options),
+    }))
   );
   const hardShuffled = shuffleArray(
-    (typedQuestionBank.hard || []).map((q) => ({ ...q, difficulty: 'hard' as Difficulty }))
+    (bank.hard || []).map((q) => ({
+      ...q,
+      difficulty: 'hard' as Difficulty,
+      options: shuffleArray(q.options),
+    }))
   );
 
   const selectedEasy = easyShuffled.slice(0, QUESTIONS_DISTRIBUTION.easy);
@@ -191,24 +204,31 @@ export function extendSessionTime(
 
 /**
  * Calculate 50-50 eliminated options
- * "Instantly hides two incorrect options, leaving only the correctAnswer and the closestAnswer"
+ * Instantly eliminates two incorrect options, leaving only the correctAnswer and the closestAnswer.
+ * Returns array of eliminated option IDs.
  */
 export function calculateFiftyFiftyHiddenOptions(question: Question): string[] {
-  const keep = new Set([question.correctAnswer, question.closestAnswer]);
-  // The two incorrect options that are NOT in keep
-  return question.options.filter((opt) => !keep.has(opt)).slice(0, 2);
+  const keepIds = new Set([question.correctAnswerId, question.closestAnswerId]);
+  const keepTexts = new Set([question.correctAnswer, question.closestAnswer]);
+
+  return question.options
+    .filter((opt) => !keepIds.has(opt.id) && !keepTexts.has(opt.text))
+    .slice(0, 2)
+    .map((opt) => opt.id);
 }
 
 /**
- * Swap current question with a fresh un-attempted question of the same difficulty
+ * Swap current question with a fresh un-attempted question of the same difficulty.
+ * Also randomizes the order of choices on the replacement question.
  */
 export function getSwapReplacement(
   currentQuestion: Question,
   activeQuestions: Question[],
   alreadySwappedIds: string[]
 ): Question | null {
+  const bank = getQuestionBank();
   const diff = currentQuestion.difficulty || 'medium';
-  const pool = (typedQuestionBank[diff] || []).map((q) => ({
+  const pool = (bank[diff] || []).map((q) => ({
     ...q,
     difficulty: diff as Difficulty,
   }));
@@ -218,19 +238,25 @@ export function getSwapReplacement(
 
   const available = pool.filter((q) => !activeIds.has(q.id) && !swappedIds.has(q.id));
 
-  if (available.length === 0) {
+  let chosen: Question | null = null;
+  if (available.length > 0) {
+    chosen = shuffleArray(available)[0];
+  } else {
     // Fallback if somehow all in category are active/swapped
     const anyAvailable = pool.filter((q) => q.id !== currentQuestion.id);
-    return anyAvailable.length > 0
-      ? shuffleArray(anyAvailable)[0]
-      : null;
+    chosen = anyAvailable.length > 0 ? shuffleArray(anyAvailable)[0] : null;
   }
 
-  return shuffleArray(available)[0];
+  if (!chosen) return null;
+
+  return {
+    ...chosen,
+    options: shuffleArray(chosen.options),
+  };
 }
 
 /**
- * Compute submission statistics
+ * Compute submission statistics with decoupled option ID validation.
  */
 export function computeQuizScore(
   questions: Question[],
@@ -248,7 +274,11 @@ export function computeQuizScore(
     const selected = selectedAnswers[q.id];
     if (selected !== undefined && selected !== null && selected !== '') {
       totalAttempted++;
-      if (selected === q.correctAnswer) {
+      const isCorrect =
+        selected === q.correctAnswerId ||
+        selected === q.correctAnswer ||
+        q.options.find((o) => o.id === selected)?.text === q.correctAnswer;
+      if (isCorrect) {
         correctAnswers++;
       }
     }

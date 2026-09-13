@@ -11,7 +11,6 @@ import {
   ChevronUp,
   Award,
   Sparkles,
-  CloudCheck,
   Zap,
 } from 'lucide-react';
 import type { QuizSessionState } from '../types';
@@ -45,19 +44,19 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
     completed: {
       title: 'STRIKE RUN FINALIZED',
       desc: 'All responses successfully locked and verified.',
-      badgeClass: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
+      badgeClass: 'bg-[#221E12] text-[#FFD000] border-[#FFD000]',
       icon: CheckCircle2,
     },
     time_expired: {
       title: 'CHRONO EXHAUSTION (TIME EXPIRED)',
       desc: '15-minute operational limit reached. Responses auto-committed to database.',
-      badgeClass: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
+      badgeClass: 'bg-[#221E12] text-[#E59500] border-[#E59500]',
       icon: Clock,
     },
     tab_switched: {
       title: 'INTEGRITY BREACH DETECTED (TAB-SWITCH)',
       desc: 'Browser visibility change detected. Auto-finalized by anti-cheat sentinel protocol.',
-      badgeClass: 'bg-rose-500/10 text-rose-400 border-rose-500/30',
+      badgeClass: 'bg-[#221E12] text-[#E59500] border-[#E59500]',
       icon: ShieldAlert,
     },
   }[status];
@@ -65,110 +64,98 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
   const StatusIcon = statusConfig.icon;
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-4 py-8 sm:py-12 flex flex-col gap-8 animate-in fade-in duration-300">
+    <div className="w-full max-w-4xl mx-auto px-4 py-8 sm:py-12 flex flex-col gap-8 animate-in fade-in duration-200 font-mono">
       {/* Result Hero Header */}
       <div className="text-center flex flex-col items-center gap-3">
         <div
-          className={`inline-flex items-center gap-2 px-3.5 py-1 rounded-full border text-xs font-mono font-bold uppercase tracking-widest ${statusConfig.badgeClass}`}
+          className={`inline-flex items-center gap-2 px-3.5 py-1.5 border-2 text-xs font-mono font-bold uppercase tracking-widest ${statusConfig.badgeClass} shadow-[3px_3px_0px_#000000]`}
         >
           <StatusIcon className="w-4 h-4" />
           <span>{statusConfig.title}</span>
         </div>
 
-        <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-100 font-mono">
-          DEBRIEF: <span className="text-cyan-400">{session.participantName}</span>
+        <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-[#FFF6D1] font-mono">
+          DEBRIEF: <span className="text-[#FFD000]">{session.participantName}</span>
         </h1>
         {session.participantId && (
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-900 border border-slate-800 text-xs font-mono text-cyan-300">
-            <span className="text-slate-500">ID:</span>
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#18160E] border-2 border-[#423A20] text-xs font-mono text-[#FFD000] shadow-[2px_2px_0px_#000000]">
+            <span className="text-[#A89F81]">ID:</span>
             <span className="font-bold">{session.participantId}</span>
           </div>
         )}
 
-        <p className="text-sm text-slate-400 max-w-xl mx-auto">{statusConfig.desc}</p>
+        <p className="text-sm text-[#A89F81] max-w-xl mx-auto">{statusConfig.desc}</p>
       </div>
 
       {/* Primary Metrics Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-        <div className="p-4 sm:p-5 rounded-2xl bg-slate-900/90 border border-cyan-500/30 shadow-lg text-center">
-          <div className="text-xs font-mono text-cyan-400 font-semibold mb-1 uppercase">
+        <div className="p-4 sm:p-5 bg-[#18160E] border-2 border-[#FFD000] shadow-[4px_4px_0px_#000000] text-center">
+          <div className="text-xs font-mono text-[#FFD000] font-bold mb-1 uppercase">
             Correct Score
           </div>
-          <div className="text-3xl sm:text-4xl font-extrabold font-mono text-slate-100">
+          <div className="text-3xl sm:text-4xl font-extrabold font-mono text-[#FFF6D1]">
             {correct}{' '}
-            <span className="text-sm sm:text-base font-normal text-slate-500">
+            <span className="text-sm sm:text-base font-normal text-[#A89F81]">
               / {totalQuestions}
             </span>
           </div>
-          <div className="text-[11px] text-slate-400 font-mono mt-1">
+          <div className="text-[11px] text-[#A89F81] font-mono mt-1">
             {overallScorePercent}% Total Yield
           </div>
         </div>
 
-        <div className="p-4 sm:p-5 rounded-2xl bg-slate-900/90 border border-slate-800 text-center">
-          <div className="text-xs font-mono text-slate-400 font-semibold mb-1 uppercase">
+        <div className="p-4 sm:p-5 bg-[#18160E] border-2 border-[#423A20] shadow-[4px_4px_0px_#000000] text-center">
+          <div className="text-xs font-mono text-[#A89F81] font-bold mb-1 uppercase">
             Attempted
           </div>
-          <div className="text-3xl sm:text-4xl font-extrabold font-mono text-slate-100">
+          <div className="text-3xl sm:text-4xl font-extrabold font-mono text-[#FFF6D1]">
             {attempted}{' '}
-            <span className="text-sm sm:text-base font-normal text-slate-500">
+            <span className="text-sm sm:text-base font-normal text-[#A89F81]">
               / {totalQuestions}
             </span>
           </div>
-          <div className="text-[11px] text-slate-400 font-mono mt-1">
+          <div className="text-[11px] text-[#A89F81] font-mono mt-1">
             {accuracy}% Precision
           </div>
         </div>
 
-        <div className="p-4 sm:p-5 rounded-2xl bg-slate-900/90 border border-slate-800 text-center">
-          <div className="text-xs font-mono text-amber-400 font-semibold mb-1 uppercase">
+        <div className="p-4 sm:p-5 bg-[#18160E] border-2 border-[#423A20] shadow-[4px_4px_0px_#000000] text-center">
+          <div className="text-xs font-mono text-[#FFE853] font-bold mb-1 uppercase">
             Time Taken
           </div>
-          <div className="text-3xl sm:text-4xl font-extrabold font-mono text-slate-100">
+          <div className="text-3xl sm:text-4xl font-extrabold font-mono text-[#FFF6D1]">
             {formatTimeMMSS(timeTakenSeconds)}
           </div>
-          <div className="text-[11px] text-slate-400 font-mono mt-1">
+          <div className="text-[11px] text-[#A89F81] font-mono mt-1">
             Tie-Breaker Benchmark
           </div>
         </div>
 
-        <div className="p-4 sm:p-5 rounded-2xl bg-slate-900/90 border border-slate-800 text-center">
-          <div className="text-xs font-mono text-purple-400 font-semibold mb-1 uppercase">
+        <div className="p-4 sm:p-5 bg-[#18160E] border-2 border-[#423A20] shadow-[4px_4px_0px_#000000] text-center">
+          <div className="text-xs font-mono text-[#E59500] font-bold mb-1 uppercase">
             Lifelines Used
           </div>
-          <div className="text-3xl sm:text-4xl font-extrabold font-mono text-slate-100">
+          <div className="text-3xl sm:text-4xl font-extrabold font-mono text-[#FFF6D1]">
             {[session.usedLifelines.fiftyFifty, session.usedLifelines.swapChallenge, session.usedLifelines.askAi].filter(Boolean).length}{' '}
-            <span className="text-sm sm:text-base font-normal text-slate-500">/ 3</span>
+            <span className="text-sm sm:text-base font-normal text-[#A89F81]">/ 3</span>
           </div>
-          <div className="text-[11px] text-slate-400 font-mono mt-1">
+          <div className="text-[11px] text-[#A89F81] font-mono mt-1">
             Tactical Assets
           </div>
         </div>
       </div>
 
-      {/* Cloud Sync Receipt Banner */}
-      <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800/90 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono">
-        <div className="flex items-center gap-2.5 text-slate-300">
-          <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span>FIREBASE FIRESTORE SYNC:</span>
-          <span className="text-emerald-400 font-bold">COMMITTED TO `submissions`</span>
-        </div>
-        <div className="text-slate-500">
-          Status Code: <span className="text-slate-300">{status}</span>
-        </div>
-      </div>
-
       {/* Tab-Switch Disqualification Notice & Revocation Status */}
       {status === 'tab_switched' && (
-        <div className="p-5 rounded-2xl bg-rose-500/10 border border-rose-500/30 flex items-start gap-3">
-          <div className="p-2.5 rounded-xl bg-rose-500/20 text-rose-400 shrink-0 mt-0.5">
+        <div className="p-5 bg-[#221E12] border-2 border-[#E59500] shadow-[4px_4px_0px_#000000] flex items-start gap-3">
+          <div className="p-2 bg-[#0D0C07] text-[#E59500] border border-[#E59500] shrink-0 mt-0.5">
             <ShieldAlert className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-sm font-bold font-mono text-rose-300 uppercase">
+            <h3 className="text-sm font-bold font-mono text-[#E59500] uppercase">
               Anti-Cheat Sentinel Disqualification
             </h3>
-            <p className="text-xs text-slate-300 font-sans mt-1 leading-relaxed max-w-2xl">
+            <p className="text-xs text-[#FFF6D1] font-mono mt-1 leading-relaxed max-w-2xl">
               Session was locked due to browser window tab-switch detection. The competition administrator can revoke your disqualification from the Command Center, which immediately restores your active session and countdown timer ({formatTimeMMSS(session.remainingSeconds)} banked).
             </p>
           </div>
@@ -183,7 +170,7 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
             sounds.playSelect();
             onViewLeaderboard();
           }}
-          className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-cyan-400 hover:from-cyan-400 hover:to-cyan-300 text-slate-950 font-mono text-sm font-extrabold uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/25 cursor-pointer"
+          className="w-full sm:w-auto px-8 py-3.5 rounded-none bg-[#FFD000] hover:bg-[#FFE853] text-[#0D0C07] font-mono text-sm font-extrabold uppercase tracking-wider transition-all flex items-center justify-center gap-2 border-2 border-[#FFD000] shadow-[4px_4px_0px_#000000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
         >
           <Trophy className="w-4 h-4" />
           <span>Inspect Global Leaderboard</span>
@@ -191,92 +178,101 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
       </div>
 
       {/* Detailed Question Review Toggle */}
-      <div className="border-t border-slate-800/80 pt-8">
+      <div className="border-t-2 border-[#423A20] pt-8">
         <button
           id="toggle-review-btn"
           onClick={() => {
             sounds.playSelect();
             setShowDetailedReview(!showDetailedReview);
           }}
-          className="w-full p-4 rounded-xl bg-slate-900/60 hover:bg-slate-900 border border-slate-800 flex items-center justify-between text-xs font-mono text-slate-300 uppercase tracking-wider transition-colors cursor-pointer"
+          className="w-full p-4 rounded-none bg-[#18160E] hover:bg-[#221E12] border-2 border-[#423A20] flex items-center justify-between text-xs font-mono text-[#FFF6D1] uppercase tracking-wider transition-colors cursor-pointer shadow-[3px_3px_0px_#000000]"
         >
-          <div className="flex items-center gap-2 font-bold">
-            <Zap className="w-4 h-4 text-cyan-400" />
+          <div className="flex items-center gap-2 font-bold text-[#FFD000]">
+            <Zap className="w-4 h-4 text-[#FFD000]" />
             <span>Comprehensive Question Review ({totalQuestions} Questions)</span>
           </div>
-          {showDetailedReview ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+          {showDetailedReview ? <ChevronUp className="w-4 h-4 text-[#FFD000]" /> : <ChevronDown className="w-4 h-4 text-[#FFD000]" />}
         </button>
 
         {showDetailedReview && (
           <div className="mt-4 flex flex-col gap-4">
             {session.activeQuestions.map((q, idx) => {
               const selected = session.selectedAnswers[q.id];
-              const isCorrect = selected === q.correctAnswer;
+              const selectedOption = q.options.find((o) => o.id === selected || o.text === selected);
+              const selectedText = selectedOption ? selectedOption.text : selected;
+
+              const isCorrect =
+                selected === q.correctAnswerId ||
+                selected === q.correctAnswer ||
+                (selectedText && selectedText === q.correctAnswer);
               const isUnanswered = !selected;
+
+              const correctOption = q.options.find((o) => o.id === q.correctAnswerId);
+              const correctText = correctOption?.text || q.correctAnswer;
 
               return (
                 <div
                   key={q.id}
-                  className={`p-5 rounded-2xl border transition-all ${
+                  className={`p-5 rounded-none border-2 transition-all shadow-[3px_3px_0px_#000000] ${
                     isCorrect
-                      ? 'bg-emerald-950/20 border-emerald-500/30'
+                      ? 'bg-[#18160E] border-[#FFD000]'
                       : isUnanswered
-                      ? 'bg-slate-900/40 border-slate-800'
-                      : 'bg-rose-950/20 border-rose-500/30'
+                      ? 'bg-[#18160E] border-[#423A20]'
+                      : 'bg-[#221E12] border-[#E59500]'
                   }`}
                 >
                   <div className="flex items-center justify-between gap-2 mb-2 text-xs font-mono">
                     <div className="flex items-center gap-2">
-                      <span className="font-bold text-slate-400">Q#{idx + 1}</span>
-                      <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-300">
+                      <span className="font-bold text-[#FFD000]">Q#{idx + 1}</span>
+                      <span className="text-[10px] uppercase font-bold px-2 py-0.5 bg-[#0D0C07] border border-[#423A20] text-[#A89F81]">
                         {q.difficulty}
                       </span>
                     </div>
 
                     <div className="font-bold flex items-center gap-1.5">
                       {isCorrect ? (
-                        <span className="text-emerald-400 flex items-center gap-1">
-                          <CheckCircle2 className="w-3.5 h-3.5" /> Correct (+1)
+                        <span className="text-[#FFD000] flex items-center gap-1 font-bold">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-[#FFD000]" /> Correct (+1)
                         </span>
                       ) : isUnanswered ? (
-                        <span className="text-slate-500">Unanswered</span>
+                        <span className="text-[#A89F81]">Unanswered</span>
                       ) : (
-                        <span className="text-rose-400 flex items-center gap-1">
-                          <XCircle className="w-3.5 h-3.5" /> Incorrect
+                        <span className="text-[#E59500] flex items-center gap-1 font-bold">
+                          <XCircle className="w-3.5 h-3.5 text-[#E59500]" /> Incorrect
                         </span>
                       )}
                     </div>
                   </div>
 
-                  <h3 className="text-sm sm:text-base font-semibold text-slate-200 mb-3">
+                  <h3 className="text-sm sm:text-base font-bold text-[#FFF6D1] mb-3">
                     {q.question}
                   </h3>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-mono mb-3">
-                    <div className="p-2.5 rounded-lg bg-slate-950/80 border border-slate-800">
-                      <span className="text-slate-500 block mb-0.5">Your Response:</span>
+                    <div className="p-2.5 bg-[#0D0C07] border border-[#423A20]">
+                      <span className="text-[#A89F81] block mb-0.5">Your Response:</span>
                       <span
-                        className={`font-semibold ${
+                        className={`font-bold ${
                           isCorrect
-                            ? 'text-emerald-400'
+                            ? 'text-[#FFD000]'
                             : isUnanswered
-                            ? 'text-slate-500 italic'
-                            : 'text-rose-400'
+                            ? 'text-[#A89F81] italic'
+                            : 'text-[#E59500]'
                         }`}
                       >
-                        {selected || 'No response recorded'}
+                        {selectedText || 'No response recorded'}
                       </span>
                     </div>
 
-                    <div className="p-2.5 rounded-lg bg-slate-950/80 border border-slate-800">
-                      <span className="text-slate-500 block mb-0.5">Verified Correct Answer:</span>
-                      <span className="text-emerald-400 font-semibold">{q.correctAnswer}</span>
+                    <div className="p-2.5 bg-[#0D0C07] border border-[#423A20]">
+                      <span className="text-[#A89F81] block mb-0.5">Verified Correct Answer:</span>
+                      <span className="text-[#FFE853] font-bold">{correctText}</span>
                     </div>
                   </div>
 
                   {q.aiHint && (
-                    <div className="text-[11px] text-slate-400 bg-slate-950/50 p-2.5 rounded-lg border border-slate-800/60 font-mono">
-                      <span className="text-cyan-400 font-semibold">AI Conceptual Core: </span>
+                    <div className="text-[11px] text-[#FFF6D1] bg-[#0D0C07] p-2.5 border border-[#423A20] font-mono">
+                      <span className="text-[#FFD000] font-bold">AI Conceptual Core: </span>
                       {q.aiHint}
                     </div>
                   )}

@@ -23,20 +23,12 @@ export const SpectrumLogo: React.FC<SpectrumLogoProps> = ({
   return (
     <div className={`flex flex-col items-center justify-center select-none ${className}`}>
       {/* Spectrum 5.0 Custom Logo Image */}
-      <div className="relative flex items-center justify-center">
-        {/* Ambient neon radial glows */}
-        <div
-          className="absolute -inset-4 rounded-full opacity-40 blur-2xl pointer-events-none -z-10"
-          style={{
-            background: 'radial-gradient(circle, rgba(0,229,255,0.4) 0%, rgba(236,72,153,0.3) 50%, transparent 70%)',
-          }}
-        />
-
+      <div className="relative flex items-center justify-center p-3 bg-[#18160E] border-2 border-[#423A20] shadow-[4px_4px_0px_#000000]">
         <img
           src="/logo.png"
           alt="Spectrum 5.0 Logo"
           referrerPolicy="no-referrer"
-          className={`${currentSizeClass} object-contain drop-shadow-[0_0_25px_rgba(0,229,255,0.45)] transition-transform duration-500 hover:scale-105`}
+          className={`${currentSizeClass} object-contain transition-transform duration-300 hover:scale-105`}
         />
       </div>
 
@@ -44,14 +36,14 @@ export const SpectrumLogo: React.FC<SpectrumLogoProps> = ({
       {showSubtitle && (
         <div className="flex flex-col items-center mt-3">
           <div className="flex items-center gap-2">
-            <span className="font-extrabold text-xl sm:text-2xl font-mono tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-sky-300 to-fuchsia-400 uppercase drop-shadow-[0_0_12px_rgba(0,229,255,0.4)]">
+            <span className="font-extrabold text-xl sm:text-2xl font-mono tracking-widest text-[#FFD000] uppercase">
               SPECTRUM
             </span>
-            <span className="font-mono font-bold text-xs sm:text-sm px-2 py-0.5 rounded-md bg-fuchsia-500/20 border border-fuchsia-500/40 text-fuchsia-300 tracking-wider">
+            <span className="font-mono font-bold text-xs sm:text-sm px-2 py-0.5 bg-[#FFD000] text-[#0D0C07] border border-[#FFD000] shadow-[2px_2px_0px_#000000] tracking-wider">
               5.0
             </span>
           </div>
-          <span className="text-[10px] sm:text-xs font-mono tracking-[0.25em] text-slate-400 uppercase mt-0.5">
+          <span className="text-[10px] sm:text-xs font-mono tracking-[0.25em] text-[#A89F81] uppercase mt-1">
             Technical Arena
           </span>
         </div>

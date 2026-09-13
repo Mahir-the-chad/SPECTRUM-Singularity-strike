@@ -265,7 +265,11 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-cyan-500 selection:text-slate-950">
+    <div
+      className={`min-h-screen bg-[#0D0C07] text-[#FFF6D1] flex flex-col font-mono selection:bg-[#FFD000] selection:text-[#0D0C07] ${
+        currentView === 'quiz' ? 'h-screen h-[100dvh] overflow-hidden' : ''
+      }`}
+    >
       {/* Universal Tactical Navbar */}
       <Navbar
         currentView={currentView}
@@ -278,7 +282,11 @@ export default function App() {
       />
 
       {/* Main Content Area with React Router */}
-      <main className="flex-1 flex flex-col justify-start">
+      <main
+        className={`flex-1 flex flex-col ${
+          currentView === 'quiz' ? 'h-[calc(100dvh-4rem)] overflow-hidden min-h-0' : 'justify-start'
+        }`}
+      >
         <Routes>
           {/* Step 1: Landing Page */}
           <Route
@@ -403,25 +411,22 @@ export default function App() {
         currentParticipantId={session?.participantId}
       />
 
-      {/* Footer */}
-      <footer className="w-full border-t border-slate-900 py-4 px-4 text-center text-xs font-mono text-slate-500">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
-          <div>
-            SINGULARITY STRIKE &bull; SPECTRUM 5.0 TECHNICAL ARENA
-          </div>
-          <div className="flex items-center gap-3 text-slate-600">
-            <span>FIRESTORE BACKED</span>
-            <span>&bull;</span>
+      {/* Clean minimal single-line terminal strip footer (hidden during live quiz for zero-scroll 100dvh layout) */}
+      {currentView !== 'quiz' && (
+        <footer className="w-full border-t-2 border-[#423A20] bg-[#18160E] py-2.5 px-4 text-center text-xs font-mono text-[#A89F81]">
+          <div className="max-w-7xl mx-auto flex items-center justify-center gap-3">
+            <span>&copy; Spectrum 5.0. All rights reserved.</span>
             <button
               id="footer-directives-btn"
               onClick={() => setIsRulesModalOpen(true)}
-              className="hover:text-cyan-400 transition-colors cursor-pointer"
+              className="text-[#A89F81] hover:text-[#FFD000] transition-colors cursor-pointer text-[10px] uppercase border border-[#423A20] px-1.5 py-0.5 bg-[#0D0C07]"
+              title="View Directives"
             >
-              Directives
+              [DIRECTIVES]
             </button>
           </div>
-        </div>
-      </footer>
+        </footer>
+      )}
     </div>
   );
 }

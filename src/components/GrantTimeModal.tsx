@@ -51,22 +51,22 @@ export const GrantTimeModal: React.FC<GrantTimeModalProps> = ({
   const newEstimatedRemaining = currentRemaining + selectedMinutes * 60;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="relative w-full max-w-lg bg-slate-900 border border-cyan-500/40 rounded-3xl shadow-2xl shadow-cyan-500/10 overflow-hidden font-mono">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0D0C07]/90 font-mono animate-in fade-in duration-150">
+      <div className="relative w-full max-w-lg bg-[#18160E] border-2 border-[#FFD000] shadow-[6px_6px_0px_#000000] overflow-hidden font-mono">
         {/* Terminal Header */}
-        <div className="flex items-center justify-between px-6 py-4 bg-slate-950/90 border-b border-cyan-500/30">
+        <div className="flex items-center justify-between px-6 py-4 bg-[#221E12] border-b-2 border-[#423A20]">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl bg-cyan-500/20 border border-cyan-500/40 text-cyan-400 flex items-center justify-center">
+            <div className="w-8 h-8 bg-[#FFD000] text-[#0D0C07] flex items-center justify-center font-bold">
               <Clock className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-sm font-bold uppercase tracking-wider text-slate-100 flex items-center gap-2">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-[#FFF6D1] flex items-center gap-2">
                 <span>ADMIN TIME OVERRIDE</span>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-cyan-950 text-cyan-300 border border-cyan-500/30">
+                <span className="text-[10px] px-2 py-0.5 bg-[#0D0C07] text-[#FFE853] border border-[#FFD000] font-bold">
                   REAL-TIME
                 </span>
               </h3>
-              <p className="text-[11px] text-slate-400">Dynamic countdown extension engine</p>
+              <p className="text-[11px] text-[#A89F81]">Dynamic countdown extension engine</p>
             </div>
           </div>
           <button
@@ -76,7 +76,7 @@ export const GrantTimeModal: React.FC<GrantTimeModalProps> = ({
               onClose();
             }}
             disabled={isGranting}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition-colors cursor-pointer"
+            className="p-1 text-[#A89F81] hover:text-[#0D0C07] hover:bg-[#FFD000] border border-transparent hover:border-[#FFD000] transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -85,33 +85,33 @@ export const GrantTimeModal: React.FC<GrantTimeModalProps> = ({
         {/* Content Body */}
         <form onSubmit={handleSubmit} className="p-6 flex flex-col gap-5">
           {/* Target Participant Meta Card */}
-          <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 flex flex-col gap-2">
+          <div className="p-4 bg-[#0D0C07] border-2 border-[#423A20] flex flex-col gap-2 shadow-inner">
             <div className="flex items-center justify-between">
-              <span className="text-xs text-slate-400 uppercase">Target Participant</span>
-              <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded border bg-cyan-500/10 border-cyan-500/30 text-cyan-300">
+              <span className="text-xs text-[#A89F81] uppercase font-bold">Target Participant</span>
+              <span className="text-[10px] uppercase font-bold px-2 py-0.5 bg-[#221E12] border border-[#FFD000] text-[#FFD000]">
                 {participant.submissionStatus.replace('_', ' ')}
               </span>
             </div>
             <div className="flex items-center justify-between gap-2">
-              <div className="font-sans text-base font-bold text-slate-100">
+              <div className="font-mono text-base font-bold text-[#FFF6D1]">
                 {participant.name}
               </div>
-              <div className="text-xs font-mono font-bold text-cyan-400 px-2 py-1 rounded bg-slate-900 border border-slate-800">
+              <div className="text-xs font-mono font-bold text-[#FFD000] px-2 py-1 bg-[#221E12] border border-[#423A20]">
                 {participant.participantId}
               </div>
             </div>
             {currentRemaining > 0 && (
-              <div className="text-[11px] text-slate-400 flex items-center justify-between pt-1 border-t border-slate-800/60 mt-1">
+              <div className="text-[11px] text-[#A89F81] flex items-center justify-between pt-1 border-t border-[#423A20] mt-1">
                 <span>Current Banked Time:</span>
-                <span className="font-bold text-slate-200">{formatTimeMMSS(currentRemaining)}</span>
+                <span className="font-bold text-[#FFE853]">{formatTimeMMSS(currentRemaining)}</span>
               </div>
             )}
           </div>
 
           {/* Quick Selection Buttons */}
           <div className="flex flex-col gap-2">
-            <label className="text-xs text-slate-300 font-bold uppercase tracking-wider flex items-center gap-1.5">
-              <Zap className="w-3.5 h-3.5 text-cyan-400" />
+            <label className="text-xs text-[#FFF6D1] font-bold uppercase tracking-wider flex items-center gap-1.5">
+              <Zap className="w-3.5 h-3.5 text-[#FFD000]" />
               <span>Select Extension Duration</span>
             </label>
             <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
@@ -124,10 +124,10 @@ export const GrantTimeModal: React.FC<GrantTimeModalProps> = ({
                     id={`quick-time-${mins}-btn`}
                     onClick={() => handleSelectQuick(mins)}
                     disabled={isGranting}
-                    className={`py-2.5 px-2 rounded-xl text-xs font-bold font-mono transition-all cursor-pointer ${
+                    className={`py-2.5 px-2 rounded-none text-xs font-bold font-mono transition-all cursor-pointer border-2 ${
                       isSelected
-                        ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/30 scale-105 border-2 border-cyan-300'
-                        : 'bg-slate-800/90 text-slate-300 hover:bg-slate-750 hover:text-white border border-slate-700'
+                        ? 'bg-[#FFD000] text-[#0D0C07] border-[#FFD000] shadow-[2px_2px_0px_#000000]'
+                        : 'bg-[#221E12] text-[#FFF6D1] hover:border-[#FFD000] hover:text-[#FFD000] border-[#423A20]'
                     }`}
                   >
                     +{mins}m
@@ -139,7 +139,7 @@ export const GrantTimeModal: React.FC<GrantTimeModalProps> = ({
 
           {/* Custom Duration Input */}
           <div className="flex flex-col gap-2">
-            <label htmlFor="custom-minutes-input" className="text-xs text-slate-300 font-bold uppercase tracking-wider">
+            <label htmlFor="custom-minutes-input" className="text-xs text-[#FFF6D1] font-bold uppercase tracking-wider">
               Or Specify Custom Minutes (1 - 60):
             </label>
             <div className="relative">
@@ -152,25 +152,25 @@ export const GrantTimeModal: React.FC<GrantTimeModalProps> = ({
                 onChange={handleCustomChange}
                 disabled={isGranting}
                 placeholder="e.g. 5"
-                className="w-full bg-slate-950/90 border border-slate-700 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 rounded-xl px-4 py-2.5 text-sm text-slate-100 font-mono outline-none transition-all"
+                className="w-full bg-[#0D0C07] border-2 border-[#423A20] focus:border-[#FFD000] rounded-none px-4 py-2.5 text-sm text-[#FFF6D1] font-mono outline-none transition-all shadow-inner"
               />
-              <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-slate-500 font-mono pointer-events-none">
+              <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-[#A89F81] font-mono pointer-events-none">
                 minutes
               </span>
             </div>
           </div>
 
           {/* Telemetry Impact Preview */}
-          <div className="p-3.5 rounded-xl bg-cyan-950/30 border border-cyan-500/30 text-xs text-cyan-200 flex flex-col gap-1.5">
-            <div className="flex items-center gap-1.5 font-bold text-cyan-300">
+          <div className="p-3.5 bg-[#221E12] border-2 border-[#423A20] text-xs text-[#FFF6D1] flex flex-col gap-1.5 shadow-inner">
+            <div className="flex items-center gap-1.5 font-bold text-[#FFD000]">
               <Sparkles className="w-3.5 h-3.5" />
               <span>Real-Time Timer Impact:</span>
             </div>
-            <div className="text-[11px] text-slate-300 leading-relaxed font-sans">
-              Adds <strong className="text-cyan-300 font-mono">+{selectedMinutes} minutes (+{selectedMinutes * 60} seconds)</strong> to the participant&apos;s live countdown. If they are in an active session, their ticker extends instantaneously without page refresh.
+            <div className="text-[11px] text-[#A89F81] leading-relaxed font-mono">
+              Adds <strong className="text-[#FFD000] font-mono">+{selectedMinutes} minutes (+{selectedMinutes * 60} seconds)</strong> to the participant&apos;s live countdown. If they are in an active session, their ticker extends instantaneously without page refresh.
             </div>
             {currentRemaining > 0 && (
-              <div className="text-[10px] text-cyan-400 font-mono pt-1">
+              <div className="text-[10px] text-[#FFE853] font-mono pt-1">
                 Estimated New Bank: {formatTimeMMSS(currentRemaining)} &rarr; {formatTimeMMSS(newEstimatedRemaining)}
               </div>
             )}
@@ -186,7 +186,7 @@ export const GrantTimeModal: React.FC<GrantTimeModalProps> = ({
                 onClose();
               }}
               disabled={isGranting}
-              className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
+              className="px-4 py-2.5 rounded-none bg-[#221E12] hover:border-[#FFD000] text-[#FFF6D1] border-2 border-[#423A20] text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
             >
               Cancel
             </button>
@@ -194,11 +194,11 @@ export const GrantTimeModal: React.FC<GrantTimeModalProps> = ({
               type="submit"
               id="confirm-grant-time-btn"
               disabled={isGranting || selectedMinutes <= 0}
-              className="px-5 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 active:scale-95 disabled:opacity-50 text-slate-950 text-xs font-bold uppercase tracking-wider flex items-center gap-2 shadow-lg shadow-cyan-500/25 transition-all cursor-pointer"
+              className="px-5 py-2.5 rounded-none bg-[#FFD000] hover:bg-[#FFE853] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none disabled:opacity-50 text-[#0D0C07] text-xs font-bold uppercase tracking-wider flex items-center gap-2 border-2 border-[#FFD000] shadow-[3px_3px_0px_#000000] transition-all cursor-pointer"
             >
               {isGranting ? (
                 <>
-                  <div className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
+                  <div className="w-4 h-4 border-2 border-[#0D0C07] border-t-transparent rounded-full animate-spin" />
                   <span>Synchronizing...</span>
                 </>
               ) : (

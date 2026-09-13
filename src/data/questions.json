@@ -3,294 +3,1050 @@
     {
       "id": "easy-1",
       "question": "Which time complexity represents constant time execution regardless of input size in Big-O notation?",
-      "options": ["O(1)", "O(n)", "O(log n)", "O(n²)"],
+      "options": [
+        {
+          "id": "easy-1-opt-1",
+          "text": "O(1)"
+        },
+        {
+          "id": "easy-1-opt-2",
+          "text": "O(n)"
+        },
+        {
+          "id": "easy-1-opt-3",
+          "text": "O(log n)"
+        },
+        {
+          "id": "easy-1-opt-4",
+          "text": "O(n²)"
+        }
+      ],
+      "correctAnswerId": "easy-1-opt-1",
+      "closestAnswerId": "easy-1-opt-3",
       "correctAnswer": "O(1)",
       "closestAnswer": "O(log n)",
-      "aiHint": "Consider operations that take the exact same amount of processor cycles whether handling 1 element or 1 billion elements, like accessing an array element by index."
+      "aiHint": "Consider operations that take the exact same amount of processor cycles whether handling 1 element or 1 billion elements, like accessing an array element by index.",
+      "difficulty": "easy",
+      "category": "Core Computer Science"
     },
     {
       "id": "easy-2",
       "question": "In Git, which command is used to download commits and objects from a remote repository into the local repository and immediately integrate them?",
-      "options": ["git pull", "git fetch", "git clone", "git push"],
+      "options": [
+        {
+          "id": "easy-2-opt-1",
+          "text": "git pull"
+        },
+        {
+          "id": "easy-2-opt-2",
+          "text": "git fetch"
+        },
+        {
+          "id": "easy-2-opt-3",
+          "text": "git clone"
+        },
+        {
+          "id": "easy-2-opt-4",
+          "text": "git push"
+        }
+      ],
+      "correctAnswerId": "easy-2-opt-1",
+      "closestAnswerId": "easy-2-opt-2",
       "correctAnswer": "git pull",
       "closestAnswer": "git fetch",
-      "aiHint": "This command performs two operations under the hood: retrieving remote changes and merging them into the current active branch."
+      "aiHint": "This command performs two operations under the hood: retrieving remote changes and merging them into the current active branch.",
+      "difficulty": "easy",
+      "category": "Core Computer Science"
     },
     {
       "id": "easy-3",
       "question": "Which HTTP status code signifies that a requested resource was successfully created on the server?",
-      "options": ["201 Created", "200 OK", "204 No Content", "301 Moved Permanently"],
+      "options": [
+        {
+          "id": "easy-3-opt-1",
+          "text": "201 Created"
+        },
+        {
+          "id": "easy-3-opt-2",
+          "text": "200 OK"
+        },
+        {
+          "id": "easy-3-opt-3",
+          "text": "204 No Content"
+        },
+        {
+          "id": "easy-3-opt-4",
+          "text": "301 Moved Permanently"
+        }
+      ],
+      "correctAnswerId": "easy-3-opt-1",
+      "closestAnswerId": "easy-3-opt-2",
       "correctAnswer": "201 Created",
       "closestAnswer": "200 OK",
-      "aiHint": "While 200 signifies general success, REST conventions define a specific 2xx code specifically returned after successful POST requests that instantiate new entities."
+      "aiHint": "While 200 signifies general success, REST conventions define a specific 2xx code specifically returned after successful POST requests that instantiate new entities.",
+      "difficulty": "easy",
+      "category": "Core Computer Science"
     },
     {
       "id": "easy-4",
       "question": "What data structure operates on a Last-In, First-Out (LIFO) order?",
-      "options": ["Stack", "Queue", "Linked List", "Binary Heap"],
+      "options": [
+        {
+          "id": "easy-4-opt-1",
+          "text": "Stack"
+        },
+        {
+          "id": "easy-4-opt-2",
+          "text": "Queue"
+        },
+        {
+          "id": "easy-4-opt-3",
+          "text": "Linked List"
+        },
+        {
+          "id": "easy-4-opt-4",
+          "text": "Binary Heap"
+        }
+      ],
+      "correctAnswerId": "easy-4-opt-1",
+      "closestAnswerId": "easy-4-opt-2",
       "correctAnswer": "Stack",
       "closestAnswer": "Queue",
-      "aiHint": "Think of a physical pile of cafeteria trays where the last tray placed on top is the first one someone picks up."
+      "aiHint": "Think of a physical pile of cafeteria trays where the last tray placed on top is the first one someone picks up.",
+      "difficulty": "easy",
+      "category": "Core Computer Science"
     },
     {
       "id": "easy-5",
       "question": "In relational databases, which SQL constraint ensures that every row in a table is uniquely identifiable and cannot contain NULL values?",
-      "options": ["PRIMARY KEY", "FOREIGN KEY", "UNIQUE", "NOT NULL"],
+      "options": [
+        {
+          "id": "easy-5-opt-1",
+          "text": "PRIMARY KEY"
+        },
+        {
+          "id": "easy-5-opt-2",
+          "text": "FOREIGN KEY"
+        },
+        {
+          "id": "easy-5-opt-3",
+          "text": "UNIQUE"
+        },
+        {
+          "id": "easy-5-opt-4",
+          "text": "NOT NULL"
+        }
+      ],
+      "correctAnswerId": "easy-5-opt-1",
+      "closestAnswerId": "easy-5-opt-3",
       "correctAnswer": "PRIMARY KEY",
       "closestAnswer": "UNIQUE",
-      "aiHint": "A UNIQUE constraint allows one NULL in most engines, but this key uniquely identifies records for relation indexing and strictly forbids nullity."
+      "aiHint": "A UNIQUE constraint allows one NULL in most engines, but this key uniquely identifies records for relation indexing and strictly forbids nullity.",
+      "difficulty": "easy",
+      "category": "Core Computer Science"
     },
     {
       "id": "easy-6",
       "question": "Which protocol is the default secure transport protocol used to encrypt web traffic via TLS/SSL?",
-      "options": ["HTTPS", "HTTP", "SFTP", "SSH"],
+      "options": [
+        {
+          "id": "easy-6-opt-1",
+          "text": "HTTPS"
+        },
+        {
+          "id": "easy-6-opt-2",
+          "text": "HTTP"
+        },
+        {
+          "id": "easy-6-opt-3",
+          "text": "SFTP"
+        },
+        {
+          "id": "easy-6-opt-4",
+          "text": "SSH"
+        }
+      ],
+      "correctAnswerId": "easy-6-opt-1",
+      "closestAnswerId": "easy-6-opt-4",
       "correctAnswer": "HTTPS",
       "closestAnswer": "SSH",
-      "aiHint": "It is the encrypted sibling of standard port 80 web requests, operating over port 443."
+      "aiHint": "It is the encrypted sibling of standard port 80 web requests, operating over port 443.",
+      "difficulty": "easy",
+      "category": "Core Computer Science"
     },
     {
       "id": "easy-7",
       "question": "In JavaScript, which operator checks for both value equality and identical data type without type coercion?",
-      "options": ["===", "==", "=", "!="],
+      "options": [
+        {
+          "id": "easy-7-opt-1",
+          "text": "==="
+        },
+        {
+          "id": "easy-7-opt-2",
+          "text": "=="
+        },
+        {
+          "id": "easy-7-opt-3",
+          "text": "="
+        },
+        {
+          "id": "easy-7-opt-4",
+          "text": "!="
+        }
+      ],
+      "correctAnswerId": "easy-7-opt-1",
+      "closestAnswerId": "easy-7-opt-2",
       "correctAnswer": "===",
       "closestAnswer": "==",
-      "aiHint": "Unlike loose equality which coerces types like '0' == 0, strict equality requires three characters."
+      "aiHint": "Unlike loose equality which coerces types like '0' == 0, strict equality requires three characters.",
+      "difficulty": "easy",
+      "category": "Core Computer Science"
     },
     {
       "id": "easy-8",
       "question": "Which standard format is most universally utilized for transmitting structured data between a web API and a browser client?",
-      "options": ["JSON", "XML", "YAML", "Protocol Buffers"],
+      "options": [
+        {
+          "id": "easy-8-opt-1",
+          "text": "JSON"
+        },
+        {
+          "id": "easy-8-opt-2",
+          "text": "XML"
+        },
+        {
+          "id": "easy-8-opt-3",
+          "text": "YAML"
+        },
+        {
+          "id": "easy-8-opt-4",
+          "text": "Protocol Buffers"
+        }
+      ],
+      "correctAnswerId": "easy-8-opt-1",
+      "closestAnswerId": "easy-8-opt-2",
       "correctAnswer": "JSON",
       "closestAnswer": "XML",
-      "aiHint": "It derives from JavaScript object syntax and uses lightweight key-value pairs formatted with curly brackets."
+      "aiHint": "It derives from JavaScript object syntax and uses lightweight key-value pairs formatted with curly brackets.",
+      "difficulty": "easy",
+      "category": "Core Computer Science"
     },
     {
       "id": "easy-9",
       "question": "What does CPU cache provide compared to main system RAM?",
-      "options": ["Significantly lower latency and higher bandwidth", "Higher storage capacity at lower cost", "Persistent non-volatile storage", "Direct network interface routing"],
+      "options": [
+        {
+          "id": "easy-9-opt-1",
+          "text": "Significantly lower latency and higher bandwidth"
+        },
+        {
+          "id": "easy-9-opt-2",
+          "text": "Higher storage capacity at lower cost"
+        },
+        {
+          "id": "easy-9-opt-3",
+          "text": "Persistent non-volatile storage"
+        },
+        {
+          "id": "easy-9-opt-4",
+          "text": "Direct network interface routing"
+        }
+      ],
+      "correctAnswerId": "easy-9-opt-1",
+      "closestAnswerId": "easy-9-opt-3",
       "correctAnswer": "Significantly lower latency and higher bandwidth",
       "closestAnswer": "Persistent non-volatile storage",
-      "aiHint": "L1, L2, and L3 caches sit directly adjacent to or inside the CPU cores to avoid the slow bus trip across the motherboard to DRAM."
+      "aiHint": "L1, L2, and L3 caches sit directly adjacent to or inside the CPU cores to avoid the slow bus trip across the motherboard to DRAM.",
+      "difficulty": "easy",
+      "category": "Core Computer Science"
     },
     {
       "id": "easy-10",
       "question": "Which Linux command is used to modify file permissions using symbolic or octal notation?",
-      "options": ["chmod", "chown", "chgrp", "touch"],
+      "options": [
+        {
+          "id": "easy-10-opt-1",
+          "text": "chmod"
+        },
+        {
+          "id": "easy-10-opt-2",
+          "text": "chown"
+        },
+        {
+          "id": "easy-10-opt-3",
+          "text": "chgrp"
+        },
+        {
+          "id": "easy-10-opt-4",
+          "text": "touch"
+        }
+      ],
+      "correctAnswerId": "easy-10-opt-1",
+      "closestAnswerId": "easy-10-opt-2",
       "correctAnswer": "chmod",
       "closestAnswer": "chown",
-      "aiHint": "The command name stands for 'change mode' and lets you set read, write, and execute bits."
+      "aiHint": "The command name stands for 'change mode' and lets you set read, write, and execute bits.",
+      "difficulty": "easy",
+      "category": "Core Computer Science"
     },
     {
       "id": "easy-11",
       "question": "In machine learning, what term refers to a model learning noise and memorizing training data rather than generalizing to unseen data?",
-      "options": ["Overfitting", "Underfitting", "Regularization", "Quantization"],
+      "options": [
+        {
+          "id": "easy-11-opt-1",
+          "text": "Overfitting"
+        },
+        {
+          "id": "easy-11-opt-2",
+          "text": "Underfitting"
+        },
+        {
+          "id": "easy-11-opt-3",
+          "text": "Regularization"
+        },
+        {
+          "id": "easy-11-opt-4",
+          "text": "Quantization"
+        }
+      ],
+      "correctAnswerId": "easy-11-opt-1",
+      "closestAnswerId": "easy-11-opt-2",
       "correctAnswer": "Overfitting",
       "closestAnswer": "Underfitting",
-      "aiHint": "Characterized by near 100% training accuracy alongside poor performance on validation and test splits."
+      "aiHint": "Characterized by near 100% training accuracy alongside poor performance on validation and test splits.",
+      "difficulty": "easy",
+      "category": "Core Computer Science"
     },
     {
       "id": "easy-12",
       "question": "Which data structure utilizes hashing to achieve average-case O(1) key lookups and insertions?",
-      "options": ["Hash Table", "Binary Search Tree", "Singly Linked List", "Trie"],
+      "options": [
+        {
+          "id": "easy-12-opt-1",
+          "text": "Hash Table"
+        },
+        {
+          "id": "easy-12-opt-2",
+          "text": "Binary Search Tree"
+        },
+        {
+          "id": "easy-12-opt-3",
+          "text": "Singly Linked List"
+        },
+        {
+          "id": "easy-12-opt-4",
+          "text": "Trie"
+        }
+      ],
+      "correctAnswerId": "easy-12-opt-1",
+      "closestAnswerId": "easy-12-opt-2",
       "correctAnswer": "Hash Table",
       "closestAnswer": "Binary Search Tree",
-      "aiHint": "It computes an index into an array of buckets from which the desired value can be found directly."
+      "aiHint": "It computes an index into an array of buckets from which the desired value can be found directly.",
+      "difficulty": "easy",
+      "category": "Core Computer Science"
     },
     {
       "id": "easy-13",
       "question": "If proposition P is TRUE and proposition Q is FALSE, what is the truth value of the Boolean expression: (P AND NOT Q)?",
-      "options": ["TRUE", "FALSE", "Indeterminate", "Contradiction"],
+      "options": [
+        {
+          "id": "easy-13-opt-1",
+          "text": "TRUE"
+        },
+        {
+          "id": "easy-13-opt-2",
+          "text": "FALSE"
+        },
+        {
+          "id": "easy-13-opt-3",
+          "text": "Indeterminate"
+        },
+        {
+          "id": "easy-13-opt-4",
+          "text": "Contradiction"
+        }
+      ],
+      "correctAnswerId": "easy-13-opt-1",
+      "closestAnswerId": "easy-13-opt-2",
       "correctAnswer": "TRUE",
       "closestAnswer": "FALSE",
-      "aiHint": "Since Q is FALSE, NOT Q becomes TRUE. Conjoining two TRUE statements results in TRUE."
+      "aiHint": "Since Q is FALSE, NOT Q becomes TRUE. Conjoining two TRUE statements results in TRUE.",
+      "difficulty": "easy",
+      "category": "Core Computer Science"
     },
     {
       "id": "easy-14",
       "question": "In Python, which built-in function returns the total number of items in a list, string, or dictionary?",
-      "options": ["len()", "count()", "size()", "length()"],
+      "options": [
+        {
+          "id": "easy-14-opt-1",
+          "text": "len()"
+        },
+        {
+          "id": "easy-14-opt-2",
+          "text": "count()"
+        },
+        {
+          "id": "easy-14-opt-3",
+          "text": "size()"
+        },
+        {
+          "id": "easy-14-opt-4",
+          "text": "length()"
+        }
+      ],
+      "correctAnswerId": "easy-14-opt-1",
+      "closestAnswerId": "easy-14-opt-2",
       "correctAnswer": "len()",
       "closestAnswer": "count()",
-      "aiHint": "A 3-letter built-in function that invokes the object's __len__() dunder method."
+      "aiHint": "A 3-letter built-in function that invokes the object's __len__() dunder method.",
+      "difficulty": "easy",
+      "category": "Core Computer Science"
     },
     {
       "id": "easy-15",
       "question": "In binary search executing on a sorted array of size n, what is the worst-case algorithmic time complexity?",
-      "options": ["O(log n)", "O(1)", "O(n)", "O(n log n)"],
+      "options": [
+        {
+          "id": "easy-15-opt-1",
+          "text": "O(log n)"
+        },
+        {
+          "id": "easy-15-opt-2",
+          "text": "O(1)"
+        },
+        {
+          "id": "easy-15-opt-3",
+          "text": "O(n)"
+        },
+        {
+          "id": "easy-15-opt-4",
+          "text": "O(n log n)"
+        }
+      ],
+      "correctAnswerId": "easy-15-opt-1",
+      "closestAnswerId": "easy-15-opt-3",
       "correctAnswer": "O(log n)",
       "closestAnswer": "O(n)",
-      "aiHint": "Because the candidate search interval is divided in half after each iteration."
+      "aiHint": "Because the candidate search interval is divided in half after each iteration.",
+      "difficulty": "easy",
+      "category": "Core Computer Science"
     },
     {
       "id": "easy-16",
       "question": "What is the primary mathematical purpose of an activation function in a deep neural network?",
-      "options": ["To introduce non-linearity into the network", "To prevent matrix multiplications", "To force all parameter weights to zero", "To eliminate the need for backpropagation"],
+      "options": [
+        {
+          "id": "easy-16-opt-1",
+          "text": "To introduce non-linearity into the network"
+        },
+        {
+          "id": "easy-16-opt-2",
+          "text": "To prevent matrix multiplications"
+        },
+        {
+          "id": "easy-16-opt-3",
+          "text": "To force all parameter weights to zero"
+        },
+        {
+          "id": "easy-16-opt-4",
+          "text": "To eliminate the need for backpropagation"
+        }
+      ],
+      "correctAnswerId": "easy-16-opt-1",
+      "closestAnswerId": "easy-16-opt-2",
       "correctAnswer": "To introduce non-linearity into the network",
       "closestAnswer": "To prevent matrix multiplications",
-      "aiHint": "Without non-linear activations like ReLU or Sigmoid, successive linear matrix layers collapse into a single affine transformation."
+      "aiHint": "Without non-linear activations like ReLU or Sigmoid, successive linear matrix layers collapse into a single affine transformation.",
+      "difficulty": "easy",
+      "category": "Core Computer Science"
     }
   ],
   "medium": [
     {
       "id": "medium-1",
       "question": "What mechanism in the JavaScript runtime is responsible for executing callbacks, handling async tasks, and draining microtask queues?",
-      "options": ["Event Loop", "V8 Just-In-Time Compiler", "Garbage Collector", "WebAssembly Sandbox"],
+      "options": [
+        {
+          "id": "medium-1-opt-1",
+          "text": "Event Loop"
+        },
+        {
+          "id": "medium-1-opt-2",
+          "text": "V8 Just-In-Time Compiler"
+        },
+        {
+          "id": "medium-1-opt-3",
+          "text": "Garbage Collector"
+        },
+        {
+          "id": "medium-1-opt-4",
+          "text": "WebAssembly Sandbox"
+        }
+      ],
+      "correctAnswerId": "medium-1-opt-1",
+      "closestAnswerId": "medium-1-opt-3",
       "correctAnswer": "Event Loop",
       "closestAnswer": "Garbage Collector",
-      "aiHint": "It continuously inspects the call stack and moves queued promises and timers into execution once the stack clears."
+      "aiHint": "It continuously inspects the call stack and moves queued promises and timers into execution once the stack clears.",
+      "difficulty": "medium",
+      "category": "Distributed Systems & Engineering"
     },
     {
       "id": "medium-2",
       "question": "In the CAP theorem for distributed systems, what does the 'P' stand for?",
-      "options": ["Partition Tolerance", "Persistence", "Parallelism", "Performance"],
+      "options": [
+        {
+          "id": "medium-2-opt-1",
+          "text": "Partition Tolerance"
+        },
+        {
+          "id": "medium-2-opt-2",
+          "text": "Persistence"
+        },
+        {
+          "id": "medium-2-opt-3",
+          "text": "Parallelism"
+        },
+        {
+          "id": "medium-2-opt-4",
+          "text": "Performance"
+        }
+      ],
+      "correctAnswerId": "medium-2-opt-1",
+      "closestAnswerId": "medium-2-opt-2",
       "correctAnswer": "Partition Tolerance",
       "closestAnswer": "Persistence",
-      "aiHint": "This property guarantees that the cluster continues to function despite network communications drops between arbitrary nodes."
+      "aiHint": "This property guarantees that the cluster continues to function despite network communications drops between arbitrary nodes.",
+      "difficulty": "medium",
+      "category": "Distributed Systems & Engineering"
     },
     {
       "id": "medium-3",
       "question": "Which cryptographic primitive generates a fixed-size deterministic digest from arbitrary-length input with one-way preimage resistance?",
-      "options": ["Cryptographic Hash Function", "Symmetric Cipher", "Asymmetric Key Pair", "Diffie-Hellman Exchange"],
+      "options": [
+        {
+          "id": "medium-3-opt-1",
+          "text": "Cryptographic Hash Function"
+        },
+        {
+          "id": "medium-3-opt-2",
+          "text": "Symmetric Cipher"
+        },
+        {
+          "id": "medium-3-opt-3",
+          "text": "Asymmetric Key Pair"
+        },
+        {
+          "id": "medium-3-opt-4",
+          "text": "Diffie-Hellman Exchange"
+        }
+      ],
+      "correctAnswerId": "medium-3-opt-1",
+      "closestAnswerId": "medium-3-opt-2",
       "correctAnswer": "Cryptographic Hash Function",
       "closestAnswer": "Symmetric Cipher",
-      "aiHint": "Examples include SHA-256 and BLAKE3; they transform data into a fixed avalanche digest and cannot be reversed mathematically."
+      "aiHint": "Examples include SHA-256 and BLAKE3; they transform data into a fixed avalanche digest and cannot be reversed mathematically.",
+      "difficulty": "medium",
+      "category": "Distributed Systems & Engineering"
     },
     {
       "id": "medium-4",
       "question": "In the Transformer neural network architecture (Vaswani et al.), which mechanism allows the model to dynamically weigh the importance of all input tokens simultaneously?",
-      "options": ["Scaled Dot-Product Multi-Head Attention", "Recurrent Hidden State Propagation", "Depthwise Convolutional Kernel", "Backpropagation Through Time"],
+      "options": [
+        {
+          "id": "medium-4-opt-1",
+          "text": "Scaled Dot-Product Multi-Head Attention"
+        },
+        {
+          "id": "medium-4-opt-2",
+          "text": "Recurrent Hidden State Propagation"
+        },
+        {
+          "id": "medium-4-opt-3",
+          "text": "Depthwise Convolutional Kernel"
+        },
+        {
+          "id": "medium-4-opt-4",
+          "text": "Backpropagation Through Time"
+        }
+      ],
+      "correctAnswerId": "medium-4-opt-1",
+      "closestAnswerId": "medium-4-opt-2",
       "correctAnswer": "Scaled Dot-Product Multi-Head Attention",
       "closestAnswer": "Recurrent Hidden State Propagation",
-      "aiHint": "This mechanism computes Query, Key, and Value vector products across multiple representation subspaces in parallel."
+      "aiHint": "This mechanism computes Query, Key, and Value vector products across multiple representation subspaces in parallel.",
+      "difficulty": "medium",
+      "category": "Distributed Systems & Engineering"
     },
     {
       "id": "medium-5",
       "question": "Which isolation level in ANSI SQL prevents dirty reads and non-repeatable reads, but may still permit phantom reads in standard implementations?",
-      "options": ["Repeatable Read", "Read Committed", "Serializable", "Read Uncommitted"],
+      "options": [
+        {
+          "id": "medium-5-opt-1",
+          "text": "Repeatable Read"
+        },
+        {
+          "id": "medium-5-opt-2",
+          "text": "Read Committed"
+        },
+        {
+          "id": "medium-5-opt-3",
+          "text": "Serializable"
+        },
+        {
+          "id": "medium-5-opt-4",
+          "text": "Read Uncommitted"
+        }
+      ],
+      "correctAnswerId": "medium-5-opt-1",
+      "closestAnswerId": "medium-5-opt-3",
       "correctAnswer": "Repeatable Read",
       "closestAnswer": "Serializable",
-      "aiHint": "It locks accessed rows so consecutive SELECTs see the exact same values, but doesn't lock index ranges against newly inserted tuples."
+      "aiHint": "It locks accessed rows so consecutive SELECTs see the exact same values, but doesn't lock index ranges against newly inserted tuples.",
+      "difficulty": "medium",
+      "category": "Distributed Systems & Engineering"
     },
     {
       "id": "medium-6",
       "question": "What is the primary architectural purpose of a Reverse Proxy (such as NGINX or Envoy) situated in front of backend microservices?",
-      "options": ["Load balancing, SSL termination, and centralized routing", "Direct compilation of client TypeScript code", "Persistent relational ACID transactions", "Generating client browser cryptographic cookies"],
+      "options": [
+        {
+          "id": "medium-6-opt-1",
+          "text": "Load balancing, SSL termination, and centralized routing"
+        },
+        {
+          "id": "medium-6-opt-2",
+          "text": "Direct compilation of client TypeScript code"
+        },
+        {
+          "id": "medium-6-opt-3",
+          "text": "Persistent relational ACID transactions"
+        },
+        {
+          "id": "medium-6-opt-4",
+          "text": "Generating client browser cryptographic cookies"
+        }
+      ],
+      "correctAnswerId": "medium-6-opt-1",
+      "closestAnswerId": "medium-6-opt-3",
       "correctAnswer": "Load balancing, SSL termination, and centralized routing",
       "closestAnswer": "Persistent relational ACID transactions",
-      "aiHint": "It shields backend servers by acting as the public gateway, managing ingress traffic, security headers, and workload distribution."
+      "aiHint": "It shields backend servers by acting as the public gateway, managing ingress traffic, security headers, and workload distribution.",
+      "difficulty": "medium",
+      "category": "Distributed Systems & Engineering"
     },
     {
       "id": "medium-7",
       "question": "In computer networking, what happens during the TCP Three-Way Handshake prior to data exchange?",
-      "options": ["SYN -> SYN-ACK -> ACK", "SYN -> ACK -> DATA", "HELLO -> VERIFY -> CONNECT", "ACK -> SYN-ACK -> FIN"],
+      "options": [
+        {
+          "id": "medium-7-opt-1",
+          "text": "SYN -> SYN-ACK -> ACK"
+        },
+        {
+          "id": "medium-7-opt-2",
+          "text": "SYN -> ACK -> DATA"
+        },
+        {
+          "id": "medium-7-opt-3",
+          "text": "HELLO -> VERIFY -> CONNECT"
+        },
+        {
+          "id": "medium-7-opt-4",
+          "text": "ACK -> SYN-ACK -> FIN"
+        }
+      ],
+      "correctAnswerId": "medium-7-opt-1",
+      "closestAnswerId": "medium-7-opt-2",
       "correctAnswer": "SYN -> SYN-ACK -> ACK",
       "closestAnswer": "SYN -> ACK -> DATA",
-      "aiHint": "The client synchronizes sequence numbers, the server acknowledges and synchronizes its own, and the client sends final acknowledgement."
+      "aiHint": "The client synchronizes sequence numbers, the server acknowledges and synchronizes its own, and the client sends final acknowledgement.",
+      "difficulty": "medium",
+      "category": "Distributed Systems & Engineering"
     },
     {
       "id": "medium-8",
       "question": "What problem does the Raft consensus algorithm solve in distributed state machines?",
-      "options": ["Electing a leader and maintaining an identical replicated log", "Compressing database backups across nodes", "Generating public-private key pairs for SSH", "Preventing memory leaks in C++ smart pointers"],
+      "options": [
+        {
+          "id": "medium-8-opt-1",
+          "text": "Electing a leader and maintaining an identical replicated log"
+        },
+        {
+          "id": "medium-8-opt-2",
+          "text": "Compressing database backups across nodes"
+        },
+        {
+          "id": "medium-8-opt-3",
+          "text": "Generating public-private key pairs for SSH"
+        },
+        {
+          "id": "medium-8-opt-4",
+          "text": "Preventing memory leaks in C++ smart pointers"
+        }
+      ],
+      "correctAnswerId": "medium-8-opt-1",
+      "closestAnswerId": "medium-8-opt-4",
       "correctAnswer": "Electing a leader and maintaining an identical replicated log",
       "closestAnswer": "Preventing memory leaks in C++ smart pointers",
-      "aiHint": "Designed as an understandable alternative to Multi-Paxos, it uses heartbeats, terms, and quorum voting to agree on state transitions."
+      "aiHint": "Designed as an understandable alternative to Multi-Paxos, it uses heartbeats, terms, and quorum voting to agree on state transitions.",
+      "difficulty": "medium",
+      "category": "Distributed Systems & Engineering"
     },
     {
       "id": "medium-9",
       "question": "What prevents a Web Worker from modifying the DOM directly in a browser environment?",
-      "options": ["Workers run in isolated background threads without window/document access", "DOM modifications require synchronous WebGL contexts", "The Same-Origin Policy forbids DOM manipulation", "Microtasks preempt all worker thread mutations"],
+      "options": [
+        {
+          "id": "medium-9-opt-1",
+          "text": "Workers run in isolated background threads without window/document access"
+        },
+        {
+          "id": "medium-9-opt-2",
+          "text": "DOM modifications require synchronous WebGL contexts"
+        },
+        {
+          "id": "medium-9-opt-3",
+          "text": "The Same-Origin Policy forbids DOM manipulation"
+        },
+        {
+          "id": "medium-9-opt-4",
+          "text": "Microtasks preempt all worker thread mutations"
+        }
+      ],
+      "correctAnswerId": "medium-9-opt-1",
+      "closestAnswerId": "medium-9-opt-3",
       "correctAnswer": "Workers run in isolated background threads without window/document access",
       "closestAnswer": "The Same-Origin Policy forbids DOM manipulation",
-      "aiHint": "Because DOM nodes are not thread-safe, JavaScript isolates UI tree mutation to the primary UI thread; workers communicate via postMessage."
+      "aiHint": "Because DOM nodes are not thread-safe, JavaScript isolates UI tree mutation to the primary UI thread; workers communicate via postMessage.",
+      "difficulty": "medium",
+      "category": "Distributed Systems & Engineering"
     },
     {
       "id": "medium-10",
       "question": "In Docker containerization, how do container layers behave when building an image from a Dockerfile?",
-      "options": ["Each instruction creates an immutable, cached read-only layer", "All commands overwrite a single mutable ext4 partition", "Layers are dynamically re-ordered at runtime for RAM optimization", "Every RUN instruction spawns a separate hypervisor kernel"],
+      "options": [
+        {
+          "id": "medium-10-opt-1",
+          "text": "Each instruction creates an immutable, cached read-only layer"
+        },
+        {
+          "id": "medium-10-opt-2",
+          "text": "All commands overwrite a single mutable ext4 partition"
+        },
+        {
+          "id": "medium-10-opt-3",
+          "text": "Layers are dynamically re-ordered at runtime for RAM optimization"
+        },
+        {
+          "id": "medium-10-opt-4",
+          "text": "Every RUN instruction spawns a separate hypervisor kernel"
+        }
+      ],
+      "correctAnswerId": "medium-10-opt-1",
+      "closestAnswerId": "medium-10-opt-2",
       "correctAnswer": "Each instruction creates an immutable, cached read-only layer",
       "closestAnswer": "All commands overwrite a single mutable ext4 partition",
-      "aiHint": "Union filesystems (like overlay2) stack immutable filesystem diffs on top of each other, caching steps that haven't changed."
+      "aiHint": "Union filesystems (like overlay2) stack immutable filesystem diffs on top of each other, caching steps that haven't changed.",
+      "difficulty": "medium",
+      "category": "Distributed Systems & Engineering"
     }
   ],
   "hard": [
     {
       "id": "hard-1",
       "question": "In LLM training and inference, what does FlashAttention mathematically achieve to achieve a 2-4x speedup over standard attention?",
-      "options": ["Tiled computation computing softmax in SRAM without materializing the N×N matrix in HBM", "Quantizing all weights into 2-bit ternary integers", "Pruning 70% of attention heads using low-rank decomposition", "Replacing transformer self-attention with state-space linear recurrences"],
+      "options": [
+        {
+          "id": "hard-1-opt-1",
+          "text": "Tiled computation computing softmax in SRAM without materializing the N×N matrix in HBM"
+        },
+        {
+          "id": "hard-1-opt-2",
+          "text": "Quantizing all weights into 2-bit ternary integers"
+        },
+        {
+          "id": "hard-1-opt-3",
+          "text": "Pruning 70% of attention heads using low-rank decomposition"
+        },
+        {
+          "id": "hard-1-opt-4",
+          "text": "Replacing transformer self-attention with state-space linear recurrences"
+        }
+      ],
+      "correctAnswerId": "hard-1-opt-1",
+      "closestAnswerId": "hard-1-opt-4",
       "correctAnswer": "Tiled computation computing softmax in SRAM without materializing the N×N matrix in HBM",
       "closestAnswer": "Replacing transformer self-attention with state-space linear recurrences",
-      "aiHint": "Standard attention is IO-bound due to repeatedly reading/writing the quadratic sequence matrix between GPU High Bandwidth Memory and fast on-chip SRAM."
+      "aiHint": "Standard attention is IO-bound due to repeatedly reading/writing the quadratic sequence matrix between GPU High Bandwidth Memory and fast on-chip SRAM.",
+      "difficulty": "hard",
+      "category": "Advanced Systems & AI Engineering"
     },
     {
       "id": "hard-2",
       "question": "What is the ABA problem in lock-free concurrent programming using Compare-And-Swap (CAS) primitives?",
-      "options": ["A memory location changes from A to B and back to A, misleading a thread into assuming no intermediate modification occurred", "Two threads deadlock by acquiring mutex locks in reverse alphabetical sequence", "Atomic registers overflow when incrementing beyond 64-bit integer limits", "Cache coherence protocols drop write-invalidations during NUMA bus congestion"],
+      "options": [
+        {
+          "id": "hard-2-opt-1",
+          "text": "A memory location changes from A to B and back to A, misleading a thread into assuming no intermediate modification occurred"
+        },
+        {
+          "id": "hard-2-opt-2",
+          "text": "Two threads deadlock by acquiring mutex locks in reverse alphabetical sequence"
+        },
+        {
+          "id": "hard-2-opt-3",
+          "text": "Atomic registers overflow when incrementing beyond 64-bit integer limits"
+        },
+        {
+          "id": "hard-2-opt-4",
+          "text": "Cache coherence protocols drop write-invalidations during NUMA bus congestion"
+        }
+      ],
+      "correctAnswerId": "hard-2-opt-1",
+      "closestAnswerId": "hard-2-opt-2",
       "correctAnswer": "A memory location changes from A to B and back to A, misleading a thread into assuming no intermediate modification occurred",
       "closestAnswer": "Two threads deadlock by acquiring mutex locks in reverse alphabetical sequence",
-      "aiHint": "CAS checks if value == expected. If another thread alters the pointer and then restores it, CAS succeeds even though structural state or nodes were freed."
+      "aiHint": "CAS checks if value == expected. If another thread alters the pointer and then restores it, CAS succeeds even though structural state or nodes were freed.",
+      "difficulty": "hard",
+      "category": "Advanced Systems & AI Engineering"
     },
     {
       "id": "hard-3",
       "question": "In modern CPUs, what hardware vulnerability class exploits speculative execution branch predictors to leak secret memory across process boundaries?",
-      "options": ["Spectre and Meltdown (transient execution side-channel attacks)", "Rowhammer DRAM bit-flipping attacks", "Buffer overflow return-oriented programming (ROP)", "DNS cache poisoning via birthday collisions"],
+      "options": [
+        {
+          "id": "hard-3-opt-1",
+          "text": "Spectre and Meltdown (transient execution side-channel attacks)"
+        },
+        {
+          "id": "hard-3-opt-2",
+          "text": "Rowhammer DRAM bit-flipping attacks"
+        },
+        {
+          "id": "hard-3-opt-3",
+          "text": "Buffer overflow return-oriented programming (ROP)"
+        },
+        {
+          "id": "hard-3-opt-4",
+          "text": "DNS cache poisoning via birthday collisions"
+        }
+      ],
+      "correctAnswerId": "hard-3-opt-1",
+      "closestAnswerId": "hard-3-opt-2",
       "correctAnswer": "Spectre and Meltdown (transient execution side-channel attacks)",
       "closestAnswer": "Rowhammer DRAM bit-flipping attacks",
-      "aiHint": "CPUs speculate ahead on conditional branches before security checks finish; even when discarded, microarchitectural cache footprints leak data via timing."
+      "aiHint": "CPUs speculate ahead on conditional branches before security checks finish; even when discarded, microarchitectural cache footprints leak data via timing.",
+      "difficulty": "hard",
+      "category": "Advanced Systems & AI Engineering"
     },
     {
       "id": "hard-4",
       "question": "In zero-knowledge proofs, what property defines a zk-SNARK where the proof verification time is logarithmic or constant relative to the witness statement size?",
-      "options": ["Succinctness", "Non-interactivity", "Zero-knowledge", "Soundness"],
+      "options": [
+        {
+          "id": "hard-4-opt-1",
+          "text": "Succinctness"
+        },
+        {
+          "id": "hard-4-opt-2",
+          "text": "Non-interactivity"
+        },
+        {
+          "id": "hard-4-opt-3",
+          "text": "Zero-knowledge"
+        },
+        {
+          "id": "hard-4-opt-4",
+          "text": "Soundness"
+        }
+      ],
+      "correctAnswerId": "hard-4-opt-1",
+      "closestAnswerId": "hard-4-opt-4",
       "correctAnswer": "Succinctness",
       "closestAnswer": "Soundness",
-      "aiHint": "The 'S' in SNARK denotes that proof size and verification work remain remarkably small regardless of how massive the computation circuit is."
+      "aiHint": "The 'S' in SNARK denotes that proof size and verification work remain remarkably small regardless of how massive the computation circuit is.",
+      "difficulty": "hard",
+      "category": "Advanced Systems & AI Engineering"
     },
     {
       "id": "hard-5",
       "question": "In the Linux kernel network stack, what technology enables running sandboxed bytecode directly within the kernel at hook points like XDP without recompiling kernel modules?",
-      "options": ["eBPF (extended Berkeley Packet Filter)", "KVM (Kernel-based Virtual Machine)", "cgroups v2", "AppArmor seccomp profiles"],
+      "options": [
+        {
+          "id": "hard-5-opt-1",
+          "text": "eBPF (extended Berkeley Packet Filter)"
+        },
+        {
+          "id": "hard-5-opt-2",
+          "text": "KVM (Kernel-based Virtual Machine)"
+        },
+        {
+          "id": "hard-5-opt-3",
+          "text": "cgroups v2"
+        },
+        {
+          "id": "hard-5-opt-4",
+          "text": "AppArmor seccomp profiles"
+        }
+      ],
+      "correctAnswerId": "hard-5-opt-1",
+      "closestAnswerId": "hard-5-opt-3",
       "correctAnswer": "eBPF (extended Berkeley Packet Filter)",
       "closestAnswer": "cgroups v2",
-      "aiHint": "A kernel in-situ verifier validates safety before executing tiny JIT-compiled bytecode programs attached to network drivers, tracepoints, or syscalls."
+      "aiHint": "A kernel in-situ verifier validates safety before executing tiny JIT-compiled bytecode programs attached to network drivers, tracepoints, or syscalls.",
+      "difficulty": "hard",
+      "category": "Advanced Systems & AI Engineering"
     },
     {
       "id": "hard-6",
       "question": "Why do Log-Structured Merge (LSM) trees offer substantially superior write throughput over B-Trees for heavy write workloads?",
-      "options": ["Writes are appended sequentially to an in-memory memtable and commit log before asynchronous batch compaction", "They eliminate disk storage by keeping all keys in distributed DRAM", "Every read-modify-write operation locks the entire tree root node", "They utilize hardware transactional memory (HTM) to bypass the OS page cache"],
+      "options": [
+        {
+          "id": "hard-6-opt-1",
+          "text": "Writes are appended sequentially to an in-memory memtable and commit log before asynchronous batch compaction"
+        },
+        {
+          "id": "hard-6-opt-2",
+          "text": "They eliminate disk storage by keeping all keys in distributed DRAM"
+        },
+        {
+          "id": "hard-6-opt-3",
+          "text": "Every read-modify-write operation locks the entire tree root node"
+        },
+        {
+          "id": "hard-6-opt-4",
+          "text": "They utilize hardware transactional memory (HTM) to bypass the OS page cache"
+        }
+      ],
+      "correctAnswerId": "hard-6-opt-1",
+      "closestAnswerId": "hard-6-opt-4",
       "correctAnswer": "Writes are appended sequentially to an in-memory memtable and commit log before asynchronous batch compaction",
       "closestAnswer": "They utilize hardware transactional memory (HTM) to bypass the OS page cache",
-      "aiHint": "LSM trees convert random disk IO into sequential writes by writing to a WAL and memtable, then flushing sorted runs (SSTables) to disk in background tiers."
+      "aiHint": "LSM trees convert random disk IO into sequential writes by writing to a WAL and memtable, then flushing sorted runs (SSTables) to disk in background tiers.",
+      "difficulty": "hard",
+      "category": "Advanced Systems & AI Engineering"
     },
     {
       "id": "hard-7",
       "question": "What is the Byzantine Generals Problem in asynchronous distributed computing with faulty or malicious nodes?",
-      "options": ["Achieving consensus when arbitrary nodes can fail arbitrarily, delay messages, or send conflicting malicious information", "Resolving merge conflicts in distributed version control systems", "Preventing hash collisions in Merkle directed acyclic graphs", "Scheduling processes across asymmetric multi-core ARM big.LITTLE architectures"],
+      "options": [
+        {
+          "id": "hard-7-opt-1",
+          "text": "Achieving consensus when arbitrary nodes can fail arbitrarily, delay messages, or send conflicting malicious information"
+        },
+        {
+          "id": "hard-7-opt-2",
+          "text": "Resolving merge conflicts in distributed version control systems"
+        },
+        {
+          "id": "hard-7-opt-3",
+          "text": "Preventing hash collisions in Merkle directed acyclic graphs"
+        },
+        {
+          "id": "hard-7-opt-4",
+          "text": "Scheduling processes across asymmetric multi-core ARM big.LITTLE architectures"
+        }
+      ],
+      "correctAnswerId": "hard-7-opt-1",
+      "closestAnswerId": "hard-7-opt-2",
       "correctAnswer": "Achieving consensus when arbitrary nodes can fail arbitrarily, delay messages, or send conflicting malicious information",
       "closestAnswer": "Resolving merge conflicts in distributed version control systems",
-      "aiHint": "To tolerate 'f' malicious traitors who forge or equivocate messages, classical BFT protocols require at least 3f + 1 total participating nodes."
+      "aiHint": "To tolerate 'f' malicious traitors who forge or equivocate messages, classical BFT protocols require at least 3f + 1 total participating nodes.",
+      "difficulty": "hard",
+      "category": "Advanced Systems & AI Engineering"
     },
     {
       "id": "hard-8",
       "question": "In reinforcement learning from human feedback (RLHF), what mathematical function is optimized in Direct Preference Optimization (DPO) to bypass training an explicit reward model?",
-      "options": ["An implicit reward formulation derived directly from the closed-form Bradley-Terry preference model and reference policy ratio", "A Monte Carlo Tree Search policy gradient with epsilon exploration", "A deep Q-learning Bellman expectation residual loss", "An adversarial discriminator cross-entropy loss function"],
+      "options": [
+        {
+          "id": "hard-8-opt-1",
+          "text": "An implicit reward formulation derived directly from the closed-form Bradley-Terry preference model and reference policy ratio"
+        },
+        {
+          "id": "hard-8-opt-2",
+          "text": "A Monte Carlo Tree Search policy gradient with epsilon exploration"
+        },
+        {
+          "id": "hard-8-opt-3",
+          "text": "A deep Q-learning Bellman expectation residual loss"
+        },
+        {
+          "id": "hard-8-opt-4",
+          "text": "An adversarial discriminator cross-entropy loss function"
+        }
+      ],
+      "correctAnswerId": "hard-8-opt-1",
+      "closestAnswerId": "hard-8-opt-3",
       "correctAnswer": "An implicit reward formulation derived directly from the closed-form Bradley-Terry preference model and reference policy ratio",
       "closestAnswer": "A deep Q-learning Bellman expectation residual loss",
-      "aiHint": "Rafailov et al. proved you can express the ground-truth reward analytically using the log-ratio of the policy and base model, turning RL into supervised binary cross-entropy."
+      "aiHint": "Rafailov et al. proved you can express the ground-truth reward analytically using the log-ratio of the policy and base model, turning RL into supervised binary cross-entropy.",
+      "difficulty": "hard",
+      "category": "Advanced Systems & AI Engineering"
     },
     {
       "id": "hard-9",
       "question": "What phenomenon occurs in cache hierarchies when multiple processor cores write to distinct variables located on the identical 64-byte cache line?",
-      "options": ["False Sharing", "Cache Miss Thrashing", "Memory Bank Conflict", "Spectre Speculation"],
+      "options": [
+        {
+          "id": "hard-9-opt-1",
+          "text": "False Sharing"
+        },
+        {
+          "id": "hard-9-opt-2",
+          "text": "Cache Miss Thrashing"
+        },
+        {
+          "id": "hard-9-opt-3",
+          "text": "Memory Bank Conflict"
+        },
+        {
+          "id": "hard-9-opt-4",
+          "text": "Spectre Speculation"
+        }
+      ],
+      "correctAnswerId": "hard-9-opt-1",
+      "closestAnswerId": "hard-9-opt-2",
       "correctAnswer": "False Sharing",
       "closestAnswer": "Cache Miss Thrashing",
-      "aiHint": "Even though the threads modify completely independent variables, the MESI cache coherence protocol repeatedly invalidates the entire cache line across CPU cores."
+      "aiHint": "Even though the threads modify completely independent variables, the MESI cache coherence protocol repeatedly invalidates the entire cache line across CPU cores.",
+      "difficulty": "hard",
+      "category": "Advanced Systems & AI Engineering"
     },
     {
       "id": "hard-10",
       "question": "In quantum computing, what algorithmic speedup does Grover's search algorithm provide over classical unstructured search algorithms?",
-      "options": ["Quadratic speedup (O(√N) versus classical O(N))", "Exponential speedup (O(log N) versus classical O(N))", "Super-polynomial speedup (O(N^(1/4)))", "Constant time search (O(1))"],
+      "options": [
+        {
+          "id": "hard-10-opt-1",
+          "text": "Quadratic speedup (O(√N) versus classical O(N))"
+        },
+        {
+          "id": "hard-10-opt-2",
+          "text": "Exponential speedup (O(log N) versus classical O(N))"
+        },
+        {
+          "id": "hard-10-opt-3",
+          "text": "Super-polynomial speedup (O(N^(1/4)))"
+        },
+        {
+          "id": "hard-10-opt-4",
+          "text": "Constant time search (O(1))"
+        }
+      ],
+      "correctAnswerId": "hard-10-opt-1",
+      "closestAnswerId": "hard-10-opt-2",
       "correctAnswer": "Quadratic speedup (O(√N) versus classical O(N))",
       "closestAnswer": "Exponential speedup (O(log N) versus classical O(N))",
-      "aiHint": "Using amplitude amplification, the quantum state rotates toward the target basis state in square-root time of the database size N."
+      "aiHint": "Using amplitude amplification, the quantum state rotates toward the target basis state in square-root time of the database size N.",
+      "difficulty": "hard",
+      "category": "Advanced Systems & AI Engineering"
     }
   ]
 }

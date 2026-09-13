@@ -22,7 +22,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenRules,
 }) => {
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-cyan-500/20 bg-slate-950/80 backdrop-blur-md">
+    <header className="sticky top-0 z-40 w-full border-b-2 border-[#423A20] bg-[#18160E]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         {/* Brand */}
         <button
@@ -38,18 +38,18 @@ export const Navbar: React.FC<NavbarProps> = ({
             src="/logo.png"
             alt="Spectrum 5.0"
             referrerPolicy="no-referrer"
-            className="h-10 w-auto object-contain drop-shadow-[0_0_12px_rgba(0,240,255,0.4)] transition-transform duration-300 group-hover:scale-105"
+            className="h-10 w-auto object-contain border border-[#423A20] p-1 bg-[#0D0C07] transition-transform duration-200 group-hover:scale-105"
           />
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-extrabold text-base sm:text-lg tracking-wider text-slate-100 uppercase font-mono">
-                SINGULARITY <span className="text-cyan-400">STRIKE</span>
+              <span className="font-extrabold text-base sm:text-lg tracking-wider text-[#FFF6D1] uppercase font-mono">
+                SINGULARITY <span className="text-[#FFD000]">STRIKE</span>
               </span>
-              <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-fuchsia-950/80 border border-fuchsia-500/40 text-fuchsia-300 font-semibold tracking-wider">
+              <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 bg-[#221E12] border border-[#FFD000] text-[#FFD000] font-bold tracking-wider">
                 SPECTRUM 5.0
               </span>
             </div>
-            <p className="text-[11px] text-slate-400 hidden sm:block tracking-wide font-mono">
+            <p className="text-[11px] text-[#A89F81] hidden sm:block tracking-wide font-mono">
               Round 1 Arena
             </p>
           </div>
@@ -57,21 +57,21 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Center: Live session status when in quiz */}
         {currentView === 'quiz' && (
-          <div className="hidden md:flex items-center gap-4 px-3.5 py-1.5 rounded-full bg-slate-900/90 border border-cyan-500/30 shadow-inner">
-            <div className="flex items-center gap-2 text-xs font-mono text-slate-300">
-              <User className="w-3.5 h-3.5 text-cyan-400" />
-              <span className="text-slate-100 font-semibold truncate max-w-[120px]">
+          <div className="hidden md:flex items-center gap-4 px-3.5 py-1.5 bg-[#221E12] border-2 border-[#423A20] shadow-[3px_3px_0px_#000000]">
+            <div className="flex items-center gap-2 text-xs font-mono text-[#FFF6D1]">
+              <User className="w-3.5 h-3.5 text-[#FFD000]" />
+              <span className="text-[#FFF6D1] font-bold truncate max-w-[120px]">
                 {participantName || 'Operative'}
               </span>
             </div>
-            <span className="w-1 h-1 rounded-full bg-slate-600" />
-            <div className="flex items-center gap-1.5 text-xs font-mono text-cyan-300">
+            <span className="w-1 h-1 bg-[#423A20]" />
+            <div className="flex items-center gap-1.5 text-xs font-mono text-[#FFD000]">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500" />
+                <span className="animate-ping absolute inline-flex h-full w-full bg-[#FFD000] opacity-75" />
+                <span className="relative inline-flex h-2 w-2 bg-[#FFD000]" />
               </span>
-              <span>TIME:</span>
-              <span className="font-bold text-cyan-300">{remainingTimeFormatted}</span>
+              <span className="text-[#A89F81]">TIME:</span>
+              <span className="font-bold text-[#FFE853]">{remainingTimeFormatted}</span>
             </div>
           </div>
         )}
@@ -84,7 +84,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               id="nav-rules-btn"
               onClick={onOpenRules}
               title="View Competition Rules"
-              className="p-2 rounded-lg text-slate-400 hover:text-cyan-300 hover:bg-slate-900 border border-transparent hover:border-cyan-500/30 transition-all cursor-pointer"
+              className="p-2 bg-[#221E12] text-[#FFF6D1] hover:text-[#0D0C07] hover:bg-[#FFD000] border-2 border-[#423A20] hover:border-[#FFD000] shadow-[2px_2px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all cursor-pointer"
             >
               <HelpCircle className="w-4 h-4" />
             </button>
@@ -95,12 +95,12 @@ export const Navbar: React.FC<NavbarProps> = ({
             id="nav-sound-btn"
             onClick={onToggleSound}
             title={soundEnabled ? 'Mute SFX' : 'Enable SFX'}
-            className="p-2 rounded-lg text-slate-400 hover:text-cyan-300 hover:bg-slate-900 border border-transparent hover:border-cyan-500/30 transition-all cursor-pointer"
+            className="p-2 bg-[#221E12] text-[#FFF6D1] hover:text-[#0D0C07] hover:bg-[#FFD000] border-2 border-[#423A20] hover:border-[#FFD000] shadow-[2px_2px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all cursor-pointer"
           >
             {soundEnabled ? (
-              <Volume2 className="w-4 h-4 text-cyan-400" />
+              <Volume2 className="w-4 h-4 text-[#FFD000]" />
             ) : (
-              <VolumeX className="w-4 h-4 text-slate-500" />
+              <VolumeX className="w-4 h-4 text-[#A89F81]" />
             )}
           </button>
         </div>

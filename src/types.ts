@@ -1,11 +1,18 @@
 export type Difficulty = 'easy' | 'medium' | 'hard';
 
+export interface QuestionOption {
+  id: string;
+  text: string;
+}
+
 export interface Question {
   id: string;
   question: string;
-  options: string[];
-  correctAnswer: string;
-  closestAnswer: string;
+  options: QuestionOption[];
+  correctAnswerId: string;
+  closestAnswerId?: string;
+  correctAnswer?: string;
+  closestAnswer?: string;
   aiHint: string;
   difficulty?: Difficulty;
   category?: string;
@@ -33,6 +40,7 @@ export interface Submission {
   totalAttempted: number;
   timeTakenSeconds: number;
   remainingSeconds?: number;
+  startedAt?: any;
   submittedAt: any;
   submissionStatus: SubmissionStatus;
   isDisqualified?: boolean;

@@ -47,7 +47,17 @@ if (typeof window !== 'undefined') {
 const LOCAL_STORAGE_SUBMISSIONS_KEY = 'singularity_submissions_fallback';
 
 /**
+ * Generate deterministic document ID per participant to enforce single-document lifecycle
+ */
+export function getSubmissionDocId(participantId: string): string {
+  const sanitized = (participantId || '').trim().toLowerCase().replace(/[^a-z0-9_-]/g, '_');
+  return sanitized || `sub_${Date.now()}`;
+}
+
+/**
  * Save quiz submission to Firestore 'submissions' collection
+ * Strictly enforces a single-document lifecycle using deterministic docId and setDoc with merge: true.
+ * Mutates the existing active session in-place instead of creating a second document.
  */
 export async function saveSubmission(
   submission: Omit<Submission, 'id' | 'submittedAt'>
@@ -58,38 +68,17 @@ export async function saveSubmission(
       submission.submissionStatus === 'disqualified' ||
       submission.isDisqualified === true;
 
-    const submissionsRef = collection(db, 'submissions');
-    let docRefId = '';
+    const cleanId = (submission.participantId || '').trim();
+    const docId = getSubmissionDocId(cleanId || submission.name);
+    const userDocRef = doc(db, 'submissions', docId);
 
-    // Check if an existing document for this participant exists (e.g. from active session registration)
-    if (submission.participantId && submission.participantId !== 'N/A') {
-      try {
-        const q = query(submissionsRef, where('participantId', '==', submission.participantId.trim()));
-        const existingDocs = await getDocs(q);
-        if (!existingDocs.empty) {
-          const firstDoc = existingDocs.docs[0];
-          docRefId = firstDoc.id;
-          await updateDoc(doc(db, 'submissions', docRefId), {
-            name: submission.name,
-            participantId: submission.participantId || 'N/A',
-            correctAnswers: submission.correctAnswers,
-            totalAttempted: submission.totalAttempted,
-            timeTakenSeconds: submission.timeTakenSeconds,
-            remainingSeconds: submission.remainingSeconds ?? 0,
-            submittedAt: serverTimestamp(),
-            submissionStatus: submission.submissionStatus,
-            isDisqualified: isDisq,
-          });
-        }
-      } catch (checkErr) {
-        console.warn('Notice checking existing participant document:', checkErr);
-      }
-    }
-
-    if (!docRefId) {
-      const docRef = await addDoc(submissionsRef, {
-        name: submission.name,
-        participantId: submission.participantId || 'N/A',
+    // Single-entry write: Upsert/mutate in-place with deterministic docId
+    // Preserves startedAt timestamp while recording final submittedAt and performance stats.
+    await setDoc(
+      userDocRef,
+      {
+        name: submission.name.trim(),
+        participantId: cleanId || 'N/A',
         correctAnswers: submission.correctAnswers,
         totalAttempted: submission.totalAttempted,
         timeTakenSeconds: submission.timeTakenSeconds,
@@ -97,23 +86,38 @@ export async function saveSubmission(
         submittedAt: serverTimestamp(),
         submissionStatus: submission.submissionStatus,
         isDisqualified: isDisq,
-      });
-      docRefId = docRef.id;
+      },
+      { merge: true }
+    );
+
+    // Clean up any legacy duplicate documents created with random IDs for this participant
+    if (cleanId && cleanId !== 'N/A') {
+      try {
+        const legacyQuery = query(collection(db, 'submissions'), where('participantId', '==', cleanId));
+        const legacySnaps = await getDocs(legacyQuery);
+        for (const snap of legacySnaps.docs) {
+          if (snap.id !== docId) {
+            await deleteDoc(snap.ref).catch(() => {});
+          }
+        }
+      } catch (cleanErr) {
+        console.warn('Legacy duplicate cleanup notice:', cleanErr);
+      }
     }
 
     // Also cache locally in case of offline/backup
     saveSubmissionToLocal({
       ...submission,
-      id: docRefId,
+      id: docId,
       isDisqualified: isDisq,
       submittedAt: new Date().toISOString(),
     });
 
-    return { success: true, id: docRefId };
+    return { success: true, id: docId };
   } catch (err: any) {
-    console.error('Firestore addDoc error, saving to local fallback:', err);
-    // Fallback save to localStorage
-    const localId = 'loc_' + Date.now();
+    console.error('Firestore saveSubmission error, saving to local fallback:', err);
+    const cleanId = (submission.participantId || '').trim();
+    const localId = getSubmissionDocId(cleanId || submission.name);
     const isDisq =
       submission.submissionStatus === 'tab_switched' ||
       submission.submissionStatus === 'disqualified' ||
@@ -134,8 +138,13 @@ function saveSubmissionToLocal(sub: Submission) {
   try {
     const raw = localStorage.getItem(LOCAL_STORAGE_SUBMISSIONS_KEY);
     const list: Submission[] = raw ? JSON.parse(raw) : [];
-    // Avoid duplicate IDs
-    const filtered = list.filter((item) => item.id !== sub.id);
+    const pId = sub.participantId?.trim().toLowerCase();
+    // Avoid duplicate IDs or duplicate participant IDs
+    const filtered = list.filter((item) => {
+      if (item.id === sub.id) return false;
+      if (pId && pId !== 'n/a' && item.participantId?.trim().toLowerCase() === pId) return false;
+      return true;
+    });
     filtered.push(sub);
     localStorage.setItem(LOCAL_STORAGE_SUBMISSIONS_KEY, JSON.stringify(filtered));
   } catch (e) {
@@ -167,24 +176,34 @@ export function subscribeToSubmissions(
     const unsubscribe = onSnapshot(
       q,
       (snapshot) => {
-        const results: Submission[] = [];
-        snapshot.forEach((doc) => {
-          const data = doc.data();
-          let submittedAt = data.submittedAt;
+        const participantMap = new Map<string, Submission>();
+        const unassignedSubs: Submission[] = [];
+
+        snapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+          let submittedAt = data.submittedAt || data.startedAt;
           if (submittedAt && typeof submittedAt.toDate === 'function') {
             submittedAt = submittedAt.toDate();
           } else if (submittedAt && submittedAt.seconds) {
             submittedAt = new Date(submittedAt.seconds * 1000);
           }
 
-          results.push({
-            id: doc.id,
+          let startedAt = data.startedAt;
+          if (startedAt && typeof startedAt.toDate === 'function') {
+            startedAt = startedAt.toDate();
+          } else if (startedAt && startedAt.seconds) {
+            startedAt = new Date(startedAt.seconds * 1000);
+          }
+
+          const sub: Submission = {
+            id: docSnap.id,
             name: data.name || 'Anonymous Operative',
             participantId: data.participantId || 'N/A',
             correctAnswers: Number(data.correctAnswers || 0),
             totalAttempted: Number(data.totalAttempted || 0),
             timeTakenSeconds: Number(data.timeTakenSeconds || 0),
             remainingSeconds: Number(data.remainingSeconds || 0),
+            startedAt: startedAt || null,
             submittedAt: submittedAt || new Date(),
             submissionStatus: data.submissionStatus || 'completed',
             isDisqualified:
@@ -192,14 +211,40 @@ export function subscribeToSubmissions(
               data.submissionStatus === 'tab_switched' ||
               data.submissionStatus === 'disqualified',
             reinstatedAt: data.reinstatedAt,
-          });
+            lastTimeGrantMinutes: data.lastTimeGrantMinutes,
+            lastTimeGrantAt: data.lastTimeGrantAt,
+          };
+
+          const pKey = (sub.participantId || '').trim().toLowerCase();
+          if (pKey && pKey !== 'n/a') {
+            const existing = participantMap.get(pKey);
+            if (!existing) {
+              participantMap.set(pKey, sub);
+            } else {
+              // Prioritize completed/finalized over active session
+              if (existing.submissionStatus === 'active' && sub.submissionStatus !== 'active') {
+                participantMap.set(pKey, sub);
+              } else if (
+                existing.submissionStatus === sub.submissionStatus &&
+                new Date(sub.submittedAt).getTime() > new Date(existing.submittedAt).getTime()
+              ) {
+                participantMap.set(pKey, sub);
+              }
+            }
+          } else {
+            unassignedSubs.push(sub);
+          }
         });
+
+        const results: Submission[] = [...Array.from(participantMap.values()), ...unassignedSubs];
 
         // Merge with any local offline submissions not in firestore
         const localSubs = getLocalFallbackSubmissions();
         const existingIds = new Set(results.map((r) => r.id));
+        const existingPids = new Set(results.map((r) => r.participantId?.trim().toLowerCase()).filter(Boolean));
         for (const local of localSubs) {
-          if (local.id && !existingIds.has(local.id)) {
+          const lPid = (local.participantId || '').trim().toLowerCase();
+          if (local.id && !existingIds.has(local.id) && (!lPid || !existingPids.has(lPid))) {
             results.push(local);
           }
         }
@@ -445,6 +490,9 @@ export async function deleteSubmission(
       try {
         const submissionsRef = collection(db, 'submissions');
         if (participantId && participantId !== 'N/A') {
+          try {
+            await deleteDoc(doc(db, 'submissions', getSubmissionDocId(participantId)));
+          } catch {}
           const qId = query(submissionsRef, where('participantId', '==', participantId.trim()));
           const snapsId = await getDocs(qId);
           for (const docSnap of snapsId.docs) {
@@ -558,7 +606,8 @@ export function subscribeToReinstatement(
 
 /**
  * Register active participant in Firestore as 'active' status
- * so the admin can monitor them in the leaderboard and grant extra time in real-time
+ * Strictly enforces single-document lifecycle using deterministic docId and setDoc with merge: true.
+ * Ensures the document is created once at session start and updated in-place upon submission.
  */
 export async function registerActiveParticipant(
   name: string,
@@ -566,36 +615,29 @@ export async function registerActiveParticipant(
   remainingSeconds: number
 ): Promise<{ success: boolean; id?: string }> {
   try {
-    const submissionsRef = collection(db, 'submissions');
-    const cleanId = participantId.trim();
-    const q = query(submissionsRef, where('participantId', '==', cleanId));
-    const snaps = await getDocs(q);
+    const cleanId = (participantId || '').trim();
+    if (!cleanId) return { success: false };
 
-    let docId = '';
-    if (!snaps.empty) {
-      docId = snaps.docs[0].id;
-      await updateDoc(doc(db, 'submissions', docId), {
-        name: name.trim(),
-        participantId: cleanId,
-        submissionStatus: 'active',
-        remainingSeconds,
-        isDisqualified: false,
-        startedAt: serverTimestamp(),
-      });
-    } else {
-      const newDoc = await addDoc(submissionsRef, {
+    const docId = getSubmissionDocId(cleanId);
+    const userDocRef = doc(db, 'submissions', docId);
+
+    // Single-entry write: Upsert in-place with deterministic docId
+    // Never calls addDoc(); sets startedAt and initializes active session.
+    await setDoc(
+      userDocRef,
+      {
         name: name.trim(),
         participantId: cleanId,
         correctAnswers: 0,
         totalAttempted: 0,
         timeTakenSeconds: 0,
         remainingSeconds,
-        submittedAt: serverTimestamp(),
+        startedAt: serverTimestamp(),
         submissionStatus: 'active',
         isDisqualified: false,
-      });
-      docId = newDoc.id;
-    }
+      },
+      { merge: true }
+    );
 
     // Also register in local storage fallback
     saveSubmissionToLocal({
@@ -606,6 +648,7 @@ export async function registerActiveParticipant(
       totalAttempted: 0,
       timeTakenSeconds: 0,
       remainingSeconds,
+      startedAt: new Date().toISOString(),
       submittedAt: new Date().toISOString(),
       submissionStatus: 'active',
       isDisqualified: false,

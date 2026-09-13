@@ -57,20 +57,20 @@ export const AskAiModal: React.FC<AskAiModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="relative w-full max-w-xl bg-slate-900 border border-cyan-500/40 rounded-2xl shadow-2xl overflow-hidden shadow-cyan-500/10">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0D0C07]/90 font-mono animate-in fade-in duration-150">
+      <div className="relative w-full max-w-xl bg-[#18160E] border-2 border-[#FFD000] shadow-[6px_6px_0px_#000000] overflow-hidden">
         {/* Terminal Header */}
-        <div className="flex items-center justify-between px-5 py-3.5 bg-slate-950/90 border-b border-cyan-500/30">
+        <div className="flex items-center justify-between px-5 py-3.5 bg-[#221E12] border-b-2 border-[#423A20]">
           <div className="flex items-center gap-2.5">
-            <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-cyan-500/20 border border-cyan-500/40 text-cyan-400">
+            <div className="flex items-center justify-center w-7 h-7 bg-[#FFD000] text-[#0D0C07] font-bold">
               <Bot className="w-4 h-4" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-mono text-xs font-bold uppercase tracking-wider text-slate-200">
+                <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#FFF6D1]">
                   TACTICAL AI CO-PILOT // TRANSMISSION
                 </span>
-                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-cyan-950 text-cyan-400 border border-cyan-500/30 uppercase">
+                <span className="text-[10px] font-mono px-1.5 py-0.5 bg-[#0D0C07] text-[#FFE853] border border-[#FFD000] uppercase font-bold">
                   Q#{questionIndex + 1}
                 </span>
               </div>
@@ -82,7 +82,7 @@ export const AskAiModal: React.FC<AskAiModalProps> = ({
               sounds.playSelect();
               onClose();
             }}
-            className="p-1 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition-colors"
+            className="p-1 text-[#A89F81] hover:text-[#0D0C07] hover:bg-[#FFD000] border border-transparent hover:border-[#FFD000] transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -90,27 +90,27 @@ export const AskAiModal: React.FC<AskAiModalProps> = ({
 
         {/* Content Body */}
         <div className="p-6 flex flex-col gap-4">
-          <div className="flex items-center gap-2 text-xs font-mono text-cyan-400">
+          <div className="flex items-center gap-2 text-xs font-mono text-[#FFD000]">
             <Terminal className="w-3.5 h-3.5" />
             <span>NEURAL REASONING COPROCESSOR STREAM</span>
             {isTyping && (
-              <span className="w-2 h-4 bg-cyan-400 animate-pulse ml-1 inline-block" />
+              <span className="w-2 h-4 bg-[#FFD000] animate-pulse ml-1 inline-block" />
             )}
           </div>
 
           <div
             onClick={isTyping ? handleSkipTyping : undefined}
-            className={`p-4 rounded-xl bg-slate-950/80 border border-cyan-500/20 text-slate-200 font-mono text-sm leading-relaxed min-h-[100px] select-text ${
-              isTyping ? 'cursor-pointer hover:border-cyan-400/50' : ''
+            className={`p-4 bg-[#0D0C07] border-2 border-[#423A20] text-[#FFF6D1] font-mono text-sm leading-relaxed min-h-[100px] select-text shadow-inner ${
+              isTyping ? 'cursor-pointer hover:border-[#FFD000]' : ''
             }`}
             title={isTyping ? 'Click to reveal immediately' : undefined}
           >
             {displayedText}
-            {isTyping && <span className="inline-block w-2 h-4 bg-cyan-400 ml-1 animate-pulse" />}
+            {isTyping && <span className="inline-block w-2 h-4 bg-[#FFD000] ml-1 animate-pulse" />}
           </div>
 
-          <div className="flex items-center gap-2 text-[11px] text-slate-400 font-mono">
-            <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+          <div className="flex items-center gap-2 text-[11px] text-[#A89F81] font-mono">
+            <ShieldCheck className="w-4 h-4 text-[#FFD000] shrink-0" />
             <span>
               Hint unlocked for Question #{questionIndex + 1}. You can re-open and view this transmission at any time without consuming extra lifelines.
             </span>
@@ -118,19 +118,19 @@ export const AskAiModal: React.FC<AskAiModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 bg-slate-950/60 border-t border-slate-800 flex items-center justify-between">
+        <div className="px-6 py-4 bg-[#221E12] border-t-2 border-[#423A20] flex items-center justify-between">
           {isTyping ? (
             <button
               type="button"
               id="skip-ai-typing-btn"
               onClick={handleSkipTyping}
-              className="text-[11px] font-mono text-cyan-400 hover:text-cyan-300 underline cursor-pointer"
+              className="text-[11px] font-mono text-[#FFD000] hover:text-[#FFE853] underline cursor-pointer"
             >
               Skip animation &amp; view full hint
             </button>
           ) : (
-            <div className="text-[11px] font-mono text-slate-500 flex items-center gap-1.5">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+            <div className="text-[11px] font-mono text-[#A89F81] flex items-center gap-1.5">
+              <CheckCircle2 className="w-3.5 h-3.5 text-[#FFD000]" />
               <span>Hint available in Question #{questionIndex + 1}</span>
             </div>
           )}
@@ -140,7 +140,7 @@ export const AskAiModal: React.FC<AskAiModalProps> = ({
               sounds.playSelect();
               onClose();
             }}
-            className="px-5 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 active:scale-95 text-slate-950 font-mono text-xs font-bold uppercase tracking-wider transition-all cursor-pointer shadow-md shadow-cyan-500/20"
+            className="px-5 py-2 rounded-none bg-[#FFD000] hover:bg-[#FFE853] active:translate-x-[1px] active:translate-y-[1px] text-[#0D0C07] font-mono text-xs font-bold uppercase tracking-wider transition-all cursor-pointer border-2 border-[#FFD000] shadow-[3px_3px_0px_#000000] active:shadow-none"
           >
             Close &amp; Return to Arena
           </button>
