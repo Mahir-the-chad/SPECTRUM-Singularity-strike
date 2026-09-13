@@ -79,6 +79,54 @@
       "correctAnswer": "chmod",
       "closestAnswer": "chown",
       "aiHint": "The command name stands for 'change mode' and lets you set read, write, and execute bits."
+    },
+    {
+      "id": "easy-11",
+      "question": "In machine learning, what term refers to a model learning noise and memorizing training data rather than generalizing to unseen data?",
+      "options": ["Overfitting", "Underfitting", "Regularization", "Quantization"],
+      "correctAnswer": "Overfitting",
+      "closestAnswer": "Underfitting",
+      "aiHint": "Characterized by near 100% training accuracy alongside poor performance on validation and test splits."
+    },
+    {
+      "id": "easy-12",
+      "question": "Which data structure utilizes hashing to achieve average-case O(1) key lookups and insertions?",
+      "options": ["Hash Table", "Binary Search Tree", "Singly Linked List", "Trie"],
+      "correctAnswer": "Hash Table",
+      "closestAnswer": "Binary Search Tree",
+      "aiHint": "It computes an index into an array of buckets from which the desired value can be found directly."
+    },
+    {
+      "id": "easy-13",
+      "question": "If proposition P is TRUE and proposition Q is FALSE, what is the truth value of the Boolean expression: (P AND NOT Q)?",
+      "options": ["TRUE", "FALSE", "Indeterminate", "Contradiction"],
+      "correctAnswer": "TRUE",
+      "closestAnswer": "FALSE",
+      "aiHint": "Since Q is FALSE, NOT Q becomes TRUE. Conjoining two TRUE statements results in TRUE."
+    },
+    {
+      "id": "easy-14",
+      "question": "In Python, which built-in function returns the total number of items in a list, string, or dictionary?",
+      "options": ["len()", "count()", "size()", "length()"],
+      "correctAnswer": "len()",
+      "closestAnswer": "count()",
+      "aiHint": "A 3-letter built-in function that invokes the object's __len__() dunder method."
+    },
+    {
+      "id": "easy-15",
+      "question": "In binary search executing on a sorted array of size n, what is the worst-case algorithmic time complexity?",
+      "options": ["O(log n)", "O(1)", "O(n)", "O(n log n)"],
+      "correctAnswer": "O(log n)",
+      "closestAnswer": "O(n)",
+      "aiHint": "Because the candidate search interval is divided in half after each iteration."
+    },
+    {
+      "id": "easy-16",
+      "question": "What is the primary mathematical purpose of an activation function in a deep neural network?",
+      "options": ["To introduce non-linearity into the network", "To prevent matrix multiplications", "To force all parameter weights to zero", "To eliminate the need for backpropagation"],
+      "correctAnswer": "To introduce non-linearity into the network",
+      "closestAnswer": "To prevent matrix multiplications",
+      "aiHint": "Without non-linear activations like ReLU or Sigmoid, successive linear matrix layers collapse into a single affine transformation."
     }
   ],
   "medium": [

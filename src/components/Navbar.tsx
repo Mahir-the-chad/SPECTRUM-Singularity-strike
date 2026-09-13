@@ -1,10 +1,10 @@
 import React from 'react';
-import { Zap, ShieldAlert, Trophy, Volume2, VolumeX, User, HelpCircle } from 'lucide-react';
+import { ShieldAlert, Trophy, Volume2, VolumeX, User, HelpCircle } from 'lucide-react';
 import { sounds } from '../lib/audio';
 
 interface NavbarProps {
-  currentView: 'entry' | 'quiz' | 'result' | 'admin';
-  onNavigate: (view: 'entry' | 'quiz' | 'result' | 'admin') => void;
+  currentView: 'landing' | 'register' | 'rules' | 'quiz' | 'result' | 'admin';
+  onNavigate: (view: 'landing' | 'register' | 'rules' | 'quiz' | 'result' | 'admin') => void;
   participantName?: string;
   remainingTimeFormatted?: string;
   soundEnabled: boolean;
@@ -29,26 +29,29 @@ export const Navbar: React.FC<NavbarProps> = ({
           id="nav-logo-btn"
           onClick={() => {
             if (currentView !== 'quiz') {
-              onNavigate('entry');
+              onNavigate('landing');
             }
           }}
-          className="flex items-center gap-3 group text-left transition-opacity hover:opacity-90"
+          className="flex items-center gap-3 group text-left transition-opacity hover:opacity-90 cursor-pointer"
         >
-          <div className="relative flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-500/20 via-cyan-500/10 to-transparent border border-cyan-500/40 shadow-inner group-hover:border-cyan-400">
-            <Zap className="w-5 h-5 text-cyan-400 animate-pulse" />
-            <div className="absolute inset-0 bg-cyan-400/10 rounded-lg blur-sm -z-10" />
-          </div>
+          <img
+            id="nav-brand-logo"
+            src="/logo.png"
+            alt="Spectrum 5.0"
+            referrerPolicy="no-referrer"
+            className="h-10 w-auto object-contain drop-shadow-[0_0_12px_rgba(0,240,255,0.4)] transition-transform duration-300 group-hover:scale-105"
+          />
           <div>
             <div className="flex items-center gap-2">
               <span className="font-extrabold text-base sm:text-lg tracking-wider text-slate-100 uppercase font-mono">
                 SINGULARITY <span className="text-cyan-400">STRIKE</span>
               </span>
-              <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-cyan-950/80 border border-cyan-500/30 text-cyan-300 font-semibold tracking-wider">
-                v2.6
+              <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-fuchsia-950/80 border border-fuchsia-500/40 text-fuchsia-300 font-semibold tracking-wider">
+                SPECTRUM 5.0
               </span>
             </div>
-            <p className="text-[11px] text-slate-400 hidden sm:block tracking-wide">
-              High-Stakes Technical Arena
+            <p className="text-[11px] text-slate-400 hidden sm:block tracking-wide font-mono">
+              Round 1 Arena
             </p>
           </div>
         </button>
@@ -82,7 +85,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               id="nav-rules-btn"
               onClick={onOpenRules}
               title="View Competition Rules"
-              className="p-2 rounded-lg text-slate-400 hover:text-cyan-300 hover:bg-slate-900 border border-transparent hover:border-cyan-500/30 transition-all"
+              className="p-2 rounded-lg text-slate-400 hover:text-cyan-300 hover:bg-slate-900 border border-transparent hover:border-cyan-500/30 transition-all cursor-pointer"
             >
               <HelpCircle className="w-4 h-4" />
             </button>
@@ -93,7 +96,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             id="nav-sound-btn"
             onClick={onToggleSound}
             title={soundEnabled ? 'Mute SFX' : 'Enable SFX'}
-            className="p-2 rounded-lg text-slate-400 hover:text-cyan-300 hover:bg-slate-900 border border-transparent hover:border-cyan-500/30 transition-all"
+            className="p-2 rounded-lg text-slate-400 hover:text-cyan-300 hover:bg-slate-900 border border-transparent hover:border-cyan-500/30 transition-all cursor-pointer"
           >
             {soundEnabled ? (
               <Volume2 className="w-4 h-4 text-cyan-400" />
@@ -107,12 +110,12 @@ export const Navbar: React.FC<NavbarProps> = ({
             id="nav-admin-btn"
             onClick={() => {
               if (currentView === 'admin') {
-                onNavigate('entry');
+                onNavigate('landing');
               } else {
                 onNavigate('admin');
               }
             }}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-medium border transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-medium border transition-all cursor-pointer ${
               currentView === 'admin'
                 ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/50 shadow-sm'
                 : 'bg-slate-900/90 text-slate-300 border-slate-800 hover:border-cyan-500/40 hover:text-cyan-200'

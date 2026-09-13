@@ -1,6 +1,6 @@
 {
-  "name": "Singularity Strike",
-  "description": "High-stakes tech trivia quiz application with 15-minute timer, lifelines, tab-switch anti-cheat detection, and live Firebase Firestore leaderboard.",
+  "name": "Singularity Strike - Round 1",
+  "description": "High-stakes tech challenge arena for Spectrum 5.0 with 20 curated questions, 15-minute countdown, strategic lifelines, tab-switch anti-cheat defense, and live Firebase Firestore leaderboard.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

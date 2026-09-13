@@ -12,15 +12,21 @@ import {
 import { saveSubmission, subscribeToReinstatement } from './lib/firebase';
 import { sounds } from './lib/audio';
 import { Navbar } from './components/Navbar';
-import { ParticipantEntry } from './components/ParticipantEntry';
+import { LandingPage } from './components/LandingPage';
+import { RegistrationPage } from './components/RegistrationPage';
+import { RulesPage } from './components/RulesPage';
 import { QuizArena } from './components/QuizArena';
 import { ResultScreen } from './components/ResultScreen';
 import { AdminPanel } from './components/AdminPanel';
 import { RulesModal } from './components/RulesModal';
 
 export default function App() {
-  const [currentView, setCurrentView] = useState<'entry' | 'quiz' | 'result' | 'admin'>('entry');
+  const [currentView, setCurrentView] = useState<
+    'landing' | 'register' | 'rules' | 'quiz' | 'result' | 'admin'
+  >('landing');
   const [session, setSession] = useState<QuizSessionState | null>(null);
+  const [pendingName, setPendingName] = useState<string>('');
+  const [pendingParticipantId, setPendingParticipantId] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [isRulesModalOpen, setIsRulesModalOpen] = useState(false);
@@ -40,22 +46,26 @@ export default function App() {
     return () => window.removeEventListener('popstate', handleUrlRoute);
   }, []);
 
-  const navigateTo = useCallback((view: 'entry' | 'quiz' | 'result' | 'admin') => {
-    setCurrentView(view);
-    if (view === 'admin') {
-      window.history.pushState(null, '', '/admin');
-    } else {
-      if (window.location.pathname === '/admin') {
-        window.history.pushState(null, '', '/');
+  const navigateTo = useCallback(
+    (view: 'landing' | 'register' | 'rules' | 'quiz' | 'result' | 'admin') => {
+      setCurrentView(view);
+      if (view === 'admin') {
+        window.history.pushState(null, '', '/admin');
+      } else {
+        if (window.location.pathname === '/admin') {
+          window.history.pushState(null, '', '/');
+        }
       }
-    }
-  }, []);
+    },
+    []
+  );
 
   // Check and restore persisted session on mount
   useEffect(() => {
     const saved = loadPersistedSession();
     if (saved) {
       setSession(saved);
+
       if (saved.isSubmitted) {
         if (window.location.pathname !== '/admin') {
           setCurrentView('result');
@@ -73,9 +83,39 @@ export default function App() {
     }
   }, []);
 
-  // Start new quiz session
-  const handleStartQuiz = (participantName: string) => {
-    const newSession = createNewSession(participantName);
+  // Flow Step 1: User clicks 'Register' on Landing Page -> go to Registration
+  const handleGoToRegister = () => {
+    setPendingName('');
+    setPendingParticipantId('');
+    navigateTo('register');
+  };
+
+  // Flow Step 2: User submits Registration form -> go to Rules Page
+  const handleCompleteRegistration = (name: string, participantId: string) => {
+    setPendingName(name);
+    setPendingParticipantId(participantId);
+
+    // If an existing unsubmitted session belongs to this same participant, allow immediate resume
+    if (
+      session &&
+      session.isStarted &&
+      !session.isSubmitted &&
+      (session.participantId.toLowerCase() === participantId.toLowerCase() ||
+        session.participantName.toLowerCase() === name.toLowerCase())
+    ) {
+      navigateTo('rules');
+      return;
+    }
+
+    navigateTo('rules');
+  };
+
+  // Flow Step 3: User checks required agreement box and clicks 'Initialize Strike Run'
+  // Strict 15-minute countdown clock starts ONLY here!
+  const handleInitializeStrikeRun = () => {
+    const activeName = pendingName.trim() || 'Operative';
+    const activeId = pendingParticipantId.trim() || 'OP-' + Math.floor(1000 + Math.random() * 9000);
+    const newSession = createNewSession(activeName, activeId);
     setSession(newSession);
     navigateTo('quiz');
   };
@@ -111,10 +151,13 @@ export default function App() {
 
   // Real-time synchronization: listen for admin revoking disqualification for this participant
   useEffect(() => {
-    if (!session || !session.participantName) return;
+    if (!session) return;
     if (!session.isSubmitted || session.submissionStatus !== 'tab_switched') return;
 
-    const unsubscribe = subscribeToReinstatement(session.participantName, () => {
+    const identifier = session.participantId || session.participantName;
+    if (!identifier) return;
+
+    const unsubscribe = subscribeToReinstatement(identifier, () => {
       sounds.playLifeline();
       setSession((prev) => {
         if (!prev) return prev;
@@ -127,7 +170,7 @@ export default function App() {
     });
 
     return () => unsubscribe();
-  }, [session?.participantName, session?.isSubmitted, session?.submissionStatus, navigateTo]);
+  }, [session?.participantId, session?.participantName, session?.isSubmitted, session?.submissionStatus, navigateTo]);
 
   // Multi-tab storage listener to resume strike if revoked in another window
   useEffect(() => {
@@ -154,7 +197,9 @@ export default function App() {
   const handleResetQuiz = () => {
     clearStoredSession();
     setSession(null);
-    navigateTo('entry');
+    setPendingName('');
+    setPendingParticipantId('');
+    navigateTo('landing');
   };
 
   // Finalize & Submit Quiz (Idempotent)
@@ -170,13 +215,14 @@ export default function App() {
     setIsSubmitting(true);
 
     try {
-      // Calculate final score
+      // Calculate final score with participantId included
       const submissionData = computeQuizScore(
         active.activeQuestions,
         active.selectedAnswers,
         active.remainingSeconds,
         active.totalDurationSeconds,
         active.participantName,
+        active.participantId,
         status
       );
 
@@ -199,47 +245,37 @@ export default function App() {
       setSession(updatedSession);
       saveSessionToStorage(updatedSession);
 
-      sounds.playLifeline();
+      // Play appropriate sound
+      if (status === 'completed') {
+        sounds.playSuccess();
+      } else if (status === 'tab_switched') {
+        sounds.playWarning();
+      } else {
+        sounds.playTimerTick();
+      }
+
       navigateTo('result');
     } catch (err) {
-      console.error('Submission finalization error:', err);
-      // Fallback update
-      const fallbackResult: Submission = {
-        name: active.participantName,
-        correctAnswers: 0,
-        totalAttempted: 0,
-        timeTakenSeconds: active.totalDurationSeconds - active.remainingSeconds,
-        submittedAt: new Date(),
-        submissionStatus: status,
-      };
-      setSession({
-        ...active,
-        isSubmitted: true,
-        submissionStatus: status,
-        submissionResult: fallbackResult,
-      });
-      navigateTo('result');
+      console.error('Finalize quiz submission error:', err);
     } finally {
       setIsSubmitting(false);
       isSubmittingRef.current = false;
     }
   };
 
-  // Toggle procedural sound FX
+  // Sound toggle
   const handleToggleSound = () => {
-    const next = !soundEnabled;
+    const next = sounds.toggleSound();
     setSoundEnabled(next);
-    sounds.enabled = next;
-    if (next) sounds.playSelect();
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-cyan-500/30 selection:text-cyan-200">
-      {/* Dynamic Navigation Header */}
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-cyan-500 selection:text-slate-950">
+      {/* Universal Tactical Navbar */}
       <Navbar
         currentView={currentView}
         onNavigate={navigateTo}
-        participantName={session?.participantName}
+        participantName={session?.participantName || pendingName}
         remainingTimeFormatted={session ? formatTimeMMSS(session.remainingSeconds) : '15:00'}
         soundEnabled={soundEnabled}
         onToggleSound={handleToggleSound}
@@ -248,16 +284,39 @@ export default function App() {
 
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col justify-start">
-        {currentView === 'entry' && (
-          <ParticipantEntry
-            onStartQuiz={handleStartQuiz}
+        {/* Step 1: Landing Page */}
+        {currentView === 'landing' && (
+          <LandingPage
+            onGoToRegister={handleGoToRegister}
             onResumeQuiz={handleResumeQuiz}
             hasActiveSession={Boolean(session && session.isStarted && !session.isSubmitted)}
             savedName={session?.participantName}
+            savedParticipantId={session?.participantId}
             savedRemainingSeconds={session?.remainingSeconds}
           />
         )}
 
+        {/* Step 2: Registration Page */}
+        {currentView === 'register' && (
+          <RegistrationPage
+            onCompleteRegistration={handleCompleteRegistration}
+            onBackToLanding={() => navigateTo('landing')}
+            initialName={pendingName || ''}
+            initialParticipantId={pendingParticipantId || ''}
+          />
+        )}
+
+        {/* Step 3: Rules Page with Timer Trigger & Required Agreement Checkbox */}
+        {currentView === 'rules' && (
+          <RulesPage
+            participantName={pendingName || session?.participantName || 'Operative'}
+            participantId={pendingParticipantId || session?.participantId || 'N/A'}
+            onInitializeStrikeRun={handleInitializeStrikeRun}
+            onBackToRegistration={() => navigateTo('register')}
+          />
+        )}
+
+        {/* Step 4: Live Quiz Arena (15-Minute Countdown) */}
         {currentView === 'quiz' && session && (
           <QuizArena
             session={session}
@@ -267,6 +326,7 @@ export default function App() {
           />
         )}
 
+        {/* Step 5: Result & Debrief Screen */}
         {currentView === 'result' && session && (
           <ResultScreen
             session={session}
@@ -276,9 +336,14 @@ export default function App() {
           />
         )}
 
+        {/* Step 6: Admin Panel & Leaderboard with Participant ID */}
         {currentView === 'admin' && (
           <AdminPanel
-            onBackToQuiz={() => navigateTo(session?.isSubmitted ? 'result' : (session?.isStarted ? 'quiz' : 'entry'))}
+            onBackToQuiz={() =>
+              navigateTo(
+                session?.isSubmitted ? 'result' : session?.isStarted ? 'quiz' : 'landing'
+              )
+            }
             onRevokeDisqualification={handleRevokeDisqualification}
           />
         )}
@@ -294,7 +359,7 @@ export default function App() {
       <footer className="w-full border-t border-slate-900 py-4 px-4 text-center text-xs font-mono text-slate-500">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
           <div>
-            SINGULARITY STRIKE &bull; DEFENSE TECH COMPETITION PROTOCOL
+            SINGULARITY STRIKE &bull; SPECTRUM 5.0 TECHNICAL ARENA
           </div>
           <div className="flex items-center gap-3 text-slate-600">
             <span>FIRESTORE BACKED</span>

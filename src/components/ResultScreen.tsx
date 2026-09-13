@@ -81,6 +81,12 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
         <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-100 font-mono">
           DEBRIEF: <span className="text-cyan-400">{session.participantName}</span>
         </h1>
+        {session.participantId && (
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-900 border border-slate-800 text-xs font-mono text-cyan-300">
+            <span className="text-slate-500">ID:</span>
+            <span className="font-bold">{session.participantId}</span>
+          </div>
+        )}
 
         <p className="text-sm text-slate-400 max-w-xl mx-auto">{statusConfig.desc}</p>
       </div>

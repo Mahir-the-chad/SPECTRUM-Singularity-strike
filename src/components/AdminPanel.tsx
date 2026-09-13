@@ -40,7 +40,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
   const [isLive, setIsLive] = useState(false);
   const [streamNotice, setStreamNotice] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'all' | SubmissionStatus>('all');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'completed' | 'time_expired' | 'disqualified' | 'reinstated'>('all');
   const [isSeeding, setIsSeeding] = useState(false);
   const [revokingName, setRevokingName] = useState<string | null>(null);
   const [revokeToast, setRevokeToast] = useState<{ name: string; message: string } | null>(null);
@@ -87,8 +87,26 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
   // Filtered submissions
   const filteredSubmissions = useMemo(() => {
     return sortedSubmissions.filter((sub) => {
-      const matchesSearch = sub.name.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesStatus = statusFilter === 'all' || sub.submissionStatus === statusFilter;
+      const q = searchQuery.toLowerCase();
+      const matchesSearch =
+        sub.name.toLowerCase().includes(q) ||
+        (sub.participantId && sub.participantId.toLowerCase().includes(q));
+
+      const isSubDisqualified =
+        (sub.submissionStatus === 'disqualified' ||
+          sub.submissionStatus === 'tab_switched' ||
+          sub.isDisqualified === true) &&
+        sub.submissionStatus !== 'reinstated';
+
+      let matchesStatus = false;
+      if (statusFilter === 'all') {
+        matchesStatus = true;
+      } else if (statusFilter === 'disqualified') {
+        matchesStatus = isSubDisqualified;
+      } else {
+        matchesStatus = sub.submissionStatus === statusFilter;
+      }
+
       return matchesSearch && matchesStatus;
     });
   }, [sortedSubmissions, searchQuery, statusFilter]);
@@ -100,7 +118,13 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
 
     const sumCorrect = sortedSubmissions.reduce((acc, curr) => acc + curr.correctAnswers, 0);
     const sumTime = sortedSubmissions.reduce((acc, curr) => acc + curr.timeTakenSeconds, 0);
-    const tabSwitchedCount = sortedSubmissions.filter((s) => s.submissionStatus === 'tab_switched').length;
+    const tabSwitchedCount = sortedSubmissions.filter(
+      (s) =>
+        (s.submissionStatus === 'disqualified' ||
+          s.submissionStatus === 'tab_switched' ||
+          s.isDisqualified === true) &&
+        s.submissionStatus !== 'reinstated'
+    ).length;
 
     return {
       total,
@@ -113,12 +137,13 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
   // Export CSV
   const handleExportCSV = () => {
     sounds.playSelect();
-    const headers = ['Rank,Participant Name,Correct Answers,Total Attempted,Time Taken (MM:SS),Time Taken (Seconds),Submission Status,Submitted At'];
+    const headers = ['Rank,Participant Name,Participant ID,Correct Answers,Total Attempted,Time Taken (MM:SS),Time Taken (Seconds),Submission Status,Submitted At'];
     const rows = sortedSubmissions.map((sub, index) => {
       const dateStr = sub.submittedAt instanceof Date ? sub.submittedAt.toISOString() : String(sub.submittedAt);
       return [
         index + 1,
         `"${sub.name.replace(/"/g, '""')}"`,
+        `"${(sub.participantId || '').replace(/"/g, '""')}"`,
         sub.correctAnswers,
         sub.totalAttempted,
         formatTimeMMSS(sub.timeTakenSeconds),
@@ -144,38 +169,43 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
     sounds.playSelect();
     const demoRecords: Array<Omit<Submission, 'id' | 'submittedAt'>> = [
       {
-        name: 'Elena Rostova (CyberSec Lab)',
-        correctAnswers: 15,
-        totalAttempted: 15,
-        timeTakenSeconds: 412,
+        name: 'Elena Rostova',
+        participantId: 'SPEC-501',
+        correctAnswers: 19,
+        totalAttempted: 20,
+        timeTakenSeconds: 512,
         submissionStatus: 'completed',
       },
       {
-        name: 'Kaelen Vance (ZeroDay Ops)',
+        name: 'Kaelen Vance',
+        participantId: 'SPEC-502',
+        correctAnswers: 18,
+        totalAttempted: 20,
+        timeTakenSeconds: 488,
+        submissionStatus: 'completed',
+      },
+      {
+        name: 'Alex Chen',
+        participantId: 'SPEC-503',
+        correctAnswers: 17,
+        totalAttempted: 20,
+        timeTakenSeconds: 620,
+        submissionStatus: 'completed',
+      },
+      {
+        name: 'Marcus Brody',
+        participantId: 'SPEC-504',
         correctAnswers: 14,
-        totalAttempted: 15,
-        timeTakenSeconds: 388,
-        submissionStatus: 'completed',
-      },
-      {
-        name: 'Alex Chen (Systems Eng)',
-        correctAnswers: 14,
-        totalAttempted: 14,
-        timeTakenSeconds: 520,
-        submissionStatus: 'completed',
-      },
-      {
-        name: 'Marcus Brody (HackerSpace)',
-        correctAnswers: 11,
-        totalAttempted: 15,
+        totalAttempted: 20,
         timeTakenSeconds: 900,
         submissionStatus: 'time_expired',
       },
       {
-        name: 'Devin Thorne (Suspicious Op)',
-        correctAnswers: 8,
-        totalAttempted: 10,
-        timeTakenSeconds: 245,
+        name: 'Devin Thorne',
+        participantId: 'SPEC-505',
+        correctAnswers: 10,
+        totalAttempted: 12,
+        timeTakenSeconds: 310,
         submissionStatus: 'tab_switched',
       },
     ];
@@ -186,14 +216,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
     setIsSeeding(false);
   };
 
-  // Revoke tab-switch disqualification & allow participant timer to resume
+  // Revoke tab-switch or policy disqualification & allow participant to re-enter or resume
   const handleRevokeDisqualification = async (sub: Submission) => {
     sounds.playSelect();
-    const identifier = sub.name;
+    const identifier = sub.participantId || sub.name;
     setRevokingName(identifier);
 
     try {
-      await revokeDisqualification(sub.id, sub.name);
+      await revokeDisqualification(sub.id, sub.name, sub.participantId);
       if (onRevokeDisqualification) {
         onRevokeDisqualification(sub.name);
       }
@@ -201,17 +231,18 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
       // Update current displayed list immediately
       setSubmissions((prev) =>
         prev.map((s) =>
-          (sub.id && s.id === sub.id) || s.name.toLowerCase() === sub.name.toLowerCase()
-            ? { ...s, submissionStatus: 'reinstated' as SubmissionStatus }
+          (sub.id && s.id === sub.id) ||
+          (sub.participantId && s.participantId === sub.participantId) ||
+          s.name.toLowerCase() === sub.name.toLowerCase()
+            ? { ...s, submissionStatus: 'reinstated' as SubmissionStatus, isDisqualified: false }
             : s
         )
       );
 
       sounds.playLifeline();
-      const bankedSeconds = sub.remainingSeconds ?? Math.max(0, 15 * 60 - sub.timeTakenSeconds);
       setRevokeToast({
         name: sub.name,
-        message: `Disqualification revoked for "${sub.name}". Timer restored to resume with ${formatTimeMMSS(bankedSeconds)} remaining.`,
+        message: `Disqualification revoked for "${sub.name}" (${sub.participantId || 'N/A'}). Status reset in Firestore: participant can now re-enter or resume.`,
       });
       setTimeout(() => setRevokeToast(null), 6000);
     } catch (err: any) {
@@ -406,7 +437,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
           <span className="text-xs font-mono text-slate-500 mr-1 flex items-center gap-1">
             <Filter className="w-3 h-3" /> Status:
           </span>
-          {(['all', 'completed', 'time_expired', 'tab_switched', 'reinstated'] as const).map((st) => (
+          {(['all', 'completed', 'time_expired', 'disqualified', 'reinstated'] as const).map((st) => (
             <button
               key={st}
               id={`filter-btn-${st}`}
@@ -420,7 +451,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
                   : 'bg-slate-950 text-slate-400 border border-slate-800 hover:text-slate-200'
               }`}
             >
-              {st === 'all' ? 'All' : st.replace('_', ' ')}
+              {st === 'all' ? 'All' : st === 'disqualified' ? 'Disqualified' : st.replace('_', ' ')}
             </button>
           ))}
         </div>
@@ -448,8 +479,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
           <table className="w-full text-left text-xs font-mono">
             <thead>
               <tr className="border-b border-slate-800 bg-slate-950/60 text-slate-400 font-bold uppercase tracking-wider">
-                <th className="py-4 px-4 sm:px-6 w-20">Rank</th>
+                <th className="py-4 px-4 sm:px-6 w-16">Rank</th>
                 <th className="py-4 px-4">Participant Name</th>
+                <th className="py-4 px-4">Participant ID</th>
                 <th className="py-4 px-4 text-center">Correct Answers</th>
                 <th className="py-4 px-4 text-center">Total Attempted</th>
                 <th className="py-4 px-4 text-center">Time Taken (MM:SS)</th>
@@ -460,7 +492,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
             <tbody className="divide-y divide-slate-800/60">
               {filteredSubmissions.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-12 text-center text-slate-500 font-mono">
+                  <td colSpan={8} className="py-12 text-center text-slate-500 font-mono">
                     <div className="flex flex-col items-center justify-center gap-2">
                       <Trophy className="w-8 h-8 text-slate-600" />
                       <span>No submissions recorded yet matching filter criteria.</span>
@@ -480,12 +512,22 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
                   const isSilver = rank === 2;
                   const isBronze = rank === 3;
 
+                  const isDisqualified =
+                    (sub.submissionStatus === 'disqualified' ||
+                      sub.submissionStatus === 'tab_switched' ||
+                      sub.isDisqualified === true) &&
+                    sub.submissionStatus !== 'reinstated';
+
                   const statusBadges = {
                     completed: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
                     time_expired: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
                     tab_switched: 'bg-rose-500/10 text-rose-400 border-rose-500/30',
+                    disqualified: 'bg-rose-500/10 text-rose-400 border-rose-500/30',
                     reinstated: 'bg-cyan-500/15 text-cyan-300 border-cyan-500/40',
-                  }[sub.submissionStatus] || 'bg-slate-800 text-slate-400 border-slate-700';
+                  }[sub.submissionStatus] ||
+                    (isDisqualified
+                      ? 'bg-rose-500/10 text-rose-400 border-rose-500/30'
+                      : 'bg-slate-800 text-slate-400 border-slate-700');
 
                   return (
                     <tr
@@ -523,17 +565,24 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
                         </div>
                       </td>
 
+                      {/* Participant ID */}
+                      <td className="py-4 px-4 font-mono text-xs">
+                        <span className="px-2.5 py-1 rounded-md bg-slate-950 border border-cyan-500/30 text-cyan-300 font-bold">
+                          {sub.participantId || 'N/A'}
+                        </span>
+                      </td>
+
                       {/* Correct Answers */}
                       <td className="py-4 px-4 text-center">
                         <span className="inline-block px-3 py-1 rounded-lg bg-slate-950 font-bold text-slate-100 text-sm border border-slate-800">
                           <span className="text-cyan-400">{sub.correctAnswers}</span>
-                          <span className="text-slate-500 text-xs"> / 15</span>
+                          <span className="text-slate-500 text-xs"> / 20</span>
                         </span>
                       </td>
 
                       {/* Total Attempted */}
                       <td className="py-4 px-4 text-center text-slate-300">
-                        {sub.totalAttempted} / 15
+                        {sub.totalAttempted} / 20
                       </td>
 
                       {/* Time Taken (MM:SS) */}
@@ -550,23 +599,29 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
                         >
                           {sub.submissionStatus === 'completed' && <CheckCircle2 className="w-3 h-3" />}
                           {sub.submissionStatus === 'time_expired' && <Clock className="w-3 h-3" />}
-                          {sub.submissionStatus === 'tab_switched' && <ShieldAlert className="w-3 h-3" />}
+                          {isDisqualified && <ShieldAlert className="w-3 h-3" />}
                           {sub.submissionStatus === 'reinstated' && <CheckCircle2 className="w-3 h-3" />}
-                          <span>{sub.submissionStatus.replace('_', ' ')}</span>
+                          <span>
+                            {sub.submissionStatus === 'tab_switched'
+                              ? 'Tab Switched'
+                              : isDisqualified
+                              ? 'Disqualified'
+                              : sub.submissionStatus.replace('_', ' ')}
+                          </span>
                         </span>
                       </td>
 
                       {/* Action */}
                       <td className="py-4 px-4 text-center">
-                        {sub.submissionStatus === 'tab_switched' ? (
+                        {isDisqualified ? (
                           <button
                             id={`revoke-btn-${sub.id || index}`}
                             onClick={() => handleRevokeDisqualification(sub)}
-                            disabled={revokingName === sub.name}
+                            disabled={revokingName === (sub.participantId || sub.name)}
                             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 active:scale-95 text-slate-950 font-mono font-bold text-[11px] uppercase tracking-wider transition-all shadow-md shadow-emerald-500/25 cursor-pointer disabled:opacity-50 whitespace-nowrap"
-                            title="Revoke disqualification & resume operative timer from where they left off"
+                            title="Revoke disqualification & reset status in Firestore"
                           >
-                            <RotateCcw className={`w-3.5 h-3.5 ${revokingName === sub.name ? 'animate-spin' : ''}`} />
+                            <RotateCcw className={`w-3.5 h-3.5 ${revokingName === (sub.participantId || sub.name) ? 'animate-spin' : ''}`} />
                             <span>Revoke Disqualification</span>
                           </button>
                         ) : sub.submissionStatus === 'reinstated' ? (

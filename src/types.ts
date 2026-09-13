@@ -8,6 +8,7 @@ export interface Question {
   closestAnswer: string;
   aiHint: string;
   difficulty?: Difficulty;
+  category?: string;
 }
 
 export interface QuestionBank {
@@ -22,22 +23,25 @@ export interface LifelinesState {
   askAi: boolean;
 }
 
-export type SubmissionStatus = 'completed' | 'time_expired' | 'tab_switched' | 'reinstated';
+export type SubmissionStatus = 'completed' | 'time_expired' | 'tab_switched' | 'disqualified' | 'reinstated';
 
 export interface Submission {
   id?: string;
   name: string;
+  participantId: string;
   correctAnswers: number;
   totalAttempted: number;
   timeTakenSeconds: number;
   remainingSeconds?: number;
   submittedAt: any;
   submissionStatus: SubmissionStatus;
+  isDisqualified?: boolean;
   reinstatedAt?: any;
 }
 
 export interface QuizSessionState {
   participantName: string;
+  participantId: string;
   activeQuestions: Question[];
   currentIndex: number;
   selectedAnswers: Record<string, string>; // questionId -> option

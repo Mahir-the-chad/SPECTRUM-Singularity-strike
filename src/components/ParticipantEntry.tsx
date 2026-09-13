@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Play, ShieldAlert, Zap, Clock, Sparkles, RefreshCw, AlertTriangle, ArrowRight } from 'lucide-react';
+import { Play, ShieldAlert, Clock, Sparkles, RefreshCw, AlertTriangle, ArrowRight } from 'lucide-react';
 import { sounds } from '../lib/audio';
 
 interface ParticipantEntryProps {
@@ -39,7 +39,12 @@ export const ParticipantEntry: React.FC<ParticipantEntryProps> = ({
       {/* Hero Header */}
       <div className="text-center flex flex-col items-center gap-3 h-auto overflow-visible">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-mono font-medium uppercase tracking-widest h-auto overflow-visible">
-          <Zap className="w-3.5 h-3.5 text-cyan-400" />
+          <img
+            src="/logo.png"
+            alt="Logo"
+            referrerPolicy="no-referrer"
+            className="h-3.5 w-auto object-contain"
+          />
           Tactical Tech Competition
         </div>
 

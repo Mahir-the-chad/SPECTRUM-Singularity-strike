@@ -10,7 +10,7 @@ import type {
 } from '../types';
 
 export const TOTAL_QUIZ_DURATION_SECONDS = 15 * 60; // 15 minutes = 900 seconds
-export const QUESTIONS_PER_DIFFICULTY = 5; // 5 easy, 5 medium, 5 hard = 15 questions total
+export const QUESTIONS_DISTRIBUTION = { easy: 12, medium: 6, hard: 2 }; // 20 questions total
 export const LOCAL_STORAGE_SESSION_KEY = 'singularity_strike_session_v1';
 
 const typedQuestionBank: QuestionBank = rawQuestionsData as QuestionBank;
@@ -26,7 +26,7 @@ export function shuffleArray<T>(array: T[]): T[] {
 }
 
 /**
- * Generate randomized questions while preserving category balance
+ * Generate randomized questions: 12 Easy, 6 Medium, 2 Hard (20 total)
  */
 export function generateBalancedQuestions(): Question[] {
   const easyShuffled = shuffleArray(
@@ -39,24 +39,26 @@ export function generateBalancedQuestions(): Question[] {
     (typedQuestionBank.hard || []).map((q) => ({ ...q, difficulty: 'hard' as Difficulty }))
   );
 
-  const selectedEasy = easyShuffled.slice(0, QUESTIONS_PER_DIFFICULTY);
-  const selectedMedium = mediumShuffled.slice(0, QUESTIONS_PER_DIFFICULTY);
-  const selectedHard = hardShuffled.slice(0, QUESTIONS_PER_DIFFICULTY);
+  const selectedEasy = easyShuffled.slice(0, QUESTIONS_DISTRIBUTION.easy);
+  const selectedMedium = mediumShuffled.slice(0, QUESTIONS_DISTRIBUTION.medium);
+  const selectedHard = hardShuffled.slice(0, QUESTIONS_DISTRIBUTION.hard);
 
-  // Combine in progressive tier or randomized order with difficulty tags
+  // Combine in progressive tier: 12 easy -> 6 medium -> 2 hard
   return [...selectedEasy, ...selectedMedium, ...selectedHard];
 }
 
 /**
- * Initialize a new session
+ * Initialize a new session with Participant Name and Participant ID
  */
-export function createNewSession(participantName: string): QuizSessionState {
+export function createNewSession(participantName: string, participantId: string = ''): QuizSessionState {
   const activeQuestions = generateBalancedQuestions();
   const now = Date.now();
   const targetEndTime = now + TOTAL_QUIZ_DURATION_SECONDS * 1000;
+  const finalId = participantId.trim() || 'OP-' + Math.floor(1000 + Math.random() * 9000);
 
   const initialState: QuizSessionState = {
     participantName: participantName.trim(),
+    participantId: finalId,
     activeQuestions,
     currentIndex: 0,
     selectedAnswers: {},
@@ -90,6 +92,9 @@ export function loadPersistedSession(): QuizSessionState | null {
 
     const state: QuizSessionState = JSON.parse(raw);
     if (!state.isStarted) return null;
+    if (!state.participantId) {
+      state.participantId = 'OP-' + Math.floor(1000 + Math.random() * 9000);
+    }
 
     // If already submitted, return the completed state
     if (state.isSubmitted) {
@@ -204,6 +209,7 @@ export function computeQuizScore(
   remainingSeconds: number,
   totalDurationSeconds: number,
   participantName: string,
+  participantId: string,
   submissionStatus: SubmissionStatus
 ): Omit<Submission, 'id' | 'submittedAt'> {
   let correctAnswers = 0;
@@ -226,6 +232,7 @@ export function computeQuizScore(
 
   return {
     name: participantName || 'Anonymous Operative',
+    participantId: participantId || 'N/A',
     correctAnswers,
     totalAttempted,
     timeTakenSeconds,
