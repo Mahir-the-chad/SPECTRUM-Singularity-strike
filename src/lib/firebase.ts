@@ -11,6 +11,7 @@ import {
   doc,
   updateDoc,
   setDoc,
+  deleteDoc,
 } from 'firebase/firestore';
 import { getAnalytics, isSupported } from 'firebase/analytics';
 import type { Submission, SubmissionStatus } from '../types';
@@ -416,6 +417,109 @@ export async function revokeDisqualification(
         : s
     );
     localStorage.setItem(LOCAL_STORAGE_SUBMISSIONS_KEY, JSON.stringify(updated));
+    return { success: true, error: err?.message };
+  }
+}
+
+/**
+ * Permanently delete a submission / participant user from Firestore and local storage
+ */
+export async function deleteSubmission(
+  submissionId?: string,
+  participantName?: string,
+  participantId?: string
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    // 1. Delete document by ID if provided and not purely a local fallback ID
+    if (submissionId && !submissionId.startsWith('loc_')) {
+      try {
+        const subDocRef = doc(db, 'submissions', submissionId);
+        await deleteDoc(subDocRef);
+      } catch (e) {
+        console.warn('Direct deleteDoc notice:', e);
+      }
+    }
+
+    // 2. Query and delete all matching submissions in Firestore by participantId or name
+    if (participantId || participantName) {
+      try {
+        const submissionsRef = collection(db, 'submissions');
+        if (participantId && participantId !== 'N/A') {
+          const qId = query(submissionsRef, where('participantId', '==', participantId.trim()));
+          const snapsId = await getDocs(qId);
+          for (const docSnap of snapsId.docs) {
+            await deleteDoc(docSnap.ref);
+          }
+        }
+        if (participantName) {
+          const qName = query(submissionsRef, where('name', '==', participantName.trim()));
+          const snapsName = await getDocs(qName);
+          for (const docSnap of snapsName.docs) {
+            await deleteDoc(docSnap.ref);
+          }
+        }
+      } catch (e) {
+        console.warn('Batch deletion query notice:', e);
+      }
+    }
+
+    // 3. Clean up any related records in 'reinstatements' and 'time_grants'
+    const keysToClean: string[] = [];
+    if (participantName) {
+      keysToClean.push(participantName.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '_'));
+    }
+    if (participantId && participantId !== 'N/A') {
+      keysToClean.push(participantId.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '_'));
+    }
+
+    for (const key of keysToClean) {
+      if (key) {
+        try {
+          await deleteDoc(doc(db, 'reinstatements', key));
+        } catch {}
+        try {
+          await deleteDoc(doc(db, 'time_grants', key));
+        } catch {}
+      }
+    }
+
+    // 4. Remove from local storage submissions cache
+    const localSubs = getLocalFallbackSubmissions();
+    const filtered = localSubs.filter((s) => {
+      if (submissionId && s.id === submissionId) return false;
+      if (participantId && participantId !== 'N/A' && s.participantId?.toLowerCase() === participantId.toLowerCase()) return false;
+      if (participantName && s.name.toLowerCase() === participantName.toLowerCase()) return false;
+      return true;
+    });
+    localStorage.setItem(LOCAL_STORAGE_SUBMISSIONS_KEY, JSON.stringify(filtered));
+
+    // 5. If this matches the current local user's active session, clear it from localStorage
+    const activeRaw = localStorage.getItem('singularity_strike_session_v1');
+    if (activeRaw) {
+      try {
+        const parsed = JSON.parse(activeRaw);
+        if (
+          parsed &&
+          ((participantId && participantId !== 'N/A' && parsed.participantId?.toLowerCase() === participantId.toLowerCase()) ||
+            (participantName && parsed.participantName?.toLowerCase() === participantName.toLowerCase()))
+        ) {
+          localStorage.removeItem('singularity_strike_session_v1');
+        }
+      } catch {}
+    }
+
+    return { success: true };
+  } catch (err: any) {
+    console.error('Error deleting submission from Firestore:', err);
+    // Local fallback deletion
+    const localSubs = getLocalFallbackSubmissions();
+    const filtered = localSubs.filter((s) => {
+      if (submissionId && s.id === submissionId) return false;
+      if (participantId && participantId !== 'N/A' && s.participantId?.toLowerCase() === participantId.toLowerCase()) return false;
+      if (participantName && s.name.toLowerCase() === participantName.toLowerCase()) return false;
+      return true;
+    });
+    localStorage.setItem(LOCAL_STORAGE_SUBMISSIONS_KEY, JSON.stringify(filtered));
     return { success: true, error: err?.message };
   }
 }

@@ -20,12 +20,20 @@ import {
   ExternalLink,
   RotateCcw,
   Plus,
+  Trash2,
 } from 'lucide-react';
 import type { Submission, SubmissionStatus } from '../types';
-import { subscribeToSubmissions, saveSubmission, revokeDisqualification, grantExtraTime } from '../lib/firebase';
+import {
+  subscribeToSubmissions,
+  saveSubmission,
+  revokeDisqualification,
+  grantExtraTime,
+  deleteSubmission,
+} from '../lib/firebase';
 import { formatTimeMMSS } from '../lib/quizEngine';
 import { sounds } from '../lib/audio';
 import { GrantTimeModal } from './GrantTimeModal';
+import { DeleteUserModal } from './DeleteUserModal';
 
 interface AdminPanelProps {
   onBackToQuiz: () => void;
@@ -51,6 +59,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
   const [timeGrantTarget, setTimeGrantTarget] = useState<Submission | null>(null);
   const [isGrantingTime, setIsGrantingTime] = useState(false);
   const [grantTimeToast, setGrantTimeToast] = useState<{ name: string; message: string } | null>(null);
+
+  // Delete user states
+  const [userToDelete, setUserToDelete] = useState<Submission | null>(null);
+  const [isDeletingUser, setIsDeletingUser] = useState(false);
+  const [deleteToast, setDeleteToast] = useState<{ name: string; message: string } | null>(null);
 
   // Authenticate Admin
   const handleLogin = (e: React.FormEvent) => {
@@ -320,6 +333,42 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
     }
   };
 
+  // Permanently delete participant user from Firestore & Leaderboard
+  const handleConfirmDeleteUser = async () => {
+    if (!userToDelete) return;
+
+    setIsDeletingUser(true);
+    sounds.playSelect();
+
+    const target = userToDelete;
+    try {
+      await deleteSubmission(target.id, target.name, target.participantId);
+
+      // Immediately remove from local state
+      setSubmissions((prev) =>
+        prev.filter((s) => {
+          if (target.id && s.id === target.id) return false;
+          if (target.participantId && target.participantId !== 'N/A' && s.participantId?.toLowerCase() === target.participantId.toLowerCase()) return false;
+          if (target.name && s.name.toLowerCase() === target.name.toLowerCase()) return false;
+          return true;
+        })
+      );
+
+      sounds.playWarning();
+      setDeleteToast({
+        name: target.name,
+        message: `Participant "${target.name}" (${target.participantId || 'N/A'}) was permanently deleted from Firestore and leaderboard.`,
+      });
+      setTimeout(() => setDeleteToast(null), 6000);
+      setUserToDelete(null);
+    } catch (err: any) {
+      console.error('Failed to delete participant:', err);
+      alert('Failed to delete participant: ' + err?.message);
+    } finally {
+      setIsDeletingUser(false);
+    }
+  };
+
   // Login View
   if (!isAuthenticated) {
     return (
@@ -557,6 +606,22 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
         </div>
       )}
 
+      {/* Delete User Alert Toast */}
+      {deleteToast && (
+        <div className="p-4 rounded-2xl bg-rose-500/15 border border-rose-500/40 text-rose-200 text-xs font-mono flex items-center justify-between gap-3 shadow-lg shadow-rose-500/10 animate-in fade-in">
+          <div className="flex items-center gap-2.5">
+            <Trash2 className="w-5 h-5 text-rose-400 shrink-0" />
+            <span className="font-semibold">{deleteToast.message}</span>
+          </div>
+          <button
+            onClick={() => setDeleteToast(null)}
+            className="text-rose-400 hover:text-rose-200 cursor-pointer font-bold px-2 py-1 rounded bg-rose-500/20 text-xs"
+          >
+            DISMISS
+          </button>
+        </div>
+      )}
+
       {/* Leaderboard Table */}
       <div className="bg-slate-900/80 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl">
         <div className="overflow-x-auto">
@@ -734,12 +799,19 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
                             </button>
                           )}
 
-                          {!isDisqualified &&
-                            sub.submissionStatus !== 'reinstated' &&
-                            sub.submissionStatus !== 'active' &&
-                            sub.submissionStatus !== 'time_expired' && (
-                              <span className="text-slate-600 text-xs font-mono">—</span>
-                            )}
+                          {/* Delete User action button */}
+                          <button
+                            id={`delete-user-btn-${sub.id || index}`}
+                            onClick={() => {
+                              sounds.playSelect();
+                              setUserToDelete(sub);
+                            }}
+                            className="inline-flex items-center gap-1 px-2 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 hover:border-rose-400 font-mono font-bold text-[11px] uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap shadow-sm shadow-rose-500/10 active:scale-95"
+                            title={`Permanently delete ${sub.name} from database`}
+                          >
+                            <Trash2 className="w-3.5 h-3.5 text-rose-400" />
+                            <span>Delete</span>
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -758,6 +830,15 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToQuiz, onRevokeDi
         participant={timeGrantTarget}
         onConfirmGrant={handleConfirmGrantTime}
         isGranting={isGrantingTime}
+      />
+
+      {/* Delete User Confirmation Modal */}
+      <DeleteUserModal
+        isOpen={!!userToDelete}
+        onClose={() => setUserToDelete(null)}
+        participant={userToDelete}
+        onConfirmDelete={handleConfirmDeleteUser}
+        isDeleting={isDeletingUser}
       />
     </div>
   );
