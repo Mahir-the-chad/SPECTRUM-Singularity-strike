@@ -266,7 +266,7 @@ export default function App() {
 
   return (
     <div
-      className={`min-h-screen bg-[#0D0C07] text-[#FFF6D1] flex flex-col font-mono selection:bg-[#FFD000] selection:text-[#0D0C07] ${
+      className={`min-h-screen bg-[#0D0C07] text-[#FFF6D1] flex flex-col font-mono selection:bg-[#FFD000] selection:text-[#0D0C07] overflow-x-hidden ${
         currentView === 'quiz' ? 'h-screen h-[100dvh] overflow-hidden' : ''
       }`}
     >
@@ -283,7 +283,7 @@ export default function App() {
 
       {/* Main Content Area with React Router */}
       <main
-        className={`flex-1 flex flex-col ${
+        className={`flex-1 flex flex-col w-full overflow-x-hidden ${
           currentView === 'quiz' ? 'h-[calc(100dvh-4rem)] overflow-hidden min-h-0' : 'justify-start'
         }`}
       >

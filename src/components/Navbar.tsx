@@ -31,21 +31,21 @@ export const Navbar: React.FC<NavbarProps> = ({
             sounds.playSelect();
             onNavigate('landing');
           }}
-          className="flex items-center gap-3 group text-left transition-opacity hover:opacity-90 cursor-pointer"
+          className="flex items-center gap-3 group text-left transition-opacity hover:opacity-90 cursor-pointer min-w-0 overflow-hidden"
         >
           <img
             id="nav-brand-logo"
             src="/logo.png"
             alt="Spectrum 5.0"
             referrerPolicy="no-referrer"
-            className="h-10 w-auto object-contain border border-[#423A20] p-1 bg-[#0D0C07] transition-transform duration-200 group-hover:scale-105"
+            className="h-10 w-auto max-w-[120px] object-contain border border-[#423A20] p-1 bg-[#0D0C07] transition-transform duration-200 group-hover:scale-105 shrink-0"
           />
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-extrabold text-base sm:text-lg tracking-wider text-[#FFF6D1] uppercase font-mono">
+          <div className="min-w-0 overflow-hidden">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="font-extrabold text-base sm:text-lg tracking-wider text-[#FFF6D1] uppercase font-mono truncate">
                 SINGULARITY <span className="text-[#FFD000]">STRIKE</span>
               </span>
-              <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 bg-[#221E12] border border-[#FFD000] text-[#FFD000] font-bold tracking-wider">
+              <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 bg-[#221E12] border border-[#FFD000] text-[#FFD000] font-bold tracking-wider shrink-0">
                 SPECTRUM 5.0
               </span>
             </div>

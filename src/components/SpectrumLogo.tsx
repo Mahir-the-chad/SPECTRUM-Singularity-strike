@@ -28,7 +28,7 @@ export const SpectrumLogo: React.FC<SpectrumLogoProps> = ({
           src="/logo.png"
           alt="Spectrum 5.0 Logo"
           referrerPolicy="no-referrer"
-          className={`${currentSizeClass} object-contain transition-transform duration-300 hover:scale-105`}
+          className={`${currentSizeClass} max-w-[160px] object-contain transition-transform duration-300 hover:scale-105`}
         />
       </div>
 
