@@ -637,37 +637,27 @@ export async function registerActiveParticipant(
     const docId = getSubmissionDocId(cleanId);
     const userDocRef = doc(db, 'submissions', docId);
 
-    // Read the existing document first so we never overwrite a finalized submission
-    // back to active+zeros (which was causing the leaderboard to stop updating).
+    // Read the existing document first.
+    // If it already exists (active or finalized), skip writing — we must never reset
+    // remainingSeconds or submissionStatus, especially after admin has granted time.
     const existingSnap = await getDoc(userDocRef);
-    const finalizedStatuses = new Set([
-      'completed', 'time_expired', 'tab_switched', 'disqualified', 'reinstated',
-    ]);
     if (existingSnap.exists()) {
-      const currentStatus = existingSnap.data()?.submissionStatus;
-      if (finalizedStatuses.has(currentStatus)) {
-        // Document already finalized — do not overwrite with active+zeros.
-        console.log(`[registerActiveParticipant] Skipping overwrite: doc ${docId} already finalized as '${currentStatus}'`);
-        return { success: true, id: docId };
-      }
+      // Doc exists (any status) — do not overwrite anything.
+      return { success: true, id: docId };
     }
 
-    // Document doesn't exist yet or is still active — safe to write/update.
-    await setDoc(
-      userDocRef,
-      {
-        name: name.trim(),
-        participantId: cleanId,
-        correctAnswers: 0,
-        totalAttempted: 0,
-        timeTakenSeconds: 0,
-        remainingSeconds,
-        startedAt: serverTimestamp(),
-        submissionStatus: 'active',
-        isDisqualified: false,
-      },
-      { merge: true }
-    );
+    // Document does not exist yet — create it fresh.
+    await setDoc(userDocRef, {
+      name: name.trim(),
+      participantId: cleanId,
+      correctAnswers: 0,
+      totalAttempted: 0,
+      timeTakenSeconds: 0,
+      remainingSeconds,
+      startedAt: serverTimestamp(),
+      submissionStatus: 'active',
+      isDisqualified: false,
+    });
 
     // Also register in local storage fallback
     saveSubmissionToLocal({
@@ -693,7 +683,8 @@ export async function registerActiveParticipant(
 
 /**
  * Grant extra time in minutes to a participant.
- * Dynamically updates Firestore time_grants collection and updates the submission document.
+ * Dynamically updates the participant's submission document in Firestore with deterministic docId,
+ * as well as the backup time_grants collection.
  */
 export async function grantExtraTime(
   participantId: string,
@@ -704,39 +695,54 @@ export async function grantExtraTime(
   if (addedSeconds <= 0) return { success: false, addedSeconds: 0, error: 'Invalid time amount' };
 
   try {
-    const sanitizedId = (participantId || participantName).trim().toLowerCase().replace(/[^a-z0-9_-]/g, '_');
-    const grantId = `${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+    const cleanId = (participantId || participantName).trim();
+    const docId = getSubmissionDocId(cleanId);
+    const sanitizedId = cleanId.toLowerCase().replace(/[^a-z0-9_-]/g, '_');
+    const grantId = `grant_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
 
-    // 1. Write to time_grants collection for real-time notification
-    const grantRef = doc(db, 'time_grants', sanitizedId);
-    await setDoc(grantRef, {
-      participantId: participantId.trim(),
-      participantName: participantName.trim(),
-      addedMinutes: additionalMinutes,
-      addedSeconds,
-      grantId,
-      grantedAt: serverTimestamp(),
-      active: true,
-    });
+    // 1. Primary write: Update participant's document directly in 'submissions' collection
+    const userDocRef = doc(db, 'submissions', docId);
+    const existingSnap = await getDoc(userDocRef);
+    let currentRemaining = 0;
+    let isTimeExpired = false;
 
-    // 2. Also update in submissions collection for this participant
+    if (existingSnap.exists()) {
+      const data = existingSnap.data();
+      currentRemaining = Number(data?.remainingSeconds || 0);
+      isTimeExpired = data?.submissionStatus === 'time_expired';
+    }
+
+    const newRemaining = currentRemaining + addedSeconds;
+
+    await setDoc(
+      userDocRef,
+      {
+        participantId: cleanId,
+        name: (participantName || '').trim(),
+        remainingSeconds: newRemaining,
+        lastTimeGrantMinutes: additionalMinutes,
+        lastTimeGrantSeconds: addedSeconds,
+        lastTimeGrantId: grantId,
+        lastTimeGrantAt: serverTimestamp(),
+        ...(isTimeExpired ? { submissionStatus: 'reinstated' } : {}),
+      },
+      { merge: true }
+    );
+
+    // 2. Backup write to time_grants collection
     try {
-      const q = query(collection(db, 'submissions'), where('participantId', '==', participantId.trim()));
-      const snaps = await getDocs(q);
-      for (const d of snaps.docs) {
-        const currentData = d.data();
-        const currentRemaining = Number(currentData.remainingSeconds || 0);
-        const newRemaining = currentRemaining + addedSeconds;
-        await updateDoc(doc(db, 'submissions', d.id), {
-          remainingSeconds: newRemaining,
-          lastTimeGrantMinutes: additionalMinutes,
-          lastTimeGrantAt: serverTimestamp(),
-          // If status was time_expired, update to reinstated or active
-          ...(currentData.submissionStatus === 'time_expired' ? { submissionStatus: 'reinstated' } : {}),
-        });
-      }
-    } catch (e) {
-      console.warn('Error updating submission remainingSeconds:', e);
+      const grantRef = doc(db, 'time_grants', sanitizedId);
+      await setDoc(grantRef, {
+        participantId: cleanId,
+        participantName: (participantName || '').trim(),
+        addedMinutes: additionalMinutes,
+        addedSeconds,
+        grantId,
+        grantedAt: serverTimestamp(),
+        active: true,
+      });
+    } catch (gErr) {
+      console.warn('time_grants backup write notice:', gErr);
     }
 
     // 3. Update localStorage session if running on this device / browser tab
@@ -746,7 +752,7 @@ export async function grantExtraTime(
         const parsed = JSON.parse(activeRaw);
         if (
           parsed &&
-          ((participantId && parsed.participantId?.toLowerCase() === participantId.toLowerCase()) ||
+          ((cleanId && parsed.participantId?.toLowerCase() === cleanId.toLowerCase()) ||
             (participantName && parsed.participantName?.toLowerCase() === participantName.toLowerCase()))
         ) {
           parsed.remainingSeconds = (parsed.remainingSeconds || 0) + addedSeconds;
@@ -770,44 +776,89 @@ export async function grantExtraTime(
 
 /**
  * Subscribe to time grant notifications for a specific participant
+ * Listens directly to the participant's deterministic document in 'submissions' collection
+ * (which is guaranteed to have Firestore read permissions).
  */
 export function subscribeToTimeGrants(
   identifier: string,
   onTimeGranted: (addedSeconds: number, grantId: string, addedMinutes: number) => void
 ): () => void {
-  const sanitized = identifier.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '_');
-  if (!sanitized) return () => {};
+  const cleanId = (identifier || '').trim();
+  if (!cleanId) return () => {};
+
+  const docId = getSubmissionDocId(cleanId);
+  const sanitized = cleanId.toLowerCase().replace(/[^a-z0-9_-]/g, '_');
 
   try {
-    const grantRef = doc(db, 'time_grants', sanitized);
-    let initialSnapshotSkipped = false;
+    const subRef = doc(db, 'submissions', docId);
     let initialDocGrantId: string | null = null;
+    let initialSnapshotSkipped = false;
 
-    const unsubscribe = onSnapshot(
+    // Listen to primary submissions document
+    const unsubSub = onSnapshot(
+      subRef,
+      (docSnap) => {
+        if (!docSnap.exists()) return;
+        const data = docSnap.data();
+        if (!data) return;
+
+        const grantId = data.lastTimeGrantId;
+        if (!initialSnapshotSkipped) {
+          initialSnapshotSkipped = true;
+          initialDocGrantId = grantId || null;
+          return;
+        }
+
+        if (grantId && grantId !== initialDocGrantId) {
+          initialDocGrantId = grantId;
+          const addedSec = Number(
+            data.lastTimeGrantSeconds || (data.lastTimeGrantMinutes ? data.lastTimeGrantMinutes * 60 : 0)
+          );
+          const addedMin = Number(data.lastTimeGrantMinutes || Math.round(addedSec / 60));
+          if (addedSec > 0) {
+            onTimeGranted(addedSec, grantId, addedMin);
+          }
+        }
+      },
+      (err) => {
+        console.warn('Submissions time grant listener notice:', err);
+      }
+    );
+
+    // Also listen to time_grants collection as fallback
+    const grantRef = doc(db, 'time_grants', sanitized);
+    let initialGrantDocId: string | null = null;
+    let initialGrantSkipped = false;
+
+    const unsubGrant = onSnapshot(
       grantRef,
       (docSnap) => {
         if (!docSnap.exists()) return;
         const data = docSnap.data();
         if (!data || !data.active || !data.grantId) return;
 
-        // Skip any existing grant on initial snapshot so we only fire on newly issued grants
-        if (!initialSnapshotSkipped) {
-          initialSnapshotSkipped = true;
-          initialDocGrantId = data.grantId;
+        if (!initialGrantSkipped) {
+          initialGrantSkipped = true;
+          initialGrantDocId = data.grantId;
           return;
         }
 
-        if (data.grantId !== initialDocGrantId) {
-          initialDocGrantId = data.grantId;
+        if (data.grantId !== initialGrantDocId) {
+          initialGrantDocId = data.grantId;
           onTimeGranted(data.addedSeconds || 0, data.grantId, data.addedMinutes || 0);
         }
       },
       (err) => {
-        console.warn('Time grant listener notice:', err);
+        console.warn('Time grant backup listener notice:', err);
       }
     );
-    return unsubscribe;
-  } catch {
+
+    return () => {
+      unsubSub();
+      unsubGrant();
+    };
+  } catch (err) {
+    console.warn('subscribeToTimeGrants setup error:', err);
     return () => {};
   }
 }

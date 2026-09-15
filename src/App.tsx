@@ -40,6 +40,16 @@ export default function App() {
   const [isRulesModalOpen, setIsRulesModalOpen] = useState(false);
   const [isLeaderboardModalOpen, setIsLeaderboardModalOpen] = useState(false);
 
+  // Stable session updater — must NOT be an inline arrow so QuizArena's useEffect
+  // dependency on onUpdateSession doesn't re-fire every second (timer tick re-render).
+  const handleUpdateSession = useCallback(
+    (updater: (prev: QuizSessionState) => QuizSessionState) => {
+      setSession((prev) => (prev ? updater(prev) : prev));
+    },
+    [] // setSession is stable; no deps needed
+  );
+
+
   // Compute active high-level view based on current route
   const getCurrentView = (): 'landing' | 'register' | 'rules' | 'quiz' | 'result' | 'admin' => {
     const path = location.pathname.toLowerCase().replace(/\/$/, '') || '/';
@@ -336,7 +346,7 @@ export default function App() {
               session && session.isStarted && !session.isSubmitted ? (
                 <QuizArena
                   session={session}
-                  onUpdateSession={(updater) => setSession((prev) => (prev ? updater(prev) : prev))}
+                  onUpdateSession={handleUpdateSession}
                   onSubmitQuiz={(status) => handleFinalizeSubmit(status)}
                   isSubmitting={isSubmitting}
                 />
