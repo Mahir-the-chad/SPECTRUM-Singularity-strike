@@ -8,6 +8,7 @@ import {
   query,
   where,
   getDocs,
+  getDoc,
   doc,
   updateDoc,
   setDoc,
@@ -221,14 +222,28 @@ export function subscribeToSubmissions(
             if (!existing) {
               participantMap.set(pKey, sub);
             } else {
-              // Prioritize completed/finalized over active session
-              if (existing.submissionStatus === 'active' && sub.submissionStatus !== 'active') {
+              // Status priority: any finalized status beats 'active'.
+              // Among two finalized or two active docs, keep the most recently updated one.
+              const finalizedStatuses = new Set([
+                'completed', 'time_expired', 'tab_switched', 'disqualified', 'reinstated',
+              ]);
+              const existingIsFinalized = finalizedStatuses.has(existing.submissionStatus);
+              const subIsFinalized = finalizedStatuses.has(sub.submissionStatus);
+
+              if (!existingIsFinalized && subIsFinalized) {
+                // Replace active with any finalized status
                 participantMap.set(pKey, sub);
-              } else if (
-                existing.submissionStatus === sub.submissionStatus &&
-                new Date(sub.submittedAt).getTime() > new Date(existing.submittedAt).getTime()
-              ) {
-                participantMap.set(pKey, sub);
+              } else if (existingIsFinalized && !subIsFinalized) {
+                // Keep existing finalized; discard new active doc
+              } else {
+                // Both same tier (both active or both finalized) → most recently updated wins
+                const existingTime = existing.submittedAt
+                  ? new Date(existing.submittedAt).getTime()
+                  : 0;
+                const subTime = sub.submittedAt ? new Date(sub.submittedAt).getTime() : 0;
+                if (subTime > existingTime) {
+                  participantMap.set(pKey, sub);
+                }
               }
             }
           } else {
@@ -605,9 +620,10 @@ export function subscribeToReinstatement(
 }
 
 /**
- * Register active participant in Firestore as 'active' status
- * Strictly enforces single-document lifecycle using deterministic docId and setDoc with merge: true.
- * Ensures the document is created once at session start and updated in-place upon submission.
+ * Register active participant in Firestore as 'active' status.
+ * Guards against overwriting a finalized submission (completed / time_expired /
+ * tab_switched / disqualified / reinstated) back to active+zeros — which was
+ * the root cause of the live leaderboard not updating.
  */
 export async function registerActiveParticipant(
   name: string,
@@ -621,8 +637,22 @@ export async function registerActiveParticipant(
     const docId = getSubmissionDocId(cleanId);
     const userDocRef = doc(db, 'submissions', docId);
 
-    // Single-entry write: Upsert in-place with deterministic docId
-    // Never calls addDoc(); sets startedAt and initializes active session.
+    // Read the existing document first so we never overwrite a finalized submission
+    // back to active+zeros (which was causing the leaderboard to stop updating).
+    const existingSnap = await getDoc(userDocRef);
+    const finalizedStatuses = new Set([
+      'completed', 'time_expired', 'tab_switched', 'disqualified', 'reinstated',
+    ]);
+    if (existingSnap.exists()) {
+      const currentStatus = existingSnap.data()?.submissionStatus;
+      if (finalizedStatuses.has(currentStatus)) {
+        // Document already finalized — do not overwrite with active+zeros.
+        console.log(`[registerActiveParticipant] Skipping overwrite: doc ${docId} already finalized as '${currentStatus}'`);
+        return { success: true, id: docId };
+      }
+    }
+
+    // Document doesn't exist yet or is still active — safe to write/update.
     await setDoc(
       userDocRef,
       {
