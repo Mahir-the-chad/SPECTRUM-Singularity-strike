@@ -1,34 +1,22 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
-  Trophy,
   CheckCircle2,
-  XCircle,
   Clock,
   ShieldAlert,
-  AlertTriangle,
-  ExternalLink,
-  ChevronDown,
-  ChevronUp,
-  Award,
-  Sparkles,
-  Zap,
 } from 'lucide-react';
 import type { QuizSessionState } from '../types';
 import { formatTimeMMSS } from '../lib/quizEngine';
-import { sounds } from '../lib/audio';
 
 interface ResultScreenProps {
   session: QuizSessionState;
-  onViewLeaderboard: () => void;
+  onViewLeaderboard?: () => void;
   onResetQuiz?: () => void;
   onResumeQuiz?: () => void;
 }
 
 export const ResultScreen: React.FC<ResultScreenProps> = ({
   session,
-  onViewLeaderboard,
 }) => {
-  const [showDetailedReview, setShowDetailedReview] = useState(false);
   const result = session.submissionResult;
 
   const totalQuestions = session.activeQuestions.length;
@@ -161,127 +149,6 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
           </div>
         </div>
       )}
-
-      {/* Navigation Actions */}
-      <div className="flex items-center justify-center pt-2">
-        <button
-          id="view-leaderboard-btn"
-          onClick={() => {
-            sounds.playSelect();
-            onViewLeaderboard();
-          }}
-          className="w-full sm:w-auto px-8 py-3.5 rounded-none bg-[#FFD000] hover:bg-[#FFE853] text-[#0D0C07] font-mono text-sm font-extrabold uppercase tracking-wider transition-all flex items-center justify-center gap-2 border-2 border-[#FFD000] shadow-[4px_4px_0px_#000000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
-        >
-          <Trophy className="w-4 h-4" />
-          <span>Inspect Global Leaderboard</span>
-        </button>
-      </div>
-
-      {/* Detailed Question Review Toggle */}
-      <div className="border-t-2 border-[#423A20] pt-8">
-        <button
-          id="toggle-review-btn"
-          onClick={() => {
-            sounds.playSelect();
-            setShowDetailedReview(!showDetailedReview);
-          }}
-          className="w-full p-4 rounded-none bg-[#18160E] hover:bg-[#221E12] border-2 border-[#423A20] flex items-center justify-between text-xs font-mono text-[#FFF6D1] uppercase tracking-wider transition-colors cursor-pointer shadow-[3px_3px_0px_#000000]"
-        >
-          <div className="flex items-center gap-2 font-bold text-[#FFD000]">
-            <Zap className="w-4 h-4 text-[#FFD000]" />
-            <span>Comprehensive Question Review ({totalQuestions} Questions)</span>
-          </div>
-          {showDetailedReview ? <ChevronUp className="w-4 h-4 text-[#FFD000]" /> : <ChevronDown className="w-4 h-4 text-[#FFD000]" />}
-        </button>
-
-        {showDetailedReview && (
-          <div className="mt-4 flex flex-col gap-4">
-            {session.activeQuestions.map((q, idx) => {
-              const selected = session.selectedAnswers[q.id];
-              const selectedOption = q.options.find((o) => o.id === selected || o.text === selected);
-              const selectedText = selectedOption ? selectedOption.text : selected;
-
-              const isCorrect =
-                selected === q.correctAnswerId ||
-                selected === q.correctAnswer ||
-                (selectedText && selectedText === q.correctAnswer);
-              const isUnanswered = !selected;
-
-              const correctOption = q.options.find((o) => o.id === q.correctAnswerId);
-              const correctText = correctOption?.text || q.correctAnswer;
-
-              return (
-                <div
-                  key={q.id}
-                  className={`p-5 rounded-none border-2 transition-all shadow-[3px_3px_0px_#000000] ${
-                    isCorrect
-                      ? 'bg-[#18160E] border-[#FFD000]'
-                      : isUnanswered
-                      ? 'bg-[#18160E] border-[#423A20]'
-                      : 'bg-[#221E12] border-[#E59500]'
-                  }`}
-                >
-                  <div className="flex items-center justify-between gap-2 mb-2 text-xs font-mono">
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-[#FFD000]">Q#{idx + 1}</span>
-                      <span className="text-[10px] uppercase font-bold px-2 py-0.5 bg-[#0D0C07] border border-[#423A20] text-[#A89F81]">
-                        {q.difficulty}
-                      </span>
-                    </div>
-
-                    <div className="font-bold flex items-center gap-1.5">
-                      {isCorrect ? (
-                        <span className="text-[#FFD000] flex items-center gap-1 font-bold">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-[#FFD000]" /> Correct (+1)
-                        </span>
-                      ) : isUnanswered ? (
-                        <span className="text-[#A89F81]">Unanswered</span>
-                      ) : (
-                        <span className="text-[#E59500] flex items-center gap-1 font-bold">
-                          <XCircle className="w-3.5 h-3.5 text-[#E59500]" /> Incorrect
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  <h3 className="text-sm sm:text-base font-bold text-[#FFF6D1] mb-3">
-                    {q.question}
-                  </h3>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-mono mb-3">
-                    <div className="p-2.5 bg-[#0D0C07] border border-[#423A20]">
-                      <span className="text-[#A89F81] block mb-0.5">Your Response:</span>
-                      <span
-                        className={`font-bold ${
-                          isCorrect
-                            ? 'text-[#FFD000]'
-                            : isUnanswered
-                            ? 'text-[#A89F81] italic'
-                            : 'text-[#E59500]'
-                        }`}
-                      >
-                        {selectedText || 'No response recorded'}
-                      </span>
-                    </div>
-
-                    <div className="p-2.5 bg-[#0D0C07] border border-[#423A20]">
-                      <span className="text-[#A89F81] block mb-0.5">Verified Correct Answer:</span>
-                      <span className="text-[#FFE853] font-bold">{correctText}</span>
-                    </div>
-                  </div>
-
-                  {q.aiHint && (
-                    <div className="text-[11px] text-[#FFF6D1] bg-[#0D0C07] p-2.5 border border-[#423A20] font-mono">
-                      <span className="text-[#FFD000] font-bold">AI Conceptual Core: </span>
-                      {q.aiHint}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
     </div>
   );
 };

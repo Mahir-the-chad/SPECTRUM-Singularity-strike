@@ -376,6 +376,7 @@ export const QuizArena: React.FC<QuizArenaProps> = ({
   const answeredCount = Object.keys(session.selectedAnswers).length;
   const totalQuestions = session.activeQuestions.length;
   const isTimeCritical = session.remainingSeconds < 120; // less than 2 minutes
+  const isLastQuestion = session.currentIndex === totalQuestions - 1;
 
   const difficultyColor = {
     easy: 'text-[#FFE853] bg-[#221E12] border-[#423A20]',
@@ -690,19 +691,33 @@ export const QuizArena: React.FC<QuizArenaProps> = ({
               <span>{isCurrentFlagged ? 'Flagged' : 'Flag'}</span>
             </button>
 
-            {/* Next Question Button */}
-            <button
-              id="next-question-btn"
-              onClick={() => goToQuestion(session.currentIndex + 1)}
-              disabled={session.currentIndex === totalQuestions - 1}
-              className="px-3 sm:px-4 py-1.5 rounded-none bg-[#221E12] hover:bg-[#FFD000] hover:text-[#0D0C07] disabled:opacity-30 disabled:cursor-not-allowed text-xs font-mono font-bold text-[#FFF6D1] transition-all flex items-center justify-center gap-1 border-2 border-[#423A20] hover:border-[#FFD000] shadow-[2px_2px_0px_#000000] cursor-pointer"
-            >
-              <span>Next</span>
-              <ChevronRight className="w-3.5 h-3.5" />
-            </button>
+            {/* Next Question Button (Q1-19) replaced by Submit Button on final Question (Q20) */}
+            {!isLastQuestion ? (
+              <button
+                id="next-question-btn"
+                onClick={() => goToQuestion(session.currentIndex + 1)}
+                className="px-3 sm:px-4 py-1.5 rounded-none bg-[#221E12] hover:bg-[#FFD000] hover:text-[#0D0C07] text-xs font-mono font-bold text-[#FFF6D1] transition-all flex items-center justify-center gap-1 border-2 border-[#423A20] hover:border-[#FFD000] shadow-[2px_2px_0px_#000000] cursor-pointer"
+              >
+                <span>NEXT</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            ) : (
+              <button
+                id="finalize-submit-btn"
+                onClick={() => {
+                  sounds.playSelect();
+                  setIsSubmitModalOpen(true);
+                }}
+                disabled={isSubmitting}
+                className="px-3 sm:px-5 py-1.5 rounded-none bg-[#FFD000] hover:bg-[#FFE853] text-[#0D0C07] font-mono text-xs font-extrabold uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 border-2 border-[#FFD000] shadow-[3px_3px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none cursor-pointer shrink-0"
+              >
+                <Send className="w-3.5 h-3.5" />
+                <span>SUBMIT</span>
+              </button>
+            )}
           </div>
 
-          {/* Center: Mission Progress Matrix (Question Jump Buttons 1-15) */}
+          {/* Center: Mission Progress Matrix (Question Jump Buttons 1-20) */}
           <div className="flex items-center gap-1 overflow-x-auto max-w-full py-0.5 px-1">
             {session.activeQuestions.map((q, idx) => {
               const isAnswered = Boolean(session.selectedAnswers[q.id]);
@@ -731,20 +746,6 @@ export const QuizArena: React.FC<QuizArenaProps> = ({
               );
             })}
           </div>
-
-          {/* Final Submit & Lock Score Button */}
-          <button
-            id="finalize-submit-btn"
-            onClick={() => {
-              sounds.playSelect();
-              setIsSubmitModalOpen(true);
-            }}
-            disabled={isSubmitting}
-            className="w-full sm:w-auto px-4 sm:px-5 py-1.5 rounded-none bg-[#FFD000] hover:bg-[#FFE853] text-[#0D0C07] font-mono text-xs font-extrabold uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 border-2 border-[#FFD000] shadow-[3px_3px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none cursor-pointer shrink-0"
-          >
-            <Send className="w-3 h-3" />
-            <span>Submit Run</span>
-          </button>
         </div>
       </div>
 

@@ -18,13 +18,13 @@ import { getAnalytics, isSupported } from 'firebase/analytics';
 import type { Submission, SubmissionStatus } from '../types';
 
 export const firebaseConfig = {
-  apiKey: "AIzaSyD4_WcMBPG6MnbwVYUiQ7kP5r69a3nUaHM",
-  authDomain: "singularitystrike.firebaseapp.com",
-  projectId: "singularitystrike",
-  storageBucket: "singularitystrike.firebasestorage.app",
-  messagingSenderId: "917307738316",
-  appId: "1:917307738316:web:04c592076ab8ffb8971a69",
-  measurementId: "G-K2X2KMW2EB"
+  apiKey: (typeof import.meta !== 'undefined' && import.meta.env?.VITE_FIREBASE_API_KEY) || "AIzaSyD4_WcMBPG6MnbwVYUiQ7kP5r69a3nUaHM",
+  authDomain: (typeof import.meta !== 'undefined' && import.meta.env?.VITE_FIREBASE_AUTH_DOMAIN) || "singularitystrike.firebaseapp.com",
+  projectId: (typeof import.meta !== 'undefined' && import.meta.env?.VITE_FIREBASE_PROJECT_ID) || "singularitystrike",
+  storageBucket: (typeof import.meta !== 'undefined' && import.meta.env?.VITE_FIREBASE_STORAGE_BUCKET) || "singularitystrike.firebasestorage.app",
+  messagingSenderId: (typeof import.meta !== 'undefined' && import.meta.env?.VITE_FIREBASE_MESSAGING_SENDER_ID) || "917307738316",
+  appId: (typeof import.meta !== 'undefined' && import.meta.env?.VITE_FIREBASE_APP_ID) || "1:917307738316:web:04c592076ab8ffb8971a69",
+  measurementId: (typeof import.meta !== 'undefined' && import.meta.env?.VITE_FIREBASE_MEASUREMENT_ID) || "G-K2X2KMW2EB"
 };
 
 // Initialize or reuse Firebase app
