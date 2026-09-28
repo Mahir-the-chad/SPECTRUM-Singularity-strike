@@ -2,1051 +2,1457 @@
   "easy": [
     {
       "id": "easy-1",
-      "question": "Which time complexity represents constant time execution regardless of input size in Big-O notation?",
+      "question": "Explain the main difference between a stack and a queue.",
       "options": [
         {
           "id": "easy-1-opt-1",
-          "text": "O(1)"
+          "text": "Both follow FIFO"
         },
         {
           "id": "easy-1-opt-2",
-          "text": "O(n)"
+          "text": "Stack uses FIFO, queue uses LIFO"
         },
         {
           "id": "easy-1-opt-3",
-          "text": "O(log n)"
+          "text": "Stack uses LIFO, queue uses FIFO"
         },
         {
           "id": "easy-1-opt-4",
-          "text": "O(n²)"
+          "text": "Both follow LIFO"
         }
       ],
-      "correctAnswerId": "easy-1-opt-1",
-      "closestAnswerId": "easy-1-opt-3",
-      "correctAnswer": "O(1)",
-      "closestAnswer": "O(log n)",
-      "aiHint": "Consider operations that take the exact same amount of processor cycles whether handling 1 element or 1 billion elements, like accessing an array element by index.",
+      "correctAnswerId": "easy-1-opt-3",
+      "closestAnswerId": "easy-1-opt-2",
+      "correctAnswer": "Stack uses LIFO, queue uses FIFO",
+      "closestAnswer": "Stack uses FIFO, queue uses LIFO",
+      "aiHint": "Think of a stack like plates piled on top of each other, while a queue operates like a line at a ticket counter.",
       "difficulty": "easy",
-      "category": "Core Computer Science"
+      "category": "Data Structures & Algorithms"
     },
     {
       "id": "easy-2",
-      "question": "In Git, which command is used to download commits and objects from a remote repository into the local repository and immediately integrate them?",
+      "question": "State the time complexity of accessing an element by index in an array.",
       "options": [
         {
           "id": "easy-2-opt-1",
-          "text": "git pull"
-        },
-        {
-          "id": "easy-2-opt-2",
-          "text": "git fetch"
-        },
-        {
-          "id": "easy-2-opt-3",
-          "text": "git clone"
-        },
-        {
-          "id": "easy-2-opt-4",
-          "text": "git push"
-        }
-      ],
-      "correctAnswerId": "easy-2-opt-1",
-      "closestAnswerId": "easy-2-opt-2",
-      "correctAnswer": "git pull",
-      "closestAnswer": "git fetch",
-      "aiHint": "This command performs two operations under the hood: retrieving remote changes and merging them into the current active branch.",
-      "difficulty": "easy",
-      "category": "Core Computer Science"
-    },
-    {
-      "id": "easy-3",
-      "question": "Which HTTP status code signifies that a requested resource was successfully created on the server?",
-      "options": [
-        {
-          "id": "easy-3-opt-1",
-          "text": "201 Created"
-        },
-        {
-          "id": "easy-3-opt-2",
-          "text": "200 OK"
-        },
-        {
-          "id": "easy-3-opt-3",
-          "text": "204 No Content"
-        },
-        {
-          "id": "easy-3-opt-4",
-          "text": "301 Moved Permanently"
-        }
-      ],
-      "correctAnswerId": "easy-3-opt-1",
-      "closestAnswerId": "easy-3-opt-2",
-      "correctAnswer": "201 Created",
-      "closestAnswer": "200 OK",
-      "aiHint": "While 200 signifies general success, REST conventions define a specific 2xx code specifically returned after successful POST requests that instantiate new entities.",
-      "difficulty": "easy",
-      "category": "Core Computer Science"
-    },
-    {
-      "id": "easy-4",
-      "question": "What data structure operates on a Last-In, First-Out (LIFO) order?",
-      "options": [
-        {
-          "id": "easy-4-opt-1",
-          "text": "Stack"
-        },
-        {
-          "id": "easy-4-opt-2",
-          "text": "Queue"
-        },
-        {
-          "id": "easy-4-opt-3",
-          "text": "Linked List"
-        },
-        {
-          "id": "easy-4-opt-4",
-          "text": "Binary Heap"
-        }
-      ],
-      "correctAnswerId": "easy-4-opt-1",
-      "closestAnswerId": "easy-4-opt-2",
-      "correctAnswer": "Stack",
-      "closestAnswer": "Queue",
-      "aiHint": "Think of a physical pile of cafeteria trays where the last tray placed on top is the first one someone picks up.",
-      "difficulty": "easy",
-      "category": "Core Computer Science"
-    },
-    {
-      "id": "easy-5",
-      "question": "In relational databases, which SQL constraint ensures that every row in a table is uniquely identifiable and cannot contain NULL values?",
-      "options": [
-        {
-          "id": "easy-5-opt-1",
-          "text": "PRIMARY KEY"
-        },
-        {
-          "id": "easy-5-opt-2",
-          "text": "FOREIGN KEY"
-        },
-        {
-          "id": "easy-5-opt-3",
-          "text": "UNIQUE"
-        },
-        {
-          "id": "easy-5-opt-4",
-          "text": "NOT NULL"
-        }
-      ],
-      "correctAnswerId": "easy-5-opt-1",
-      "closestAnswerId": "easy-5-opt-3",
-      "correctAnswer": "PRIMARY KEY",
-      "closestAnswer": "UNIQUE",
-      "aiHint": "A UNIQUE constraint allows one NULL in most engines, but this key uniquely identifies records for relation indexing and strictly forbids nullity.",
-      "difficulty": "easy",
-      "category": "Core Computer Science"
-    },
-    {
-      "id": "easy-6",
-      "question": "Which protocol is the default secure transport protocol used to encrypt web traffic via TLS/SSL?",
-      "options": [
-        {
-          "id": "easy-6-opt-1",
-          "text": "HTTPS"
-        },
-        {
-          "id": "easy-6-opt-2",
-          "text": "HTTP"
-        },
-        {
-          "id": "easy-6-opt-3",
-          "text": "SFTP"
-        },
-        {
-          "id": "easy-6-opt-4",
-          "text": "SSH"
-        }
-      ],
-      "correctAnswerId": "easy-6-opt-1",
-      "closestAnswerId": "easy-6-opt-4",
-      "correctAnswer": "HTTPS",
-      "closestAnswer": "SSH",
-      "aiHint": "It is the encrypted sibling of standard port 80 web requests, operating over port 443.",
-      "difficulty": "easy",
-      "category": "Core Computer Science"
-    },
-    {
-      "id": "easy-7",
-      "question": "In JavaScript, which operator checks for both value equality and identical data type without type coercion?",
-      "options": [
-        {
-          "id": "easy-7-opt-1",
-          "text": "==="
-        },
-        {
-          "id": "easy-7-opt-2",
-          "text": "=="
-        },
-        {
-          "id": "easy-7-opt-3",
-          "text": "="
-        },
-        {
-          "id": "easy-7-opt-4",
-          "text": "!="
-        }
-      ],
-      "correctAnswerId": "easy-7-opt-1",
-      "closestAnswerId": "easy-7-opt-2",
-      "correctAnswer": "===",
-      "closestAnswer": "==",
-      "aiHint": "Unlike loose equality which coerces types like '0' == 0, strict equality requires three characters.",
-      "difficulty": "easy",
-      "category": "Core Computer Science"
-    },
-    {
-      "id": "easy-8",
-      "question": "Which standard format is most universally utilized for transmitting structured data between a web API and a browser client?",
-      "options": [
-        {
-          "id": "easy-8-opt-1",
-          "text": "JSON"
-        },
-        {
-          "id": "easy-8-opt-2",
-          "text": "XML"
-        },
-        {
-          "id": "easy-8-opt-3",
-          "text": "YAML"
-        },
-        {
-          "id": "easy-8-opt-4",
-          "text": "Protocol Buffers"
-        }
-      ],
-      "correctAnswerId": "easy-8-opt-1",
-      "closestAnswerId": "easy-8-opt-2",
-      "correctAnswer": "JSON",
-      "closestAnswer": "XML",
-      "aiHint": "It derives from JavaScript object syntax and uses lightweight key-value pairs formatted with curly brackets.",
-      "difficulty": "easy",
-      "category": "Core Computer Science"
-    },
-    {
-      "id": "easy-9",
-      "question": "What does CPU cache provide compared to main system RAM?",
-      "options": [
-        {
-          "id": "easy-9-opt-1",
-          "text": "Significantly lower latency and higher bandwidth"
-        },
-        {
-          "id": "easy-9-opt-2",
-          "text": "Higher storage capacity at lower cost"
-        },
-        {
-          "id": "easy-9-opt-3",
-          "text": "Persistent non-volatile storage"
-        },
-        {
-          "id": "easy-9-opt-4",
-          "text": "Direct network interface routing"
-        }
-      ],
-      "correctAnswerId": "easy-9-opt-1",
-      "closestAnswerId": "easy-9-opt-3",
-      "correctAnswer": "Significantly lower latency and higher bandwidth",
-      "closestAnswer": "Persistent non-volatile storage",
-      "aiHint": "L1, L2, and L3 caches sit directly adjacent to or inside the CPU cores to avoid the slow bus trip across the motherboard to DRAM.",
-      "difficulty": "easy",
-      "category": "Core Computer Science"
-    },
-    {
-      "id": "easy-10",
-      "question": "Which Linux command is used to modify file permissions using symbolic or octal notation?",
-      "options": [
-        {
-          "id": "easy-10-opt-1",
-          "text": "chmod"
-        },
-        {
-          "id": "easy-10-opt-2",
-          "text": "chown"
-        },
-        {
-          "id": "easy-10-opt-3",
-          "text": "chgrp"
-        },
-        {
-          "id": "easy-10-opt-4",
-          "text": "touch"
-        }
-      ],
-      "correctAnswerId": "easy-10-opt-1",
-      "closestAnswerId": "easy-10-opt-2",
-      "correctAnswer": "chmod",
-      "closestAnswer": "chown",
-      "aiHint": "The command name stands for 'change mode' and lets you set read, write, and execute bits.",
-      "difficulty": "easy",
-      "category": "Core Computer Science"
-    },
-    {
-      "id": "easy-11",
-      "question": "In machine learning, what term refers to a model learning noise and memorizing training data rather than generalizing to unseen data?",
-      "options": [
-        {
-          "id": "easy-11-opt-1",
-          "text": "Overfitting"
-        },
-        {
-          "id": "easy-11-opt-2",
-          "text": "Underfitting"
-        },
-        {
-          "id": "easy-11-opt-3",
-          "text": "Regularization"
-        },
-        {
-          "id": "easy-11-opt-4",
-          "text": "Quantization"
-        }
-      ],
-      "correctAnswerId": "easy-11-opt-1",
-      "closestAnswerId": "easy-11-opt-2",
-      "correctAnswer": "Overfitting",
-      "closestAnswer": "Underfitting",
-      "aiHint": "Characterized by near 100% training accuracy alongside poor performance on validation and test splits.",
-      "difficulty": "easy",
-      "category": "Core Computer Science"
-    },
-    {
-      "id": "easy-12",
-      "question": "Which data structure utilizes hashing to achieve average-case O(1) key lookups and insertions?",
-      "options": [
-        {
-          "id": "easy-12-opt-1",
-          "text": "Hash Table"
-        },
-        {
-          "id": "easy-12-opt-2",
-          "text": "Binary Search Tree"
-        },
-        {
-          "id": "easy-12-opt-3",
-          "text": "Singly Linked List"
-        },
-        {
-          "id": "easy-12-opt-4",
-          "text": "Trie"
-        }
-      ],
-      "correctAnswerId": "easy-12-opt-1",
-      "closestAnswerId": "easy-12-opt-2",
-      "correctAnswer": "Hash Table",
-      "closestAnswer": "Binary Search Tree",
-      "aiHint": "It computes an index into an array of buckets from which the desired value can be found directly.",
-      "difficulty": "easy",
-      "category": "Core Computer Science"
-    },
-    {
-      "id": "easy-13",
-      "question": "If proposition P is TRUE and proposition Q is FALSE, what is the truth value of the Boolean expression: (P AND NOT Q)?",
-      "options": [
-        {
-          "id": "easy-13-opt-1",
-          "text": "TRUE"
-        },
-        {
-          "id": "easy-13-opt-2",
-          "text": "FALSE"
-        },
-        {
-          "id": "easy-13-opt-3",
-          "text": "Indeterminate"
-        },
-        {
-          "id": "easy-13-opt-4",
-          "text": "Contradiction"
-        }
-      ],
-      "correctAnswerId": "easy-13-opt-1",
-      "closestAnswerId": "easy-13-opt-2",
-      "correctAnswer": "TRUE",
-      "closestAnswer": "FALSE",
-      "aiHint": "Since Q is FALSE, NOT Q becomes TRUE. Conjoining two TRUE statements results in TRUE.",
-      "difficulty": "easy",
-      "category": "Core Computer Science"
-    },
-    {
-      "id": "easy-14",
-      "question": "In Python, which built-in function returns the total number of items in a list, string, or dictionary?",
-      "options": [
-        {
-          "id": "easy-14-opt-1",
-          "text": "len()"
-        },
-        {
-          "id": "easy-14-opt-2",
-          "text": "count()"
-        },
-        {
-          "id": "easy-14-opt-3",
-          "text": "size()"
-        },
-        {
-          "id": "easy-14-opt-4",
-          "text": "length()"
-        }
-      ],
-      "correctAnswerId": "easy-14-opt-1",
-      "closestAnswerId": "easy-14-opt-2",
-      "correctAnswer": "len()",
-      "closestAnswer": "count()",
-      "aiHint": "A 3-letter built-in function that invokes the object's __len__() dunder method.",
-      "difficulty": "easy",
-      "category": "Core Computer Science"
-    },
-    {
-      "id": "easy-15",
-      "question": "In binary search executing on a sorted array of size n, what is the worst-case algorithmic time complexity?",
-      "options": [
-        {
-          "id": "easy-15-opt-1",
-          "text": "O(log n)"
-        },
-        {
-          "id": "easy-15-opt-2",
-          "text": "O(1)"
-        },
-        {
-          "id": "easy-15-opt-3",
           "text": "O(n)"
         },
         {
-          "id": "easy-15-opt-4",
-          "text": "O(n log n)"
+          "id": "easy-2-opt-2",
+          "text": "O(1)"
+        },
+        {
+          "id": "easy-2-opt-3",
+          "text": "O(n²)"
+        },
+        {
+          "id": "easy-2-opt-4",
+          "text": "O(log n)"
         }
       ],
-      "correctAnswerId": "easy-15-opt-1",
-      "closestAnswerId": "easy-15-opt-3",
-      "correctAnswer": "O(log n)",
-      "closestAnswer": "O(n)",
-      "aiHint": "Because the candidate search interval is divided in half after each iteration.",
+      "correctAnswerId": "easy-2-opt-2",
+      "closestAnswerId": "easy-2-opt-4",
+      "correctAnswer": "O(1)",
+      "closestAnswer": "O(log n)",
+      "aiHint": "Arrays store items contiguously in memory, allowing direct address arithmetic using base address plus offset.",
       "difficulty": "easy",
-      "category": "Core Computer Science"
+      "category": "Data Structures & Algorithms"
+    },
+    {
+      "id": "easy-3",
+      "question": "Identify which data structure is commonly used to implement Breadth-First Search (BFS).",
+      "options": [
+        {
+          "id": "easy-3-opt-1",
+          "text": "Priority Queue"
+        },
+        {
+          "id": "easy-3-opt-2",
+          "text": "Binary Tree"
+        },
+        {
+          "id": "easy-3-opt-3",
+          "text": "Stack"
+        },
+        {
+          "id": "easy-3-opt-4",
+          "text": "Queue"
+        }
+      ],
+      "correctAnswerId": "easy-3-opt-4",
+      "closestAnswerId": "easy-3-opt-3",
+      "correctAnswer": "Queue",
+      "closestAnswer": "Stack",
+      "aiHint": "BFS traverses level by level, meaning vertices discovered earlier must be processed and expanded first.",
+      "difficulty": "easy",
+      "category": "Data Structures & Algorithms"
+    },
+    {
+      "id": "easy-4",
+      "question": "Explain the components that typically make up a standard singly linked list node.",
+      "options": [
+        {
+          "id": "easy-4-opt-1",
+          "text": "Data and next pointer"
+        },
+        {
+          "id": "easy-4-opt-2",
+          "text": "Key and hash value"
+        },
+        {
+          "id": "easy-4-opt-3",
+          "text": "Data and index"
+        },
+        {
+          "id": "easy-4-opt-4",
+          "text": "Left and right child"
+        }
+      ],
+      "correctAnswerId": "easy-4-opt-1",
+      "closestAnswerId": "easy-4-opt-4",
+      "correctAnswer": "Data and next pointer",
+      "closestAnswer": "Left and right child",
+      "aiHint": "A node in a linear chain needs to store its payload and the address of the subsequent element.",
+      "difficulty": "easy",
+      "category": "Data Structures & Algorithms"
+    },
+    {
+      "id": "easy-5",
+      "question": "Describe the primary purpose of a hash function in a hash table.",
+      "options": [
+        {
+          "id": "easy-5-opt-1",
+          "text": "Sorts input keys in ascending order"
+        },
+        {
+          "id": "easy-5-opt-2",
+          "text": "Compresses large files for storage"
+        },
+        {
+          "id": "easy-5-opt-3",
+          "text": "Maps keys directly to table indices"
+        },
+        {
+          "id": "easy-5-opt-4",
+          "text": "Encrypts sensitive passwords"
+        }
+      ],
+      "correctAnswerId": "easy-5-opt-3",
+      "closestAnswerId": "easy-5-opt-4",
+      "correctAnswer": "Maps keys directly to table indices",
+      "closestAnswer": "Encrypts sensitive passwords",
+      "aiHint": "It transforms arbitrary key identifiers into bounded integer values corresponding to array slots.",
+      "difficulty": "easy",
+      "category": "Data Structures & Algorithms"
+    },
+    {
+      "id": "easy-6",
+      "question": "Define recursion in computer programming.",
+      "options": [
+        {
+          "id": "easy-6-opt-1",
+          "text": "Looping over an array using pointers"
+        },
+        {
+          "id": "easy-6-opt-2",
+          "text": "A function calling itself to solve subproblems"
+        },
+        {
+          "id": "easy-6-opt-3",
+          "text": "Compiling source code into machine instructions"
+        },
+        {
+          "id": "easy-6-opt-4",
+          "text": "Allocating dynamic memory on the heap"
+        }
+      ],
+      "correctAnswerId": "easy-6-opt-2",
+      "closestAnswerId": "easy-6-opt-1",
+      "correctAnswer": "A function calling itself to solve subproblems",
+      "closestAnswer": "Looping over an array using pointers",
+      "aiHint": "This programming construct relies on a base case to terminate and unwinds via the call stack.",
+      "difficulty": "easy",
+      "category": "Data Structures & Algorithms"
+    },
+    {
+      "id": "easy-7",
+      "question": "Define the term for a graph that contains no cycles.",
+      "options": [
+        {
+          "id": "easy-7-opt-1",
+          "text": "Complete graph"
+        },
+        {
+          "id": "easy-7-opt-2",
+          "text": "Cyclic graph"
+        },
+        {
+          "id": "easy-7-opt-3",
+          "text": "Bipartite graph"
+        },
+        {
+          "id": "easy-7-opt-4",
+          "text": "Acyclic graph"
+        }
+      ],
+      "correctAnswerId": "easy-7-opt-4",
+      "closestAnswerId": "easy-7-opt-2",
+      "correctAnswer": "Acyclic graph",
+      "closestAnswer": "Cyclic graph",
+      "aiHint": "The prefix 'a-' denotes absence; this graph structure ensures you cannot loop back to a starting node.",
+      "difficulty": "easy",
+      "category": "Data Structures & Algorithms"
+    },
+    {
+      "id": "easy-8",
+      "question": "In a min-heap, identify where the smallest element is located.",
+      "options": [
+        {
+          "id": "easy-8-opt-1",
+          "text": "At the leaf node"
+        },
+        {
+          "id": "easy-8-opt-2",
+          "text": "At the root"
+        },
+        {
+          "id": "easy-8-opt-3",
+          "text": "In the middle"
+        },
+        {
+          "id": "easy-8-opt-4",
+          "text": "At a random index"
+        }
+      ],
+      "correctAnswerId": "easy-8-opt-2",
+      "closestAnswerId": "easy-8-opt-1",
+      "correctAnswer": "At the root",
+      "closestAnswer": "At the leaf node",
+      "aiHint": "The heap property ensures parent nodes are always less than or equal to their children.",
+      "difficulty": "easy",
+      "category": "Data Structures & Algorithms"
+    },
+    {
+      "id": "easy-9",
+      "question": "Define SQL.",
+      "options": [
+        {
+          "id": "easy-9-opt-1",
+          "text": "Operating system distribution for database servers"
+        },
+        {
+          "id": "easy-9-opt-2",
+          "text": "Programming language for client-side web design"
+        },
+        {
+          "id": "easy-9-opt-3",
+          "text": "Standard language for managing relational databases"
+        },
+        {
+          "id": "easy-9-opt-4",
+          "text": "Hardware interface protocol for storage drives"
+        }
+      ],
+      "correctAnswerId": "easy-9-opt-3",
+      "closestAnswerId": "easy-9-opt-2",
+      "correctAnswer": "Standard language for managing relational databases",
+      "closestAnswer": "Programming language for client-side web design",
+      "aiHint": "It stands for Structured Query Language and is used with systems like MySQL and PostgreSQL.",
+      "difficulty": "easy",
+      "category": "Database Management Systems"
+    },
+    {
+      "id": "easy-10",
+      "question": "Define a primary key in a relational database.",
+      "options": [
+        {
+          "id": "easy-10-opt-1",
+          "text": "Allows duplicate and null values in a column"
+        },
+        {
+          "id": "easy-10-opt-2",
+          "text": "Uniquely identifies each row in a table"
+        },
+        {
+          "id": "easy-10-opt-3",
+          "text": "Stores encrypted passwords on the server"
+        },
+        {
+          "id": "easy-10-opt-4",
+          "text": "Links tables directly to external web servers"
+        }
+      ],
+      "correctAnswerId": "easy-10-opt-2",
+      "closestAnswerId": "easy-10-opt-1",
+      "correctAnswer": "Uniquely identifies each row in a table",
+      "closestAnswer": "Allows duplicate and null values in a column",
+      "aiHint": "It enforces both uniqueness and non-null constraints across all table records.",
+      "difficulty": "easy",
+      "category": "Database Management Systems"
+    },
+    {
+      "id": "easy-11",
+      "question": "Identify the HTML tag used to create an ordered list.",
+      "options": [
+        {
+          "id": "easy-11-opt-1",
+          "text": "<ul>"
+        },
+        {
+          "id": "easy-11-opt-2",
+          "text": "<li>"
+        },
+        {
+          "id": "easy-11-opt-3",
+          "text": "<dl>"
+        },
+        {
+          "id": "easy-11-opt-4",
+          "text": "<ol>"
+        }
+      ],
+      "correctAnswerId": "easy-11-opt-4",
+      "closestAnswerId": "easy-11-opt-1",
+      "correctAnswer": "<ol>",
+      "closestAnswer": "<ul>",
+      "aiHint": "The letters represent the abbreviation for 'ordered list', rendering numbered items by default.",
+      "difficulty": "easy",
+      "category": "Web Technologies"
+    },
+    {
+      "id": "easy-12",
+      "question": "Identify the CSS property used to change text color.",
+      "options": [
+        {
+          "id": "easy-12-opt-1",
+          "text": "text-color"
+        },
+        {
+          "id": "easy-12-opt-2",
+          "text": "font-color"
+        },
+        {
+          "id": "easy-12-opt-3",
+          "text": "color"
+        },
+        {
+          "id": "easy-12-opt-4",
+          "text": "background-color"
+        }
+      ],
+      "correctAnswerId": "easy-12-opt-3",
+      "closestAnswerId": "easy-12-opt-1",
+      "correctAnswer": "color",
+      "closestAnswer": "text-color",
+      "aiHint": "Unlike background-color, this single-word property directly styles the foreground typography.",
+      "difficulty": "easy",
+      "category": "Web Technologies"
+    },
+    {
+      "id": "easy-13",
+      "question": "Identify the HTML tag used to embed JavaScript.",
+      "options": [
+        {
+          "id": "easy-13-opt-1",
+          "text": "<script>"
+        },
+        {
+          "id": "easy-13-opt-2",
+          "text": "<js>"
+        },
+        {
+          "id": "easy-13-opt-3",
+          "text": "<javascript>"
+        },
+        {
+          "id": "easy-13-opt-4",
+          "text": "<code>"
+        }
+      ],
+      "correctAnswerId": "easy-13-opt-1",
+      "closestAnswerId": "easy-13-opt-3",
+      "correctAnswer": "<script>",
+      "closestAnswer": "<javascript>",
+      "aiHint": "This tag can contain inline client-side code or reference external files via a src attribute.",
+      "difficulty": "easy",
+      "category": "Web Technologies"
+    },
+    {
+      "id": "easy-14",
+      "question": "Identify the symbol commonly used to start a single-line comment in Python.",
+      "options": [
+        {
+          "id": "easy-14-opt-1",
+          "text": "//"
+        },
+        {
+          "id": "easy-14-opt-2",
+          "text": "/*"
+        },
+        {
+          "id": "easy-14-opt-3",
+          "text": "#"
+        },
+        {
+          "id": "easy-14-opt-4",
+          "text": "--"
+        }
+      ],
+      "correctAnswerId": "easy-14-opt-3",
+      "closestAnswerId": "easy-14-opt-1",
+      "correctAnswer": "#",
+      "closestAnswer": "//",
+      "aiHint": "Also referred to as a hash, pound sign, or octothorpe.",
+      "difficulty": "easy",
+      "category": "Programming Languages"
+    },
+    {
+      "id": "easy-15",
+      "question": "Explain the purpose of the main() function in C and Java.",
+      "options": [
+        {
+          "id": "easy-15-opt-1",
+          "text": "Handles runtime exceptions"
+        },
+        {
+          "id": "easy-15-opt-2",
+          "text": "Defines global class variables"
+        },
+        {
+          "id": "easy-15-opt-3",
+          "text": "Entry point for executing program code"
+        },
+        {
+          "id": "easy-15-opt-4",
+          "text": "Frees unused heap memory"
+        }
+      ],
+      "correctAnswerId": "easy-15-opt-3",
+      "closestAnswerId": "easy-15-opt-1",
+      "correctAnswer": "Entry point for executing program code",
+      "closestAnswer": "Handles runtime exceptions",
+      "aiHint": "When the binary or JVM process starts, execution begins at this designated signature.",
+      "difficulty": "easy",
+      "category": "Programming Languages"
     },
     {
       "id": "easy-16",
-      "question": "What is the primary mathematical purpose of an activation function in a deep neural network?",
+      "question": "Identify the keyword used to create a class in Java.",
       "options": [
         {
           "id": "easy-16-opt-1",
-          "text": "To introduce non-linearity into the network"
+          "text": "interface"
         },
         {
           "id": "easy-16-opt-2",
-          "text": "To prevent matrix multiplications"
+          "text": "class"
         },
         {
           "id": "easy-16-opt-3",
-          "text": "To force all parameter weights to zero"
+          "text": "struct"
         },
         {
           "id": "easy-16-opt-4",
-          "text": "To eliminate the need for backpropagation"
+          "text": "object"
         }
       ],
-      "correctAnswerId": "easy-16-opt-1",
-      "closestAnswerId": "easy-16-opt-2",
-      "correctAnswer": "To introduce non-linearity into the network",
-      "closestAnswer": "To prevent matrix multiplications",
-      "aiHint": "Without non-linear activations like ReLU or Sigmoid, successive linear matrix layers collapse into a single affine transformation.",
+      "correctAnswerId": "easy-16-opt-2",
+      "closestAnswerId": "easy-16-opt-1",
+      "correctAnswer": "class",
+      "closestAnswer": "interface",
+      "aiHint": "A lowercase five-letter reserved keyword used to define object blueprints.",
       "difficulty": "easy",
-      "category": "Core Computer Science"
+      "category": "Programming Languages"
+    },
+    {
+      "id": "easy-17",
+      "question": "Explain what indentation is used for in Python.",
+      "options": [
+        {
+          "id": "easy-17-opt-1",
+          "text": "Purely cosmetic code formatting"
+        },
+        {
+          "id": "easy-17-opt-2",
+          "text": "Declaring private class variables"
+        },
+        {
+          "id": "easy-17-opt-3",
+          "text": "Importing external library packages"
+        },
+        {
+          "id": "easy-17-opt-4",
+          "text": "Indentation defines code blocks and scopes"
+        }
+      ],
+      "correctAnswerId": "easy-17-opt-4",
+      "closestAnswerId": "easy-17-opt-1",
+      "correctAnswer": "Indentation defines code blocks and scopes",
+      "closestAnswer": "Purely cosmetic code formatting",
+      "aiHint": "Instead of curly braces, Python enforces white space to determine block nesting.",
+      "difficulty": "easy",
+      "category": "Programming Languages"
+    },
+    {
+      "id": "easy-18",
+      "question": "Explain the difference between == and =.",
+      "options": [
+        {
+          "id": "easy-18-opt-1",
+          "text": "= checks equality, == performs assignment"
+        },
+        {
+          "id": "easy-18-opt-2",
+          "text": "Both perform value assignment"
+        },
+        {
+          "id": "easy-18-opt-3",
+          "text": "== checks equality, = performs assignment"
+        },
+        {
+          "id": "easy-18-opt-4",
+          "text": "Both compare values for equality"
+        }
+      ],
+      "correctAnswerId": "easy-18-opt-3",
+      "closestAnswerId": "easy-18-opt-1",
+      "correctAnswer": "== checks equality, = performs assignment",
+      "closestAnswer": "= checks equality, == performs assignment",
+      "aiHint": "A single equals sign sets a variable value, while double equals compares two operands.",
+      "difficulty": "easy",
+      "category": "Programming Languages"
     }
   ],
   "medium": [
     {
       "id": "medium-1",
-      "question": "What mechanism in the JavaScript runtime is responsible for executing callbacks, handling async tasks, and draining microtask queues?",
+      "question": "Define a heap and explain its common usage.",
       "options": [
         {
           "id": "medium-1-opt-1",
-          "text": "Event Loop"
+          "text": "Linear array used for stacks"
         },
         {
           "id": "medium-1-opt-2",
-          "text": "V8 Just-In-Time Compiler"
+          "text": "Tree structure used for priority queues"
         },
         {
           "id": "medium-1-opt-3",
-          "text": "Garbage Collector"
+          "text": "Graph structure used for network routing"
         },
         {
           "id": "medium-1-opt-4",
-          "text": "WebAssembly Sandbox"
+          "text": "Hash table used for dictionaries"
         }
       ],
-      "correctAnswerId": "medium-1-opt-1",
-      "closestAnswerId": "medium-1-opt-3",
-      "correctAnswer": "Event Loop",
-      "closestAnswer": "Garbage Collector",
-      "aiHint": "It continuously inspects the call stack and moves queued promises and timers into execution once the stack clears.",
+      "correctAnswerId": "medium-1-opt-2",
+      "closestAnswerId": "medium-1-opt-1",
+      "correctAnswer": "Tree structure used for priority queues",
+      "closestAnswer": "Linear array used for stacks",
+      "aiHint": "It is a specialized complete binary tree allowing logarithmic insertion and constant-time peak lookups.",
       "difficulty": "medium",
-      "category": "Distributed Systems & Engineering"
+      "category": "Data Structures & Algorithms"
     },
     {
       "id": "medium-2",
-      "question": "In the CAP theorem for distributed systems, what does the 'P' stand for?",
+      "question": "Explain the algorithmic difference between BFS and DFS traversal.",
       "options": [
         {
           "id": "medium-2-opt-1",
-          "text": "Partition Tolerance"
+          "text": "BFS uses recursion, DFS uses queues"
         },
         {
           "id": "medium-2-opt-2",
-          "text": "Persistence"
+          "text": "BFS explores deep, DFS explores levelwise"
         },
         {
           "id": "medium-2-opt-3",
-          "text": "Parallelism"
+          "text": "Both use stacks for traversal"
         },
         {
           "id": "medium-2-opt-4",
-          "text": "Performance"
+          "text": "BFS explores levelwise, DFS explores deep"
         }
       ],
-      "correctAnswerId": "medium-2-opt-1",
+      "correctAnswerId": "medium-2-opt-4",
       "closestAnswerId": "medium-2-opt-2",
-      "correctAnswer": "Partition Tolerance",
-      "closestAnswer": "Persistence",
-      "aiHint": "This property guarantees that the cluster continues to function despite network communications drops between arbitrary nodes.",
+      "correctAnswer": "BFS explores levelwise, DFS explores deep",
+      "closestAnswer": "BFS explores deep, DFS explores levelwise",
+      "aiHint": "One spreads outward across neighboring nodes first, while the other pursues a single branch down to its leaves.",
       "difficulty": "medium",
-      "category": "Distributed Systems & Engineering"
+      "category": "Data Structures & Algorithms"
     },
     {
       "id": "medium-3",
-      "question": "Which cryptographic primitive generates a fixed-size deterministic digest from arbitrary-length input with one-way preimage resistance?",
+      "question": "State the guaranteed time complexity of Merge Sort.",
       "options": [
         {
           "id": "medium-3-opt-1",
-          "text": "Cryptographic Hash Function"
+          "text": "O(n²)"
         },
         {
           "id": "medium-3-opt-2",
-          "text": "Symmetric Cipher"
+          "text": "O(n log n)"
         },
         {
           "id": "medium-3-opt-3",
-          "text": "Asymmetric Key Pair"
+          "text": "O(n)"
         },
         {
           "id": "medium-3-opt-4",
-          "text": "Diffie-Hellman Exchange"
+          "text": "O(log n)"
         }
       ],
-      "correctAnswerId": "medium-3-opt-1",
-      "closestAnswerId": "medium-3-opt-2",
-      "correctAnswer": "Cryptographic Hash Function",
-      "closestAnswer": "Symmetric Cipher",
-      "aiHint": "Examples include SHA-256 and BLAKE3; they transform data into a fixed avalanche digest and cannot be reversed mathematically.",
+      "correctAnswerId": "medium-3-opt-2",
+      "closestAnswerId": "medium-3-opt-1",
+      "correctAnswer": "O(n log n)",
+      "closestAnswer": "O(n²)",
+      "aiHint": "This divide-and-conquer sorting algorithm splits arrays in half (log n levels) and merges them in linear time.",
       "difficulty": "medium",
-      "category": "Distributed Systems & Engineering"
+      "category": "Data Structures & Algorithms"
     },
     {
       "id": "medium-4",
-      "question": "In the Transformer neural network architecture (Vaswani et al.), which mechanism allows the model to dynamically weigh the importance of all input tokens simultaneously?",
+      "question": "Define database normalization.",
       "options": [
         {
           "id": "medium-4-opt-1",
-          "text": "Scaled Dot-Product Multi-Head Attention"
+          "text": "Compressing large image files on disk"
         },
         {
           "id": "medium-4-opt-2",
-          "text": "Recurrent Hidden State Propagation"
+          "text": "Encrypting sensitive table columns"
         },
         {
           "id": "medium-4-opt-3",
-          "text": "Depthwise Convolutional Kernel"
+          "text": "Organizing data to minimize redundancy"
         },
         {
           "id": "medium-4-opt-4",
-          "text": "Backpropagation Through Time"
+          "text": "Deleting old backup records"
         }
       ],
-      "correctAnswerId": "medium-4-opt-1",
+      "correctAnswerId": "medium-4-opt-3",
       "closestAnswerId": "medium-4-opt-2",
-      "correctAnswer": "Scaled Dot-Product Multi-Head Attention",
-      "closestAnswer": "Recurrent Hidden State Propagation",
-      "aiHint": "This mechanism computes Query, Key, and Value vector products across multiple representation subspaces in parallel.",
+      "correctAnswer": "Organizing data to minimize redundancy",
+      "closestAnswer": "Encrypting sensitive table columns",
+      "aiHint": "Techniques like 1NF, 2NF, and 3NF decompose tables to avoid update anomalies and duplicated data.",
       "difficulty": "medium",
-      "category": "Distributed Systems & Engineering"
+      "category": "Database Management Systems"
     },
     {
       "id": "medium-5",
-      "question": "Which isolation level in ANSI SQL prevents dirty reads and non-repeatable reads, but may still permit phantom reads in standard implementations?",
+      "question": "Define a foreign key in a relational database.",
       "options": [
         {
           "id": "medium-5-opt-1",
-          "text": "Repeatable Read"
+          "text": "Primary key generated from an external database"
         },
         {
           "id": "medium-5-opt-2",
-          "text": "Read Committed"
+          "text": "Field referencing a primary key in another table"
         },
         {
           "id": "medium-5-opt-3",
-          "text": "Serializable"
+          "text": "Variable holding temporary SQL query code"
         },
         {
           "id": "medium-5-opt-4",
-          "text": "Read Uncommitted"
+          "text": "System administrator credential token"
         }
       ],
-      "correctAnswerId": "medium-5-opt-1",
-      "closestAnswerId": "medium-5-opt-3",
-      "correctAnswer": "Repeatable Read",
-      "closestAnswer": "Serializable",
-      "aiHint": "It locks accessed rows so consecutive SELECTs see the exact same values, but doesn't lock index ranges against newly inserted tuples.",
+      "correctAnswerId": "medium-5-opt-2",
+      "closestAnswerId": "medium-5-opt-1",
+      "correctAnswer": "Field referencing a primary key in another table",
+      "closestAnswer": "Primary key generated from an external database",
+      "aiHint": "It establishes a link between relational entities and maintains referential integrity.",
       "difficulty": "medium",
-      "category": "Distributed Systems & Engineering"
+      "category": "Database Management Systems"
     },
     {
       "id": "medium-6",
-      "question": "What is the primary architectural purpose of a Reverse Proxy (such as NGINX or Envoy) situated in front of backend microservices?",
+      "question": "Explain the purpose of a database index.",
       "options": [
         {
           "id": "medium-6-opt-1",
-          "text": "Load balancing, SSL termination, and centralized routing"
+          "text": "Encrypting raw table data at rest"
         },
         {
           "id": "medium-6-opt-2",
-          "text": "Direct compilation of client TypeScript code"
+          "text": "Backing up database transaction files"
         },
         {
           "id": "medium-6-opt-3",
-          "text": "Persistent relational ACID transactions"
+          "text": "Formatting tabular console outputs"
         },
         {
           "id": "medium-6-opt-4",
-          "text": "Generating client browser cryptographic cookies"
+          "text": "Speeding up data retrieval operations"
         }
       ],
-      "correctAnswerId": "medium-6-opt-1",
-      "closestAnswerId": "medium-6-opt-3",
-      "correctAnswer": "Load balancing, SSL termination, and centralized routing",
-      "closestAnswer": "Persistent relational ACID transactions",
-      "aiHint": "It shields backend servers by acting as the public gateway, managing ingress traffic, security headers, and workload distribution.",
+      "correctAnswerId": "medium-6-opt-4",
+      "closestAnswerId": "medium-6-opt-2",
+      "correctAnswer": "Speeding up data retrieval operations",
+      "closestAnswer": "Backing up database transaction files",
+      "aiHint": "Typically structured as B-Trees, indexes avoid full table scans during lookup queries.",
       "difficulty": "medium",
-      "category": "Distributed Systems & Engineering"
+      "category": "Database Management Systems"
     },
     {
       "id": "medium-7",
-      "question": "In computer networking, what happens during the TCP Three-Way Handshake prior to data exchange?",
+      "question": "Define a JOIN in SQL.",
       "options": [
         {
           "id": "medium-7-opt-1",
-          "text": "SYN -> SYN-ACK -> ACK"
+          "text": "Combines rows from two or more tables"
         },
         {
           "id": "medium-7-opt-2",
-          "text": "SYN -> ACK -> DATA"
+          "text": "Merges two separate database server files"
         },
         {
           "id": "medium-7-opt-3",
-          "text": "HELLO -> VERIFY -> CONNECT"
+          "text": "Deletes duplicate records across tables"
         },
         {
           "id": "medium-7-opt-4",
-          "text": "ACK -> SYN-ACK -> FIN"
+          "text": "Creates a new administrative database user"
         }
       ],
       "correctAnswerId": "medium-7-opt-1",
       "closestAnswerId": "medium-7-opt-2",
-      "correctAnswer": "SYN -> SYN-ACK -> ACK",
-      "closestAnswer": "SYN -> ACK -> DATA",
-      "aiHint": "The client synchronizes sequence numbers, the server acknowledges and synchronizes its own, and the client sends final acknowledgement.",
+      "correctAnswer": "Combines rows from two or more tables",
+      "closestAnswer": "Merges two separate database server files",
+      "aiHint": "Clauses like INNER, LEFT, or RIGHT match records between tables based on related columns.",
       "difficulty": "medium",
-      "category": "Distributed Systems & Engineering"
+      "category": "Database Management Systems"
     },
     {
       "id": "medium-8",
-      "question": "What problem does the Raft consensus algorithm solve in distributed state machines?",
+      "question": "Define NoSQL.",
       "options": [
         {
           "id": "medium-8-opt-1",
-          "text": "Electing a leader and maintaining an identical replicated log"
+          "text": "SQL query containing syntax compilation errors"
         },
         {
           "id": "medium-8-opt-2",
-          "text": "Compressing database backups across nodes"
+          "text": "Programming language designed for web markup"
         },
         {
           "id": "medium-8-opt-3",
-          "text": "Generating public-private key pairs for SSH"
+          "text": "Non-relational database for unstructured data"
         },
         {
           "id": "medium-8-opt-4",
-          "text": "Preventing memory leaks in C++ smart pointers"
+          "text": "Database completely lacking user access controls"
         }
       ],
-      "correctAnswerId": "medium-8-opt-1",
-      "closestAnswerId": "medium-8-opt-4",
-      "correctAnswer": "Electing a leader and maintaining an identical replicated log",
-      "closestAnswer": "Preventing memory leaks in C++ smart pointers",
-      "aiHint": "Designed as an understandable alternative to Multi-Paxos, it uses heartbeats, terms, and quorum voting to agree on state transitions.",
+      "correctAnswerId": "medium-8-opt-3",
+      "closestAnswerId": "medium-8-opt-1",
+      "correctAnswer": "Non-relational database for unstructured data",
+      "closestAnswer": "SQL query containing syntax compilation errors",
+      "aiHint": "Systems like MongoDB or Cassandra store key-value, document, or graph structures instead of fixed tabular schemas.",
       "difficulty": "medium",
-      "category": "Distributed Systems & Engineering"
+      "category": "Database Management Systems"
     },
     {
       "id": "medium-9",
-      "question": "What prevents a Web Worker from modifying the DOM directly in a browser environment?",
+      "question": "Define a view in SQL.",
       "options": [
         {
           "id": "medium-9-opt-1",
-          "text": "Workers run in isolated background threads without window/document access"
+          "text": "A visual layout editor for database GUI clients"
         },
         {
           "id": "medium-9-opt-2",
-          "text": "DOM modifications require synchronous WebGL contexts"
+          "text": "A physical backup copy of a database table"
         },
         {
           "id": "medium-9-opt-3",
-          "text": "The Same-Origin Policy forbids DOM manipulation"
+          "text": "A report exported and printed from the database"
         },
         {
           "id": "medium-9-opt-4",
-          "text": "Microtasks preempt all worker thread mutations"
+          "text": "A virtual table based on the result-set of a SQL statement"
         }
       ],
-      "correctAnswerId": "medium-9-opt-1",
-      "closestAnswerId": "medium-9-opt-3",
-      "correctAnswer": "Workers run in isolated background threads without window/document access",
-      "closestAnswer": "The Same-Origin Policy forbids DOM manipulation",
-      "aiHint": "Because DOM nodes are not thread-safe, JavaScript isolates UI tree mutation to the primary UI thread; workers communicate via postMessage.",
+      "correctAnswerId": "medium-9-opt-4",
+      "closestAnswerId": "medium-9-opt-2",
+      "correctAnswer": "A virtual table based on the result-set of a SQL statement",
+      "closestAnswer": "A physical backup copy of a database table",
+      "aiHint": "It acts like a saved query that appears as a table, without persisting data redundantly.",
       "difficulty": "medium",
-      "category": "Distributed Systems & Engineering"
+      "category": "Database Management Systems"
     },
     {
       "id": "medium-10",
-      "question": "In Docker containerization, how do container layers behave when building an image from a Dockerfile?",
+      "question": "Explain the main architectural difference between SQL and NoSQL databases.",
       "options": [
         {
           "id": "medium-10-opt-1",
-          "text": "Each instruction creates an immutable, cached read-only layer"
+          "text": "SQL uses files, NoSQL uses tables"
         },
         {
           "id": "medium-10-opt-2",
-          "text": "All commands overwrite a single mutable ext4 partition"
+          "text": "SQL databases are relational; NoSQL databases are non-relational"
         },
         {
           "id": "medium-10-opt-3",
-          "text": "Layers are dynamically re-ordered at runtime for RAM optimization"
+          "text": "NoSQL cannot store numeric values"
         },
         {
           "id": "medium-10-opt-4",
-          "text": "Every RUN instruction spawns a separate hypervisor kernel"
+          "text": "SQL requires no host operating system to execute"
         }
       ],
-      "correctAnswerId": "medium-10-opt-1",
-      "closestAnswerId": "medium-10-opt-2",
-      "correctAnswer": "Each instruction creates an immutable, cached read-only layer",
-      "closestAnswer": "All commands overwrite a single mutable ext4 partition",
-      "aiHint": "Union filesystems (like overlay2) stack immutable filesystem diffs on top of each other, caching steps that haven't changed.",
+      "correctAnswerId": "medium-10-opt-2",
+      "closestAnswerId": "medium-10-opt-1",
+      "correctAnswer": "SQL databases are relational; NoSQL databases are non-relational",
+      "closestAnswer": "SQL uses files, NoSQL uses tables",
+      "aiHint": "One relies on structured relations and predefined schemas, while the other offers flexible, non-tabular schemas.",
       "difficulty": "medium",
-      "category": "Distributed Systems & Engineering"
+      "category": "Database Management Systems"
+    },
+    {
+      "id": "medium-11",
+      "question": "Explain the purpose of the CSS display property.",
+      "options": [
+        {
+          "id": "medium-11-opt-1",
+          "text": "Sets element text color"
+        },
+        {
+          "id": "medium-11-opt-2",
+          "text": "Controls typographic font size"
+        },
+        {
+          "id": "medium-11-opt-3",
+          "text": "Determines layout behavior of HTML elements"
+        },
+        {
+          "id": "medium-11-opt-4",
+          "text": "Changes element background image"
+        }
+      ],
+      "correctAnswerId": "medium-11-opt-3",
+      "closestAnswerId": "medium-11-opt-1",
+      "correctAnswer": "Determines layout behavior of HTML elements",
+      "closestAnswer": "Sets element text color",
+      "aiHint": "Values include block, inline, flex, grid, and none to govern rendering boxes.",
+      "difficulty": "medium",
+      "category": "Web Technologies"
+    },
+    {
+      "id": "medium-12",
+      "question": "Explain the difference between an id and a class attribute in HTML/CSS.",
+      "options": [
+        {
+          "id": "medium-12-opt-1",
+          "text": "Class must be unique, ID is reusable"
+        },
+        {
+          "id": "medium-12-opt-2",
+          "text": "IDs apply to multiple elements across pages"
+        },
+        {
+          "id": "medium-12-opt-3",
+          "text": "Both share identical CSS specificity rules"
+        },
+        {
+          "id": "medium-12-opt-4",
+          "text": "ID is unique per page, class is reusable"
+        }
+      ],
+      "correctAnswerId": "medium-12-opt-4",
+      "closestAnswerId": "medium-12-opt-1",
+      "correctAnswer": "ID is unique per page, class is reusable",
+      "closestAnswer": "Class must be unique, ID is reusable",
+      "aiHint": "Targeting an element with '#' expects only one match, whereas '.' can style multiple targets.",
+      "difficulty": "medium",
+      "category": "Web Technologies"
+    },
+    {
+      "id": "medium-13",
+      "question": "Define the layers of the CSS Box Model from inside out.",
+      "options": [
+        {
+          "id": "medium-13-opt-1",
+          "text": "Margin, border, padding, and content"
+        },
+        {
+          "id": "medium-13-opt-2",
+          "text": "Content, padding, border, and margin"
+        },
+        {
+          "id": "medium-13-opt-3",
+          "text": "Content, border, padding, and margin"
+        },
+        {
+          "id": "medium-13-opt-4",
+          "text": "Header, body, main, and footer"
+        }
+      ],
+      "correctAnswerId": "medium-13-opt-2",
+      "closestAnswerId": "medium-13-opt-3",
+      "correctAnswer": "Content, padding, border, and margin",
+      "closestAnswer": "Content, border, padding, and margin",
+      "aiHint": "Padding surrounds the central content, followed by the border edge and outside margin spacing.",
+      "difficulty": "medium",
+      "category": "Web Technologies"
+    },
+    {
+      "id": "medium-14",
+      "question": "Explain the purpose of JavaScript's addEventListener() method.",
+      "options": [
+        {
+          "id": "medium-14-opt-1",
+          "text": "Removes selected DOM elements from document"
+        },
+        {
+          "id": "medium-14-opt-2",
+          "text": "Creates new HTML tags dynamically"
+        },
+        {
+          "id": "medium-14-opt-3",
+          "text": "Attaches event handlers to targeted elements"
+        },
+        {
+          "id": "medium-14-opt-4",
+          "text": "Executes CSS keyframe animations"
+        }
+      ],
+      "correctAnswerId": "medium-14-opt-3",
+      "closestAnswerId": "medium-14-opt-4",
+      "correctAnswer": "Attaches event handlers to targeted elements",
+      "closestAnswer": "Executes CSS keyframe animations",
+      "aiHint": "It registers a callback function to fire when actions like 'click' or 'keydown' occur.",
+      "difficulty": "medium",
+      "category": "Web Technologies"
+    },
+    {
+      "id": "medium-15",
+      "question": "Explain what CSS Flexbox primarily assists with.",
+      "options": [
+        {
+          "id": "medium-15-opt-1",
+          "text": "Efficient alignment and layout of items in a container"
+        },
+        {
+          "id": "medium-15-opt-2",
+          "text": "Optimizing database querying speeds"
+        },
+        {
+          "id": "medium-15-opt-3",
+          "text": "Managing client and server-side routing"
+        },
+        {
+          "id": "medium-15-opt-4",
+          "text": "Rendering 3D vector graphics"
+        }
+      ],
+      "correctAnswerId": "medium-15-opt-1",
+      "closestAnswerId": "medium-15-opt-4",
+      "correctAnswer": "Efficient alignment and layout of items in a container",
+      "closestAnswer": "Rendering 3D vector graphics",
+      "aiHint": "A one-dimensional layout model providing dynamic item distribution along main and cross axes.",
+      "difficulty": "medium",
+      "category": "Web Technologies"
+    },
+    {
+      "id": "medium-16",
+      "question": "Define the Document Object Model (DOM).",
+      "options": [
+        {
+          "id": "medium-16-opt-1",
+          "text": "Remote web server hosting environment"
+        },
+        {
+          "id": "medium-16-opt-2",
+          "text": "Tree structure representing document content objects"
+        },
+        {
+          "id": "medium-16-opt-3",
+          "text": "CSS styling and layout processing module"
+        },
+        {
+          "id": "medium-16-opt-4",
+          "text": "Browser browsing history log store"
+        }
+      ],
+      "correctAnswerId": "medium-16-opt-2",
+      "closestAnswerId": "medium-16-opt-3",
+      "correctAnswer": "Tree structure representing document content objects",
+      "closestAnswer": "CSS styling and layout processing module",
+      "aiHint": "An API for HTML and XML documents that allows scripting languages to modify document structure and content.",
+      "difficulty": "medium",
+      "category": "Web Technologies"
+    },
+    {
+      "id": "medium-17",
+      "question": "Define responsive web design.",
+      "options": [
+        {
+          "id": "medium-17-opt-1",
+          "text": "Minimizes backend server response latency"
+        },
+        {
+          "id": "medium-17-opt-2",
+          "text": "Adds fluid animations to user interface buttons"
+        },
+        {
+          "id": "medium-17-opt-3",
+          "text": "Adapts website layouts dynamically to screen dimensions"
+        },
+        {
+          "id": "medium-17-opt-4",
+          "text": "Formats backend REST API responses into JSON"
+        }
+      ],
+      "correctAnswerId": "medium-17-opt-3",
+      "closestAnswerId": "medium-17-opt-1",
+      "correctAnswer": "Adapts website layouts dynamically to screen dimensions",
+      "closestAnswer": "Minimizes backend server response latency",
+      "aiHint": "Uses CSS media queries, flexible grids, and fluid images to look good on desktops, tablets, and mobile devices.",
+      "difficulty": "medium",
+      "category": "Web Technologies"
+    },
+    {
+      "id": "medium-18",
+      "question": "Define type casting in programming.",
+      "options": [
+        {
+          "id": "medium-18-opt-1",
+          "text": "Declaring new variable identifiers"
+        },
+        {
+          "id": "medium-18-opt-2",
+          "text": "Allocating raw dynamic memory on heap"
+        },
+        {
+          "id": "medium-18-opt-3",
+          "text": "Passing parameters into overloaded methods"
+        },
+        {
+          "id": "medium-18-opt-4",
+          "text": "Converting variables between different data types"
+        }
+      ],
+      "correctAnswerId": "medium-18-opt-4",
+      "closestAnswerId": "medium-18-opt-1",
+      "correctAnswer": "Converting variables between different data types",
+      "closestAnswer": "Declaring new variable identifiers",
+      "aiHint": "Examples include converting a floating-point number into an integer or parsing a string to a numeric primitive.",
+      "difficulty": "medium",
+      "category": "Programming Languages"
+    },
+    {
+      "id": "medium-19",
+      "question": "Explain the operational difference between for and while loops.",
+      "options": [
+        {
+          "id": "medium-19-opt-1",
+          "text": "While loops always execute at least once"
+        },
+        {
+          "id": "medium-19-opt-2",
+          "text": "For loops iterate over known counts; while loops check conditions"
+        },
+        {
+          "id": "medium-19-opt-3",
+          "text": "For loops run indefinitely without condition limits"
+        },
+        {
+          "id": "medium-19-opt-4",
+          "text": "Both structures share identical initialization syntax"
+        }
+      ],
+      "correctAnswerId": "medium-19-opt-2",
+      "closestAnswerId": "medium-19-opt-1",
+      "correctAnswer": "For loops iterate over known counts; while loops check conditions",
+      "closestAnswer": "While loops always execute at least once",
+      "aiHint": "One is typically used when the iteration count is predetermined, while the other loops until a boolean expression evaluates to false.",
+      "difficulty": "medium",
+      "category": "Programming Languages"
+    },
+    {
+      "id": "medium-20",
+      "question": "Define an exception in software execution.",
+      "options": [
+        {
+          "id": "medium-20-opt-1",
+          "text": "Runtime event disrupting normal execution flow"
+        },
+        {
+          "id": "medium-20-opt-2",
+          "text": "Syntax error caught during compilation time"
+        },
+        {
+          "id": "medium-20-opt-3",
+          "text": "User input validation failure rule"
+        },
+        {
+          "id": "medium-20-opt-4",
+          "text": "Low-level memory leak detection alert"
+        }
+      ],
+      "correctAnswerId": "medium-20-opt-1",
+      "closestAnswerId": "medium-20-opt-2",
+      "correctAnswer": "Runtime event disrupting normal execution flow",
+      "closestAnswer": "Syntax error caught during compilation time",
+      "aiHint": "An anomalous runtime condition that can be intercepted and handled using try-catch blocks.",
+      "difficulty": "medium",
+      "category": "Programming Languages"
+    },
+    {
+      "id": "medium-21",
+      "question": "Define inheritance in object-oriented programming.",
+      "options": [
+        {
+          "id": "medium-21-opt-1",
+          "text": "Hiding implementation details within an object"
+        },
+        {
+          "id": "medium-21-opt-2",
+          "text": "Overloading methods with varying parameter signatures"
+        },
+        {
+          "id": "medium-21-opt-3",
+          "text": "Classes deriving properties and methods from parent classes"
+        },
+        {
+          "id": "medium-21-opt-4",
+          "text": "Instantiating concrete objects from abstract interfaces"
+        }
+      ],
+      "correctAnswerId": "medium-21-opt-3",
+      "closestAnswerId": "medium-21-opt-1",
+      "correctAnswer": "Classes deriving properties and methods from parent classes",
+      "closestAnswer": "Hiding implementation details within an object",
+      "aiHint": "Enables code reuse and hierarchical class modeling using keywords like 'extends'.",
+      "difficulty": "medium",
+      "category": "Programming Languages"
+    },
+    {
+      "id": "medium-22",
+      "question": "Define an AI-powered chatbot, and identify technologies that could be used to build its web interface.",
+      "options": [
+        {
+          "id": "medium-22-opt-1",
+          "text": "Web interface built strictly using SQL and C"
+        },
+        {
+          "id": "medium-22-opt-2",
+          "text": "Web interface requiring low-level Assembly code strictly"
+        },
+        {
+          "id": "medium-22-opt-3",
+          "text": "Web interface built using HTML, CSS, and JavaScript"
+        },
+        {
+          "id": "medium-22-opt-4",
+          "text": "Web interface rendered via CSS without HTML document trees"
+        }
+      ],
+      "correctAnswerId": "medium-22-opt-3",
+      "closestAnswerId": "medium-22-opt-1",
+      "correctAnswer": "Web interface built using HTML, CSS, and JavaScript",
+      "closestAnswer": "Web interface built strictly using SQL and C",
+      "aiHint": "The frontend standard stack handles user input, styles conversational bubbles, and calls the model API asynchronously.",
+      "difficulty": "medium",
+      "category": "Web Technologies"
     }
   ],
   "hard": [
     {
       "id": "hard-1",
-      "question": "In LLM training and inference, what does FlashAttention mathematically achieve to achieve a 2-4x speedup over standard attention?",
+      "question": "State the worst-case time complexity of searching in an unbalanced Binary Search Tree (BST).",
       "options": [
         {
           "id": "hard-1-opt-1",
-          "text": "Tiled computation computing softmax in SRAM without materializing the N×N matrix in HBM"
+          "text": "O(1)"
         },
         {
           "id": "hard-1-opt-2",
-          "text": "Quantizing all weights into 2-bit ternary integers"
+          "text": "O(log n)"
         },
         {
           "id": "hard-1-opt-3",
-          "text": "Pruning 70% of attention heads using low-rank decomposition"
+          "text": "O(n)"
         },
         {
           "id": "hard-1-opt-4",
-          "text": "Replacing transformer self-attention with state-space linear recurrences"
+          "text": "O(n log n)"
         }
       ],
-      "correctAnswerId": "hard-1-opt-1",
-      "closestAnswerId": "hard-1-opt-4",
-      "correctAnswer": "Tiled computation computing softmax in SRAM without materializing the N×N matrix in HBM",
-      "closestAnswer": "Replacing transformer self-attention with state-space linear recurrences",
-      "aiHint": "Standard attention is IO-bound due to repeatedly reading/writing the quadratic sequence matrix between GPU High Bandwidth Memory and fast on-chip SRAM.",
+      "correctAnswerId": "hard-1-opt-3",
+      "closestAnswerId": "hard-1-opt-2",
+      "correctAnswer": "O(n)",
+      "closestAnswer": "O(log n)",
+      "aiHint": "When items are inserted in sorted order, the BST degenerates into a linear linked list.",
       "difficulty": "hard",
-      "category": "Advanced Systems & AI Engineering"
+      "category": "Data Structures & Algorithms"
     },
     {
       "id": "hard-2",
-      "question": "What is the ABA problem in lock-free concurrent programming using Compare-And-Swap (CAS) primitives?",
+      "question": "Identify which data structure you would use to implement function calls and recursion, and explain why.",
       "options": [
         {
           "id": "hard-2-opt-1",
-          "text": "A memory location changes from A to B and back to A, misleading a thread into assuming no intermediate modification occurred"
+          "text": "Queue, because function calls are processed FIFO"
         },
         {
           "id": "hard-2-opt-2",
-          "text": "Two threads deadlock by acquiring mutex locks in reverse alphabetical sequence"
+          "text": "Heap, exclusively for static local variable scoping"
         },
         {
           "id": "hard-2-opt-3",
-          "text": "Atomic registers overflow when incrementing beyond 64-bit integer limits"
+          "text": "Contiguous array, for direct jump index lookups"
         },
         {
           "id": "hard-2-opt-4",
-          "text": "Cache coherence protocols drop write-invalidations during NUMA bus congestion"
+          "text": "Stack, because function execution frames follow LIFO order"
         }
       ],
-      "correctAnswerId": "hard-2-opt-1",
-      "closestAnswerId": "hard-2-opt-2",
-      "correctAnswer": "A memory location changes from A to B and back to A, misleading a thread into assuming no intermediate modification occurred",
-      "closestAnswer": "Two threads deadlock by acquiring mutex locks in reverse alphabetical sequence",
-      "aiHint": "CAS checks if value == expected. If another thread alters the pointer and then restores it, CAS succeeds even though structural state or nodes were freed.",
+      "correctAnswerId": "hard-2-opt-4",
+      "closestAnswerId": "hard-2-opt-1",
+      "correctAnswer": "Stack, because function execution frames follow LIFO order",
+      "closestAnswer": "Queue, because function calls are processed FIFO",
+      "aiHint": "The most recently invoked function must finish execution and return before its caller can proceed.",
       "difficulty": "hard",
-      "category": "Advanced Systems & AI Engineering"
+      "category": "Data Structures & Algorithms"
     },
     {
       "id": "hard-3",
-      "question": "In modern CPUs, what hardware vulnerability class exploits speculative execution branch predictors to leak secret memory across process boundaries?",
+      "question": "Explain what the ACID acronym stands for in database management systems.",
       "options": [
         {
           "id": "hard-3-opt-1",
-          "text": "Spectre and Meltdown (transient execution side-channel attacks)"
+          "text": "Array, Code, Index, Data"
         },
         {
           "id": "hard-3-opt-2",
-          "text": "Rowhammer DRAM bit-flipping attacks"
+          "text": "Atomicity, Consistency, Isolation, Durability"
         },
         {
           "id": "hard-3-opt-3",
-          "text": "Buffer overflow return-oriented programming (ROP)"
+          "text": "Access, Control, Information, Design"
         },
         {
           "id": "hard-3-opt-4",
-          "text": "DNS cache poisoning via birthday collisions"
+          "text": "Automatic, Central, Internal, Direct"
         }
       ],
-      "correctAnswerId": "hard-3-opt-1",
-      "closestAnswerId": "hard-3-opt-2",
-      "correctAnswer": "Spectre and Meltdown (transient execution side-channel attacks)",
-      "closestAnswer": "Rowhammer DRAM bit-flipping attacks",
-      "aiHint": "CPUs speculate ahead on conditional branches before security checks finish; even when discarded, microarchitectural cache footprints leak data via timing.",
+      "correctAnswerId": "hard-3-opt-2",
+      "closestAnswerId": "hard-3-opt-3",
+      "correctAnswer": "Atomicity, Consistency, Isolation, Durability",
+      "closestAnswer": "Access, Control, Information, Design",
+      "aiHint": "These four properties guarantee that database transactions are processed reliably even through crashes or concurrent execution.",
       "difficulty": "hard",
-      "category": "Advanced Systems & AI Engineering"
+      "category": "Database Management Systems"
     },
     {
       "id": "hard-4",
-      "question": "In zero-knowledge proofs, what property defines a zk-SNARK where the proof verification time is logarithmic or constant relative to the witness statement size?",
+      "question": "Define a transaction in the context of DBMS operations.",
       "options": [
         {
           "id": "hard-4-opt-1",
-          "text": "Succinctness"
+          "text": "Connecting a socket to an external web server"
         },
         {
           "id": "hard-4-opt-2",
-          "text": "Non-interactivity"
+          "text": "A payment made to purchase software licenses"
         },
         {
           "id": "hard-4-opt-3",
-          "text": "Zero-knowledge"
+          "text": "A single logical unit of work executing queries"
         },
         {
           "id": "hard-4-opt-4",
-          "text": "Soundness"
+          "text": "Exporting table records to a CSV file"
         }
       ],
-      "correctAnswerId": "hard-4-opt-1",
-      "closestAnswerId": "hard-4-opt-4",
-      "correctAnswer": "Succinctness",
-      "closestAnswer": "Soundness",
-      "aiHint": "The 'S' in SNARK denotes that proof size and verification work remain remarkably small regardless of how massive the computation circuit is.",
+      "correctAnswerId": "hard-4-opt-3",
+      "closestAnswerId": "hard-4-opt-1",
+      "correctAnswer": "A single logical unit of work executing queries",
+      "closestAnswer": "Connecting a socket to an external web server",
+      "aiHint": "A sequence of operations treated as a single atomic step that either completely commits or rolls back.",
       "difficulty": "hard",
-      "category": "Advanced Systems & AI Engineering"
+      "category": "Database Management Systems"
     },
     {
       "id": "hard-5",
-      "question": "In the Linux kernel network stack, what technology enables running sandboxed bytecode directly within the kernel at hook points like XDP without recompiling kernel modules?",
+      "question": "Define a database trigger and how it operates.",
       "options": [
         {
           "id": "hard-5-opt-1",
-          "text": "eBPF (extended Berkeley Packet Filter)"
+          "text": "A clickable button in a database UI management tool"
         },
         {
           "id": "hard-5-opt-2",
-          "text": "KVM (Kernel-based Virtual Machine)"
+          "text": "Procedural code automatically executed on table events"
         },
         {
           "id": "hard-5-opt-3",
-          "text": "cgroups v2"
+          "text": "A faulty query that crashes the database instance"
         },
         {
           "id": "hard-5-opt-4",
-          "text": "AppArmor seccomp profiles"
+          "text": "A hardware sensor located inside the server rack"
         }
       ],
-      "correctAnswerId": "hard-5-opt-1",
-      "closestAnswerId": "hard-5-opt-3",
-      "correctAnswer": "eBPF (extended Berkeley Packet Filter)",
-      "closestAnswer": "cgroups v2",
-      "aiHint": "A kernel in-situ verifier validates safety before executing tiny JIT-compiled bytecode programs attached to network drivers, tracepoints, or syscalls.",
+      "correctAnswerId": "hard-5-opt-2",
+      "closestAnswerId": "hard-5-opt-1",
+      "correctAnswer": "Procedural code automatically executed on table events",
+      "closestAnswer": "A clickable button in a database UI management tool",
+      "aiHint": "These stored procedures fire automatically in response to DML operations like INSERT, UPDATE, or DELETE.",
       "difficulty": "hard",
-      "category": "Advanced Systems & AI Engineering"
+      "category": "Database Management Systems"
     },
     {
       "id": "hard-6",
-      "question": "Why do Log-Structured Merge (LSM) trees offer substantially superior write throughput over B-Trees for heavy write workloads?",
+      "question": "Explain the difference in scope and mutability between let, const, and var in JavaScript.",
       "options": [
         {
           "id": "hard-6-opt-1",
-          "text": "Writes are appended sequentially to an in-memory memtable and commit log before asynchronous batch compaction"
+          "text": "let and const have block scope, var is function scoped; const prevents reassignment"
         },
         {
           "id": "hard-6-opt-2",
-          "text": "They eliminate disk storage by keeping all keys in distributed DRAM"
+          "text": "const can be reassigned freely; var has strict block scope"
         },
         {
           "id": "hard-6-opt-3",
-          "text": "Every read-modify-write operation locks the entire tree root node"
+          "text": "All three keywords share identical hoisting and scoping rules"
         },
         {
           "id": "hard-6-opt-4",
-          "text": "They utilize hardware transactional memory (HTM) to bypass the OS page cache"
+          "text": "let has global scope only; const has function scope"
         }
       ],
       "correctAnswerId": "hard-6-opt-1",
-      "closestAnswerId": "hard-6-opt-4",
-      "correctAnswer": "Writes are appended sequentially to an in-memory memtable and commit log before asynchronous batch compaction",
-      "closestAnswer": "They utilize hardware transactional memory (HTM) to bypass the OS page cache",
-      "aiHint": "LSM trees convert random disk IO into sequential writes by writing to a WAL and memtable, then flushing sorted runs (SSTables) to disk in background tiers.",
+      "closestAnswerId": "hard-6-opt-2",
+      "correctAnswer": "let and const have block scope, var is function scoped; const prevents reassignment",
+      "closestAnswer": "const can be reassigned freely; var has strict block scope",
+      "aiHint": "ES6 introduced block-scoped declarations, whereas legacy declarations hoist to enclosing functions and allow redeclarations.",
       "difficulty": "hard",
-      "category": "Advanced Systems & AI Engineering"
+      "category": "Web Technologies"
     },
     {
       "id": "hard-7",
-      "question": "What is the Byzantine Generals Problem in asynchronous distributed computing with faulty or malicious nodes?",
+      "question": "Explain what preventDefault() does when handling DOM events in JavaScript.",
       "options": [
         {
           "id": "hard-7-opt-1",
-          "text": "Achieving consensus when arbitrary nodes can fail arbitrarily, delay messages, or send conflicting malicious information"
+          "text": "Stops event propagation upward through DOM ancestors"
         },
         {
           "id": "hard-7-opt-2",
-          "text": "Resolving merge conflicts in distributed version control systems"
+          "text": "Deletes the target DOM element from the tree"
         },
         {
           "id": "hard-7-opt-3",
-          "text": "Preventing hash collisions in Merkle directed acyclic graphs"
+          "text": "Reloads the current web page context"
         },
         {
           "id": "hard-7-opt-4",
-          "text": "Scheduling processes across asymmetric multi-core ARM big.LITTLE architectures"
+          "text": "Stops default browser action for events"
         }
       ],
-      "correctAnswerId": "hard-7-opt-1",
-      "closestAnswerId": "hard-7-opt-2",
-      "correctAnswer": "Achieving consensus when arbitrary nodes can fail arbitrarily, delay messages, or send conflicting malicious information",
-      "closestAnswer": "Resolving merge conflicts in distributed version control systems",
-      "aiHint": "To tolerate 'f' malicious traitors who forge or equivocate messages, classical BFT protocols require at least 3f + 1 total participating nodes.",
+      "correctAnswerId": "hard-7-opt-4",
+      "closestAnswerId": "hard-7-opt-1",
+      "correctAnswer": "Stops default browser action for events",
+      "closestAnswer": "Stops event propagation upward through DOM ancestors",
+      "aiHint": "It halts native behaviors, such as preventing a form submit from reloading the page or an anchor tag from navigating.",
       "difficulty": "hard",
-      "category": "Advanced Systems & AI Engineering"
+      "category": "Web Technologies"
     },
     {
       "id": "hard-8",
-      "question": "In reinforcement learning from human feedback (RLHF), what mathematical function is optimized in Direct Preference Optimization (DPO) to bypass training an explicit reward model?",
+      "question": "Define a pointer in C and explain its core mechanism.",
       "options": [
         {
           "id": "hard-8-opt-1",
-          "text": "An implicit reward formulation derived directly from the closed-form Bradley-Terry preference model and reference policy ratio"
+          "text": "Constant integer value holder inside CPU registers"
         },
         {
           "id": "hard-8-opt-2",
-          "text": "A Monte Carlo Tree Search policy gradient with epsilon exploration"
+          "text": "Function signature return type specifier"
         },
         {
           "id": "hard-8-opt-3",
-          "text": "A deep Q-learning Bellman expectation residual loss"
+          "text": "Variable storing another variable's memory address"
         },
         {
           "id": "hard-8-opt-4",
-          "text": "An adversarial discriminator cross-entropy loss function"
+          "text": "Reserved list of standard library compiler keywords"
         }
       ],
-      "correctAnswerId": "hard-8-opt-1",
-      "closestAnswerId": "hard-8-opt-3",
-      "correctAnswer": "An implicit reward formulation derived directly from the closed-form Bradley-Terry preference model and reference policy ratio",
-      "closestAnswer": "A deep Q-learning Bellman expectation residual loss",
-      "aiHint": "Rafailov et al. proved you can express the ground-truth reward analytically using the log-ratio of the policy and base model, turning RL into supervised binary cross-entropy.",
+      "correctAnswerId": "hard-8-opt-3",
+      "closestAnswerId": "hard-8-opt-1",
+      "correctAnswer": "Variable storing another variable's memory address",
+      "closestAnswer": "Constant integer value holder inside CPU registers",
+      "aiHint": "Declared using an asterisk (*), it allows direct memory dereferencing and pass-by-reference semantics.",
       "difficulty": "hard",
-      "category": "Advanced Systems & AI Engineering"
+      "category": "Programming Languages"
     },
     {
       "id": "hard-9",
-      "question": "What phenomenon occurs in cache hierarchies when multiple processor cores write to distinct variables located on the identical 64-byte cache line?",
+      "question": "Define garbage collection in Java.",
       "options": [
         {
           "id": "hard-9-opt-1",
-          "text": "False Sharing"
+          "text": "Manual memory deallocation system via free() calls"
         },
         {
           "id": "hard-9-opt-2",
-          "text": "Cache Miss Thrashing"
+          "text": "Automatic cleanup of unreferenced heap objects"
         },
         {
           "id": "hard-9-opt-3",
-          "text": "Memory Bank Conflict"
+          "text": "Deleting unused source files during compilation"
         },
         {
           "id": "hard-9-opt-4",
-          "text": "Spectre Speculation"
+          "text": "Clearing local thread stack variables on return"
         }
       ],
-      "correctAnswerId": "hard-9-opt-1",
-      "closestAnswerId": "hard-9-opt-2",
-      "correctAnswer": "False Sharing",
-      "closestAnswer": "Cache Miss Thrashing",
-      "aiHint": "Even though the threads modify completely independent variables, the MESI cache coherence protocol repeatedly invalidates the entire cache line across CPU cores.",
+      "correctAnswerId": "hard-9-opt-2",
+      "closestAnswerId": "hard-9-opt-1",
+      "correctAnswer": "Automatic cleanup of unreferenced heap objects",
+      "closestAnswer": "Manual memory deallocation system via free() calls",
+      "aiHint": "The JVM daemon thread traces roots to identify unreachable memory and reclaim heap space automatically.",
       "difficulty": "hard",
-      "category": "Advanced Systems & AI Engineering"
+      "category": "Programming Languages"
     },
     {
       "id": "hard-10",
-      "question": "In quantum computing, what algorithmic speedup does Grover's search algorithm provide over classical unstructured search algorithms?",
+      "question": "Explain the architectural difference between a compiler and an interpreter.",
       "options": [
         {
           "id": "hard-10-opt-1",
-          "text": "Quadratic speedup (O(√N) versus classical O(N))"
+          "text": "Interpreters translate code entirely before execution begins"
         },
         {
           "id": "hard-10-opt-2",
-          "text": "Exponential speedup (O(log N) versus classical O(N))"
+          "text": "Both translate and run machine instructions identically"
         },
         {
           "id": "hard-10-opt-3",
-          "text": "Super-polynomial speedup (O(N^(1/4)))"
+          "text": "Compilers execute source code line by line at runtime"
         },
         {
           "id": "hard-10-opt-4",
-          "text": "Constant time search (O(1))"
+          "text": "Compilers translate code before runtime; interpreters execute line by line"
         }
       ],
-      "correctAnswerId": "hard-10-opt-1",
-      "closestAnswerId": "hard-10-opt-2",
-      "correctAnswer": "Quadratic speedup (O(√N) versus classical O(N))",
-      "closestAnswer": "Exponential speedup (O(log N) versus classical O(N))",
-      "aiHint": "Using amplitude amplification, the quantum state rotates toward the target basis state in square-root time of the database size N.",
+      "correctAnswerId": "hard-10-opt-4",
+      "closestAnswerId": "hard-10-opt-3",
+      "correctAnswer": "Compilers translate code before runtime; interpreters execute line by line",
+      "closestAnswer": "Compilers execute source code line by line at runtime",
+      "aiHint": "One translates source code into machine artifacts ahead of time, while the other parses and evaluates instructions on the fly.",
       "difficulty": "hard",
-      "category": "Advanced Systems & AI Engineering"
+      "category": "Programming Languages"
     }
   ]
 }
